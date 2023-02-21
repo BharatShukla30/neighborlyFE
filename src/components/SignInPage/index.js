@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
+import { loginWithCredentials } from './actions';
 
 function Copyright(props) {
     return (
@@ -30,13 +31,21 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignInPage() {
+
+    const [formData, setFormData] = React.useState({
+        email: '',
+        password: ''
+    });
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        const requestBody = {
+            email: formData.email,
+            password: formData.password
+        };
+
+        console.log(requestBody);
+        loginWithCredentials(requestBody);
     };
 
     return (
@@ -67,6 +76,15 @@ export default function SignInPage() {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            value={formData.email}
+                            onChange={(event) => {
+                                setFormData((formData) => {
+                                    return {
+                                        ...formData,
+                                        email: event.target.value
+                                    }
+                                })
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -77,6 +95,15 @@ export default function SignInPage() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={formData.password}
+                            onChange={(event) => {
+                                setFormData((formData) => {
+                                    return {
+                                        ...formData,
+                                        password: event.target.value
+                                    }
+                                })
+                            }}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}

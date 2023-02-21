@@ -1,0 +1,22 @@
+body {
+    margin: 0px;
+}
+
+.custom-link-style {
+    color: #2e7dc3;
+    text-decoration: none;
+}
+
+.custom-link-style:hover {
+    text-decoration: underline;
+}
+
+.custom-link-style:focus {
+    border-radius: 2px;
+    outline: 2px solid #2e7dc3;
+}
+
+.logo-link {
+    all: unset;
+    cursor: pointer;
+}

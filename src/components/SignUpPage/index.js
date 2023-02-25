@@ -12,8 +12,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
-import { FormControl, FormHelperText, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
+import { Alert, AlertTitle, FormControl, FormHelperText, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
 import { registerUser } from './actions';
+import { GlobalContext } from '../../App';
 
 function Copyright(props) {
   return (
@@ -35,6 +36,8 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUpPage() {
+  const { globalState, setGlobalState } = React.useContext(GlobalContext);
+
   const [formData, setFormData] = React.useState({
     firstName: '',
     lastName: '',
@@ -57,7 +60,7 @@ export default function SignUpPage() {
     };
 
     console.log(requestBody);
-    registerUser(requestBody);
+    registerUser(requestBody, setGlobalState);
   };
 
   return (
@@ -78,6 +81,18 @@ export default function SignUpPage() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {
+            globalState?.registrationResult?.success && <Alert severity="success">
+              <AlertTitle>Success</AlertTitle>
+              Your registration has been completed successfully. <a className='custom-link-style' href='/signin'>Please Sign In to continue.</a>
+            </Alert>
+          }
+          {
+            globalState?.registrationResult?.error && <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              Your registration could not be completed. <strong>{globalState?.registrationResult?.message}</strong>
+            </Alert>
+          }
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>

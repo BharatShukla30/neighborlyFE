@@ -14,6 +14,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { loginWithCredentials } from './actions';
+import { GlobalContext } from '../../App';
+import { Alert, AlertTitle } from '@mui/material';
+import { Construction } from '@mui/icons-material';
 
 function Copyright(props) {
     return (
@@ -32,6 +35,8 @@ const theme = createTheme();
 
 export default function SignInPage() {
 
+    const { globalState, setGlobalState } = React.useContext(GlobalContext);
+
     const [formData, setFormData] = React.useState({
         email: '',
         password: ''
@@ -45,7 +50,7 @@ export default function SignInPage() {
         };
 
         console.log(requestBody);
-        loginWithCredentials(requestBody);
+        loginWithCredentials(requestBody, setGlobalState);
     };
 
     return (
@@ -66,6 +71,12 @@ export default function SignInPage() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
+                    {
+                        globalState?.signInResult?.error && <Alert severity="error">
+                            <AlertTitle>Error</AlertTitle>
+                            <strong>{globalState?.signInResult?.message}</strong>
+                        </Alert>
+                    }
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"

@@ -39,8 +39,7 @@ export default function SignUpPage() {
   const { globalState, setGlobalState } = React.useContext(GlobalContext);
 
   const [formData, setFormData] = React.useState({
-    firstName: '',
-    lastName: '',
+    fullName: '',
     email: '',
     blood_group: '',
     user_type: 'individual',
@@ -51,7 +50,7 @@ export default function SignUpPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const requestBody = {
-      name: `${formData.firstName} ${formData.lastName}`,
+      name: formData.fullName,
       email: formData.email,
       blood_group: formData.blood_group,
       user_type: formData.user_type,
@@ -95,43 +94,24 @@ export default function SignUpPage() {
           }
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="fullName"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
-                  value={formData.firstName}
+                  id="fullName"
+                  label="Full Name"
+                  value={formData.fullName}
                   onChange={(event) => {
                     setFormData((formData) => {
                       return {
                         ...formData,
-                        firstName: event.target.value
+                        fullName: event.target.value
                       }
                     })
                   }}
                   autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  value={formData.lastName}
-                  onChange={(event) => {
-                    setFormData((formData) => {
-                      return {
-                        ...formData,
-                        lastName: event.target.value
-                      }
-                    })
-                  }}
                 />
               </Grid>
               <Grid item xs={12}>

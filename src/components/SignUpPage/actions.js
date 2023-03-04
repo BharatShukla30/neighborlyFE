@@ -1,7 +1,11 @@
 import axios from "axios";
 import { origin } from "../../constants/env_constants";
 
-export const registerUser = (requestBody, setGlobalState) => {
+export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
+export const SIGN_UP_LOADING = 'SIGN_UP_LOADING';
+export const SIGN_UP_ERROR = 'SIGN_UP_ERROR';
+
+export const registerUser = (requestBody) => function (dispatch) {
     const API_URL = `${origin}/register`;
 
     const axiosConfig = {
@@ -11,44 +15,28 @@ export const registerUser = (requestBody, setGlobalState) => {
         withCredentials: true
     };
 
+    dispatch({type: SIGN_UP_LOADING});
+
     axios({ ...axiosConfig, })
         .then((response) => {
             console.log("Response => ", response);
             if (response.status === 200 && response?.data?.message === "Registration successful") {
-                setGlobalState((globalState) => {
-                    return {
-                        ...globalState,
-                        registrationResult: {
-                            success: true,
-                            error: false,
-                            message: response?.data?.message
-                        }
-                    }
-                });
+                dispatch({
+                    type: SIGN_UP_SUCCESS,
+                    payload: response?.data?.message
+                })
             } else {
-                setGlobalState((globalState) => {
-                    return {
-                        ...globalState,
-                        registrationResult: {
-                            success: false,
-                            error: true,
-                            message: response?.data?.message
-                        }
-                    }
-                });
+                dispatch({
+                    type: SIGN_UP_ERROR,
+                    payload: response?.data?.message
+                })
             }
         })
         .catch((error) => {
             console.log("Error => ", error)
-            setGlobalState((globalState) => {
-                return {
-                    ...globalState,
-                    registrationResult: {
-                        success: false,
-                        error: true,
-                        message: error?.response?.data?.message
-                    }
-                }
-            });
+            dispatch({
+                type: SIGN_UP_ERROR,
+                payload: error?.response?.data?.message
+            })
         })
 };

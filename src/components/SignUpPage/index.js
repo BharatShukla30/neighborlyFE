@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,29 +14,18 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { Alert, AlertTitle, FormControl, FormHelperText, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
 import { registerUser } from './actions';
-import { GlobalContext } from '../../App';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-// Type of User - Individual/Organization
-// Blood Group
-// Address
+import { useDispatch, useSelector } from 'react-redux';
+import Copyright from '../UIUtils/Copyright';
 
 const theme = createTheme();
 
+const signUpSelector = (state) => state.signUpReducer;
+
 export default function SignUpPage() {
-  const { globalState, setGlobalState } = React.useContext(GlobalContext);
+
+  const dispatch = useDispatch();
+
+  const signUpReducerState = useSelector(signUpSelector);
 
   const [formData, setFormData] = React.useState({
     fullName: '',
@@ -59,7 +48,7 @@ export default function SignUpPage() {
     };
 
     console.log(requestBody);
-    registerUser(requestBody, setGlobalState);
+    dispatch(registerUser(requestBody));
   };
 
   return (
@@ -81,15 +70,15 @@ export default function SignUpPage() {
             Sign up
           </Typography>
           {
-            globalState?.registrationResult?.success && <Alert severity="success">
+            signUpReducerState?.success && <Alert severity="success">
               <AlertTitle>Success</AlertTitle>
               Your registration has been completed successfully. <a className='custom-link-style' href='/signin'>Please Sign In to continue.</a>
             </Alert>
           }
           {
-            globalState?.registrationResult?.error && <Alert severity="error">
+            signUpReducerState?.error && <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              Your registration could not be completed. <strong>{globalState?.registrationResult?.message}</strong>
+              Your registration could not be completed. <strong>{signUpReducerState?.payload}</strong>
             </Alert>
           }
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -227,12 +216,12 @@ export default function SignUpPage() {
                   <FormHelperText>All - Only for Organizations</FormHelperText>
                 </FormControl>
               </Grid>
-              {/* <Grid item xs={12}>
+              <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
                 />
-              </Grid> */}
+              </Grid>
             </Grid>
             <Button
               type="submit"

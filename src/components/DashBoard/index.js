@@ -1,98 +1,66 @@
-import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { useEffect } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from '../UIUtils/ListItems/listItems';
-// import Chart from '../UIUtils/Chart/Chart';
-import Deposits from '../UIUtils/Deposits/Deposits';
-import Orders from '../UIUtils/Orders/Orders';
-// import Chart from './Chart';
-// import Deposits from './Deposits';
-// import Orders from './Orders';
 
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
-const drawerWidth = 240;
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-}));
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
-        '& .MuiDrawer-paper': {
-            position: 'relative',
-            whiteSpace: 'nowrap',
-            width: drawerWidth,
-            transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-            boxSizing: 'border-box',
-            ...(!open && {
-                overflowX: 'hidden',
-                transition: theme.transitions.create('width', {
-                    easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.leavingScreen,
-                }),
-                width: theme.spacing(7),
-                [theme.breakpoints.up('sm')]: {
-                    width: theme.spacing(9),
-                },
-            }),
-        },
-    }),
-);
+import { useDispatch, useSelector } from 'react-redux';
+import { Drawer } from '../UIUtils/Drawer';
+import { AppBar } from '../UIUtils/AppBar';
+import { CLEAR_ALL_USER, getUserDetails } from './actions';
+import { useNavigate } from 'react-router';
+import IndividualDashboard from '../IndividualDashboard';
+import { CLEAR_ALL_INFO, SIGN_IN_SUCCESS } from '../SignInPage/actions';
+import { Button } from '@mui/material';
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
-    const [open, setOpen] = React.useState(true);
+const signInSelector = (state) => state.signInReducer;
+const userSelector = (state) => state.userReducer;
+
+export default function Dashboard() {
+    const signInReducerState = useSelector(signInSelector);
+
+    const userReducerState = useSelector(userSelector);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = sessionStorage.getItem('auth-token')
+        if (userReducerState.self.error && !token) {
+            navigate('/signin')
+        }
+
+        dispatch({
+            type: SIGN_IN_SUCCESS,
+            payload: token
+        })
+
+        dispatch(getUserDetails(signInReducerState?.token));
+    }, [])
+
+    const [open, setOpen] = React.useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
+    if (userReducerState.self.error || userReducerState.self.loading) {
+        return <></>;
+    }
+
+    const location = userReducerState?.self?.payload?.location && userReducerState?.self?.payload?.location.split(',')
+    const latitude = location[0] && location[0].trim();
+    const longitude = location[1] && location[1].trim();
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -125,6 +93,17 @@ function DashboardContent() {
                         >
                             Dashboard
                         </Typography>
+                        <Button
+                            color="inherit"
+                            onClick={() => {
+                                sessionStorage.removeItem('auth-token')
+                                dispatch({type: CLEAR_ALL_USER})
+                                dispatch({type: CLEAR_ALL_INFO})
+                                navigate('/signin')
+                            }}
+                        >
+                            Sign Out
+                        </Button>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
                                 <NotificationsIcon />
@@ -152,68 +131,23 @@ function DashboardContent() {
                         {secondaryListItems}
                     </List>
                 </Drawer>
-                <Box
-                    component="main"
-                    sx={{
-                        backgroundColor: (theme) =>
-                            theme.palette.mode === 'light'
-                                ? theme.palette.grey[100]
-                                : theme.palette.grey[900],
-                        flexGrow: 1,
-                        height: '100vh',
-                        overflow: 'auto',
-                    }}
-                >
-                    <Toolbar />
 
-
-                    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                        <div style={{ height: "300px", width: "700px" }}>
-                            <MapContainer center={[26.8467, 80.9462]} zoom={1}>
-                                <TileLayer
-                                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                    url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
-                                />
-                                <Marker title='ABC' position={[51.505, -0.091]}>
-                                    <Popup>
-                                        A pretty CSS3 popup. <br /> Easily customizable.
-                                    </Popup>
-                                </Marker>
-                                <Marker title='ABC' position={[26.8467, 80.9462]}>
-                                    <Popup>
-                                        A pretty CSS3 popup. <br /> Easily customizable.
-                                    </Popup>
-                                </Marker>
-                            </MapContainer>
-                        </div>
-                        {/* <Grid container spacing={3}>
-
-                            <Grid item xs={12} md={4} lg={3}>
-                                <Paper
-                                    sx={{
-                                        p: 2,
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        height: 240,
-                                    }}
-                                >
-                                    <Deposits />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} md={8} lg={9}>
-                                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                    <Orders />
-                                </Paper>
-                            </Grid>
-                        </Grid> */}
-                        <Copyright sx={{ pt: 4 }} />
-                    </Container>
+                <Toolbar />
+                <Box sx={{ width: '100%' }} mt={8}>
+                    <br />
+                    Name: {userReducerState?.self?.payload?.name}
+                    <br />
+                    Type: {userReducerState?.self?.payload?.user_type}
+                    <br />
+                    BloodGroup: {userReducerState?.self?.payload?.blood_group}
+                    <br />
+                    <IndividualDashboard
+                        latitude={latitude}
+                        longitude={longitude}
+                        blood_group={userReducerState?.self?.payload?.blood_group}
+                    />
                 </Box>
             </Box>
         </ThemeProvider>
     );
-}
-
-export default function Dashboard() {
-    return <DashboardContent />;
 }

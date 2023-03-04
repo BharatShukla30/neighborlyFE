@@ -5,53 +5,61 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-// import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
-import { loginWithCredentials } from './actions';
-import { GlobalContext } from '../../App';
+import { Link, redirect, useNavigate } from 'react-router-dom';
+import { loginWithCredentials, SIGN_IN_SUCCESS } from './actions';
 import { Alert, AlertTitle } from '@mui/material';
-import { Construction } from '@mui/icons-material';
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import Copyright from '../UIUtils/Copyright';
+import { useDispatch, useSelector } from 'react-redux';
 
 const theme = createTheme();
 
+const signInSelector = (state) => state.signInReducer;
+
 export default function SignInPage() {
 
-    const { globalState, setGlobalState } = React.useContext(GlobalContext);
+    const dispatch = useDispatch();
+
+    const signInReducerState = useSelector(signInSelector);
+
+    const navigate = useNavigate();
 
     const [formData, setFormData] = React.useState({
         email: '',
         password: ''
     });
 
+    React.useEffect(() => {
+        const token = sessionStorage.getItem('auth-token');
+        if (token) {
+            dispatch({
+                type: SIGN_IN_SUCCESS,
+                payload: token
+            })
+            navigate('/dashboard')
+        }
+    }, [])
+
+
     const handleSubmit = (event) => {
         event.preventDefault();
+
         const requestBody = {
             email: formData.email,
             password: formData.password
         };
 
-        console.log(requestBody);
-        loginWithCredentials(requestBody, setGlobalState);
+        dispatch(loginWithCredentials(requestBody, navigate));
     };
+
+    // if (signInReducerState?.success && signInReducerState?.payload) {
+    //     navigate('/dashboard');
+    // }
 
     return (
         <ThemeProvider theme={theme}>
@@ -72,9 +80,9 @@ export default function SignInPage() {
                         Sign in
                     </Typography>
                     {
-                        globalState?.signInResult?.error && <Alert severity="error">
+                        signInReducerState?.error && <Alert severity="error">
                             <AlertTitle>Error</AlertTitle>
-                            <strong>{globalState?.signInResult?.message}</strong>
+                            <strong>{signInReducerState?.message}</strong>
                         </Alert>
                     }
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>

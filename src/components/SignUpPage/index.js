@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,32 +12,23 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
-import { FormControl, FormHelperText, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
+import { Alert, AlertTitle, FormControl, FormHelperText, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
 import { registerUser } from './actions';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-// Type of User - Individual/Organization
-// Blood Group
-// Address
+import { useDispatch, useSelector } from 'react-redux';
+import Copyright from '../UIUtils/Copyright';
 
 const theme = createTheme();
 
+const signUpSelector = (state) => state.signUpReducer;
+
 export default function SignUpPage() {
+
+  const dispatch = useDispatch();
+
+  const signUpReducerState = useSelector(signUpSelector);
+
   const [formData, setFormData] = React.useState({
-    firstName: '',
-    lastName: '',
+    fullName: '',
     email: '',
     blood_group: '',
     user_type: 'individual',
@@ -48,7 +39,7 @@ export default function SignUpPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const requestBody = {
-      name: `${formData.firstName} ${formData.lastName}`,
+      name: formData.fullName,
       email: formData.email,
       blood_group: formData.blood_group,
       user_type: formData.user_type,
@@ -57,7 +48,7 @@ export default function SignUpPage() {
     };
 
     console.log(requestBody);
-    registerUser(requestBody);
+    dispatch(registerUser(requestBody));
   };
 
   return (
@@ -78,45 +69,38 @@ export default function SignUpPage() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {
+            signUpReducerState?.success && <Alert severity="success">
+              <AlertTitle>Success</AlertTitle>
+              Your registration has been completed successfully. <a className='custom-link-style' href='/signin'>Please Sign In to continue.</a>
+            </Alert>
+          }
+          {
+            signUpReducerState?.error && <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              Your registration could not be completed. <strong>{signUpReducerState?.payload}</strong>
+            </Alert>
+          }
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="fullName"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
-                  value={formData.firstName}
+                  id="fullName"
+                  label="Full Name"
+                  value={formData.fullName}
                   onChange={(event) => {
                     setFormData((formData) => {
                       return {
                         ...formData,
-                        firstName: event.target.value
+                        fullName: event.target.value
                       }
                     })
                   }}
                   autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  value={formData.lastName}
-                  onChange={(event) => {
-                    setFormData((formData) => {
-                      return {
-                        ...formData,
-                        lastName: event.target.value
-                      }
-                    })
-                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -232,12 +216,12 @@ export default function SignUpPage() {
                   <FormHelperText>All - Only for Organizations</FormHelperText>
                 </FormControl>
               </Grid>
-              {/* <Grid item xs={12}>
+              <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
                 />
-              </Grid> */}
+              </Grid>
             </Grid>
             <Button
               type="submit"

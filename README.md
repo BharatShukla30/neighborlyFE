@@ -1,2 +1,2 @@
 # neighborhoodFE
-bloodbank frontend
+neighborhood frontend

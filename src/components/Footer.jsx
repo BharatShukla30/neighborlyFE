@@ -1,8 +1,11 @@
+import { useLocation } from "react-router-dom"
 
 const Footer = () => {
+    const location = useLocation();
+
   return (
     
-<footer className="bg-white border-t-[1px] border-slate-300 px-10 py-4">
+<footer className={`bg-white border-t-[1px] border-slate-300 px-10 py-4 ${location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? "hidden" : ""}`}>
     <div className="w-full max-w-screen-xl mx-auto">
         <div className="sm:flex sm:items-center sm:justify-between">
             <div className=''>

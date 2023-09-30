@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import {RxAvatar} from 'react-icons/rx'
 
 const navigation = [
     // { name: 'Product', href: '#' },
@@ -13,13 +14,23 @@ const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white inset-x-0 top-0 z-50 shadow-sm">
-        <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+    <header className="bg-white inset-x-0 z-50 border-b-2 border-slate-200 fixed top-0">
+        <nav className="flex items-center justify-between p-4 lg:px-8" aria-label="Global">
           <div className="flex lg:flex-1">
             <a href="/" className="">
-              <span className="text-3xl font-bold tracking-widest">Neighborly</span>
+              <span className="text-xl md:text-2xl lg:text-3xl font-bold tracking-widest">Neighborly</span>
             </a>
           </div>
+            
+          <div className='hidden lg:inline-block md:inline-block text-3xl rounded-full cursor-pointer hover:bg-slate-200 hover:shadow-sm hover:text-4xl hover:opacity-50 transition-all duration-300'>
+            <RxAvatar />
+          </div>
+          {/* <img
+          className="hidden lg:inline-block md:inline-block w-10 h-10 rounded-full cursor-pointer"
+          src="https://overreacted.io/static/profile-pic-c715447ce38098828758e525a1128b87.jpg"
+          alt="Dan_Abromov"
+          
+      /> */}
           <div className="flex lg:hidden md:hidden">
             <button
               type="button"

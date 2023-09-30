@@ -7,6 +7,7 @@ import Home from './pages/home';
 import Footer from './components/Footer';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import Dashboard from './pages/Dashboard';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
           <Route path='/'  element={<Home/>} />
           <Route path='/signin' element={<SignIn/>} />
           <Route path='/signup' element={<SignUp />} />
+          <Route path='/dashboard' element={<Dashboard />} />
         </Routes>
       <Footer />
 

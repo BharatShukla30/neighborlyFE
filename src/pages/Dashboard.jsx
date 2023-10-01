@@ -37,8 +37,6 @@ const Dashboard = () => {
     
   } 
 
-  // console.log(activeGroup);
-
   return (
     <>
       <section className="flex max-h-screen h-screen bg-chatBg pt-16">
@@ -49,7 +47,7 @@ const Dashboard = () => {
             <nav className="-mx-3 space-y-6">
               <div className="space-y-3 ">
                 <div className="mb-5">
-                  <div className="shadow-sm cursor-pointer bg-blue-200 py-3 w-[100%] border-[1px] border-slate-400 rounded-lg hover:bg-slate-700 hover:text-white duration-200 active:shadow-xl transition-all flex justify-center items-center">
+                  <div className="shadow-sm cursor-pointer bg-blue-200 py-3 w-full border-[1px] border-slate-400 rounded-lg hover:bg-slate-700 hover:text-white duration-200 active:shadow-xl transition-all flex justify-center items-center">
                     <div className="me-3 text-xl">
                       <AiOutlinePlus />
                     </div>
@@ -117,8 +115,8 @@ const Dashboard = () => {
             </div>
             
             {/* Chats Section */}
-            <div className="px-5 py-5 bg-chatBg w-full">
-              <div className="h-[66vh] overflow-y-scroll">
+            <div className=" py-5 bg-chatBg w-full">
+              <div className="h-[66vh] overflow-y-scroll px-4">
                 <div className="flex flex-col w-full">
                   <div className="border-2  border-primary bg-primary text-white px-3 py-1 w-fit sm:max-w-xs lg:max-w-lg md:max-w-md my-2 rounded-md self-end">
                     <p className="pe-4">Suno bhai suno</p>
@@ -132,7 +130,7 @@ const Dashboard = () => {
                     </p>
                     <p className="text-xs text-end mt-1">00:58</p>
                   </div>
-                  <div className="border-2  border-primary bg-primary text-white px-3 max-w-[15rem] py-1 max-w-xs lg:max-w-lg md:max-w-sm my-2 rounded-md self-end">
+                  <div className="border-2  border-primary bg-primary text-white px-3 max-w-[15rem] py-1 lg:max-w-lg md:max-w-sm my-2 rounded-md self-end">
                     <p className="pe-4">
                       Aree nhi bhai nhi matter nhi hua koi.. bs raat ho gyi h na
                       to ab overthinking peeche bhaag rhi

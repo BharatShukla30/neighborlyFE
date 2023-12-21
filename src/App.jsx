@@ -1,5 +1,6 @@
 import React, { } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'; 
+import store from "./redux/store"
 
 import './App.css'
 import Header from './components/Header';
@@ -8,8 +9,14 @@ import Footer from './components/Footer';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
+import { loadUser } from './redux/actions/authActions';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+
+  React.useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
 
   return (
     <React.Fragment>
@@ -19,7 +26,10 @@ function App() {
           <Route path='/'  element={<Home/>} />
           <Route path='/signin' element={<SignIn/>} />
           <Route path='/signup' element={<SignUp />} />
-          <Route path='/dashboard' element={<Dashboard />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path='/dashboard' element={<Dashboard />} />
+          </Route>
         </Routes>
       <Footer />
 
@@ -28,4 +38,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

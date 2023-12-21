@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiSolidChat } from "react-icons/bi";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsPeople, BsSend } from "react-icons/bs";
 import { SlOptionsVertical } from "react-icons/sl";
 import {IoIosArrowBack} from 'react-icons/io';
+import NewChat from '../components/NewChat';
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const groups = [
@@ -19,35 +22,42 @@ const Dashboard = () => {
     "Group 10",
   ];
 
+  const {user} = useSelector(state => state.auth);
+  const navigate = useNavigate();
+
   const [activeGroup, setActiveGroup] = useState(
     groups.length > 0 ? groups[0] : null
   );
 
     const [openRecentChats, setOpenRecentChats] = useState(true);
+    const [openNewChatBox, setOpenNewChatBox] = useState(false);
+
 
   const handleEnterKey = (e) => {
     if(e.keyCode === 13 && !e.shiftKey){
       e.preventDefault();
       const message = e.target.value;
       console.log(message)
-
       e.target.value="";
-
     }
-    
   } 
+
+
 
   return (
     <>
       <section className="flex max-h-screen h-screen bg-chatBg pt-16">
-
+        
+        {openNewChatBox && <NewChat changeState={setOpenNewChatBox} />}
         {/* Recent Chats List */}
         <aside className={`md:block flex md:w-[32vw] flex-col border-r bg-white px-5 ${openRecentChats ? "block w-screen" : "hidden"}`}>
           <div className="mt-4 flex flex-1 flex-col justify-between">
             <nav className="-mx-3 space-y-6">
               <div className="space-y-3 ">
                 <div className="mb-5">
-                  <div className="shadow-sm cursor-pointer bg-blue-200 py-3 w-full border-[1px] border-slate-400 rounded-lg hover:bg-slate-700 hover:text-white duration-200 active:shadow-xl transition-all flex justify-center items-center">
+                  <div className="shadow-sm cursor-pointer bg-blue-200 py-3 w-full border-[1px] border-slate-400 rounded-lg hover:bg-slate-700 hover:text-white duration-200 active:shadow-xl transition-all flex justify-center items-center"
+                    onClick={() => setOpenNewChatBox(true)}
+                  >
                     <div className="me-3 text-xl">
                       <AiOutlinePlus />
                     </div>

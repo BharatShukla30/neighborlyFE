@@ -1,7 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import chatting from '../assets/chatting.svg'
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../redux/actions/authActions';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const {error, user, isAuthenticated} = useSelector(state => state.auth)
+
+  useEffect(() => {
+    if(isAuthenticated){
+      navigate('/dashboard');
+    }
+  },[isAuthenticated]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -23,9 +37,12 @@ const SignIn = () => {
       navigator.geolocation.getCurrentPosition(
        (position) => {
           const {longitude, latitude} = position.coords;
-         const updatedData = {...formData, location:{longitude, latitude}};
-         console.log(updatedData);
-
+          const updatedData = {...formData, location:{longitude, latitude}};
+          dispatch(loginUser(updatedData)).then((result) => {
+            if(result.payload.success){
+              navigate("/dashboard");
+            }
+          })
         },
         (error) => {
           console.log(error.message);
@@ -57,7 +74,28 @@ const SignIn = () => {
             </p>
             <form onSubmit={handleForm} className="mt-8" >
               <div className="space-y-5">
-                {errors.location && <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded' role='alert'>{errors.location}</div>}
+              {error && (
+                <div
+                  className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 "
+                  role="alert"
+                >
+                  <svg
+                    className="flex-shrink-0 inline w-4 h-4 mr-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                  </svg>
+                  <span className="sr-only">Info</span>
+                  <div>
+                    <span className="font-medium">Error!</span> {error}
+                  </div>
+                </div>
+              )}
+                {errors.location && <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded' role='alert'>
+                  {errors.location}</div>}
                 <div>
                   <label htmlFor="" className="text-base font-medium text-gray-900">
                     {' '}
@@ -110,7 +148,7 @@ const SignIn = () => {
                 </div>
               </div>
             </form>
-            <div className="mt-3 space-y-3">
+            {/* <div className="mt-3 space-y-3">
               <button
                 type="button"
                 className="relative inline-flex w-full items-center justify-center rounded-md border border-gray-400 bg-white px-3.5 py-2.5 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:bg-gray-100 focus:text-black focus:outline-none"
@@ -143,7 +181,7 @@ const SignIn = () => {
                 </span>
                 Sign in with Facebook
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="hidden lg:block lg:h-full lg:w-full">

@@ -37,9 +37,9 @@ const SignUp = () => {
     const validationErrors = {};
 
     if (!formData.username.trim()) {
-      validationErrors.username = "Name is required";
-    } else if (!/^[a-zA-Z0-9\s]+$/.test(formData.username)) {
-      validationErrors.username = "Name must contain only alphabets and spaces";
+      validationErrors.username = "Username is required";
+    } else if (!/^[a-zA-Z0-9]+$/.test(formData.username)) {
+      validationErrors.username = "Username must be alphanumeric";
     }
     if (!formData.email.trim()) {
       validationErrors.email = "Email is required";
@@ -55,9 +55,9 @@ const SignUp = () => {
     }
 
     setErrors(validationErrors);
-    console.log(validationErrors);
+    
     if (Object.keys(validationErrors).length === 0) {
-      console.log(formData);
+      
       dispatch(registerUser(formData)).then((result) => {
         if (result.payload.username) {
           navigate("/dashboard");
@@ -120,7 +120,7 @@ const SignUp = () => {
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="text"
                       name="username"
-                      placeholder="Full Name"
+                      placeholder="Username"
                       id="name"
                       required
                       onChange={handleChange}

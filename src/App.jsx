@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import { loadUser } from './redux/actions/authActions';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
 function App() {
 
   React.useEffect(() => {

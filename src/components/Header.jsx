@@ -149,7 +149,7 @@ const Header = () => {
               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <div className="mt-6 flow-root">
+          <div className="mt-6 md:flow-root hidden ">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="py-6">
                 <a

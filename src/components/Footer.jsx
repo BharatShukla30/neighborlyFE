@@ -5,13 +5,13 @@ const Footer = () => {
 
   return (
     
-<footer className={`bg-white border-t-[1px] border-slate-300 px-10 py-4 ${location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? "hidden" : ""}`}>
+<footer className={` bg-[#0f172a]  px-10 py-4 ${location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? "hidden" : ""}`}>
     <div className="w-full max-w-screen-xl mx-auto">
         <div className="sm:flex sm:items-center sm:justify-between">
             <div className=''>
                 <a href="/" className="flex items-center sm:mb-0">
                 
-                <span className="self-center text-2xl font-semibold whitespace-nowrap ">Neighborly</span>
+                <span className="self-center  text-white text-2xl font-semibold whitespace-nowrap ">Neighborly</span>
                 </a>
             <p className='pt-1 lg:py-3 text-slate-500'>Explore, Connect, Thrive - Your Local Community Hub</p>
             </div>

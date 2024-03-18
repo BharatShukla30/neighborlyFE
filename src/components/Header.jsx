@@ -5,8 +5,8 @@ import { RxAvatar } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/websiteName.png"
 
-const menuItems = ["Profile", "Sign Out"];
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -38,9 +38,16 @@ const Header = () => {
     setMobileMenuOpen(false);
     dispatch(logoutUser()).then((result) => {
       if (result.success) {
-        navigate("/signin");
+        navigate("/");
       }
     });
+  };
+
+
+  const handleProfile = () => {
+    setMenuOpen(false);
+    setMobileMenuOpen(false);
+    navigate("/profile");
   };
 
   return (
@@ -53,26 +60,27 @@ const Header = () => {
       >
         <div className="flex lg:flex-1">
           <a href="/" className="">
-            <span className="text-xl text-white md:text-3xl font-bold tracking-widest">
-              Neighborly
+            <span >
+              <img src={logo} className="h-8 " />
             </span>
           </a>
         </div>
-
+      {/* 
         {!isAuthenticated && (
           
           <div className="flex lg:flex-1 justify-end">
             
-            <ul className="flex flex-row gap-4 text-white">
+            <ul className="flex flex-row gap-4 text-black">
                 <li className="px-4 py-2 rounded  transition-colors duration-200">
-                    <a href="/signup" className="text-white no-underline">Sign up</a>
+                    <a href="/signup" className="no-underline">Sign up</a>
                 </li>
                 <li className="px-4 py-2 rounded  transition-colors duration-200">
-                    <a href="/signin" className="text-white no-underline">Sign in</a>
+                    <a href="/signin" className="no-underline">Sign in</a>
                 </li>
             </ul>
           </div>
-        )}
+        )} */
+        }
         
 
         {isAuthenticated && (
@@ -99,7 +107,9 @@ const Header = () => {
                   ))
               } 
             */}
-              <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300">
+              <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+                onClick={handleProfile}
+              >
                 Profile
               </li>
               <li

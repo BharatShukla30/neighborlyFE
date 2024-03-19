@@ -44,18 +44,36 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white inset-x-0 z-50 border-b-2 border-slate-200 fixed top-0">
+    <header className=" inset-x-0 z-50    fixed top-0">
+
+
       <nav
         className="flex items-center justify-between p-4 lg:px-8"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
           <a href="/" className="">
-            <span className="text-xl md:text-3xl font-bold tracking-widest">
+            <span className="text-xl text-white md:text-3xl font-bold tracking-widest">
               Neighborly
             </span>
           </a>
         </div>
+
+        {!isAuthenticated && (
+          
+          <div className="flex lg:flex-1 justify-end">
+            
+            <ul className="flex flex-row gap-4 text-white">
+                <li className="px-4 py-2 rounded  transition-colors duration-200">
+                    <a href="/signup" className="text-white no-underline">Sign up</a>
+                </li>
+                <li className="px-4 py-2 rounded  transition-colors duration-200">
+                    <a href="/signin" className="text-white no-underline">Sign in</a>
+                </li>
+            </ul>
+          </div>
+        )}
+        
 
         {isAuthenticated && (
           <div
@@ -68,15 +86,19 @@ const Header = () => {
             <RxAvatar />
           </div>
         )}
+
         {isAuthenticated && menuOpen && (
           <div
             ref={menuRef}
             className="md:block absolute hidden right-5 bg-gray-100 top-14 z-10 shadow-md border border-gray-300 text-sm rounded-md"
           >
             <ul>
-              {/* {menuItems.map((item, idx) => (
-              <li key={idx} className='px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300'>{item}</li>
-            ))} */}
+              {/* {
+                menuItems.map((item, idx) => (
+                  <li key={idx} className='px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300'>{item}</li>
+                  ))
+              } 
+            */}
               <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300">
                 Profile
               </li>

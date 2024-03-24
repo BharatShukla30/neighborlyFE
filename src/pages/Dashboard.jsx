@@ -1,21 +1,23 @@
 import  { useCallback, useEffect, useState } from "react"
 import { BsPeople, BsSend } from "react-icons/bs"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
+
 import { getChatMessages, getUserChats } from "../redux/actions/chatActions"
+import { getUserGroups } from "../redux/actions/userAction"
+
 import girl from "../assets/girl.jpg"
 import { IoLocationSharp } from "react-icons/io5"
-import { FaPlus } from "react-icons/fa"
+import { FaCamera, FaPlus } from "react-icons/fa"
 import { HiBellAlert } from "react-icons/hi2"
 import { FaCircleUser } from "react-icons/fa6"
 import { IoIosAttach } from "react-icons/io";
-import { useDropzone } from "react-dropzone";
 import Dropzone from "../components/Dropzone"
-
+import {createGroup } from "../redux/actions/groupAction"
 
 const Dashboard = () => {
 
   const [files, setFiles] = useState([])
+  const [newGrp , setNewGrp] = useState(false)
 
   const onDrop = useCallback(acceptedFiles => {
   //  check the file size is less than 5MB , and only 1 file is uploaded
@@ -24,16 +26,13 @@ const Dashboard = () => {
         preview: URL.createObjectURL(file)
       })))
     }
-
-    // create a 
-    
   }, [])
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+  
 
 
+  const { auth } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.user)
 
-  const { user } = useSelector((state) => state.auth)
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const [chats, setChats] = useState([])
@@ -43,9 +42,8 @@ const Dashboard = () => {
   )
 
   const [openRecentChats, setOpenRecentChats] = useState(true)
-  const [openNewChatBox, setOpenNewChatBox] = useState(false)
-  const [messages, setMessages] = useState([])
-
+  // const [openNewChatBox, setOpenNewChatBox] = useState(false)
+  // const [messages, setMessages] = useState([])
 
 
 
@@ -53,22 +51,31 @@ const Dashboard = () => {
     dispatch(getUserChats()).then((result) => setChats(result.payload.groups))
   }, [])
 
-  useEffect(() => {
-    if (activeChat && activeChat.group_id) {
-      dispatch(getChatMessages(activeChat.group_id)).then((result) => {
-        setActiveChat((chat) => {
-          dispatch(getChatMessages(chat.group_id)).then((result) => {
-            setMessages(result.payload)
-          })
-          return chat
-        })
-      })
-    }
-  }, [activeChat])
+  // useEffect(() => {
+  //   if (activeChat && activeChat.group_id) {
+  //     dispatch(getChatMessages(activeChat.group_id)).then((result) => {
+  //       setActiveChat((chat) => {
+  //         dispatch(getChatMessages(chat.group_id)).then((result) => {
+  //           setMessages(result.payload)
+  //         })
+  //         return chat
+  //       })
+  //     })
+  //   }
+  // }, [activeChat])
 
   const [fileUpload , setFileUpload] = useState(false)
 
+  const [grp , setGrp]  = useState({
+    name: "",
+    description: "",
+    type: "",
+    karma: 0,
+    icon: ""
+  })
+
   const uploadHandler = () => {
+    // S3 goes here 
     console.log("upload") 
     setFileUpload(!fileUpload)
   }
@@ -83,10 +90,102 @@ const Dashboard = () => {
     }
   }
 
+  const handleGrpCreation = () => {
+    setNewGrp(!newGrp)
+  }
+
+  const cancelGrp = () => {
+    setGrp({
+      name: "",
+      description: "",
+      type: "",
+      karma: 0,
+      icon: ""
+    })
+    setNewGrp(!newGrp)
+  }
+
+  const createGrp = (e) => {
+    e.preventDefault()  
+    console.log("create grp")
+    // post info to server
+    try{
+      
+      dispatch(createGroup(grp)).
+      then((result) => {
+        console.log(result)
+      })
+      
+    }catch(err){
+      console.log(err)
+    }
+
+    
+    setNewGrp(false)
+  }
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let img = e.target.files[0];
+      console.log(img)
+      setGrp({...grp, icon: URL.createObjectURL(img)})
+    }
+  };
+
   return (
     <>
       <section className="flex max-h-screen  bg-chatBg pt-16">
         {/* {openNewChatBox && <NewChat changeState={setOpenNewChatBox} />} */}
+
+        {
+          newGrp && (
+            <div className="flex flex-col items-center justify-center w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
+              <div className="bg-white  rounded-md p-5">
+                <h1 className="text-2xl  text-cblue m-2 font-bold">Create New Group</h1>
+                  <form className="my-5 max-w-md  ">
+                    <div className="grid grid-col-6 gap-x-6 mx-auto ">
+                      <div className="col-span-1 relative">
+                        <label htmlFor="grpIcon" className="absolute text-black left-3 top-[10px] ">
+                          <FaCamera  className="pointer-events-auto"/>
+                        </label>
+                        <input  type="file" accept="image/*" id="grpIcon" name="grpIcon"  onChange={handleImageChange}  className="opacity-5 bg-gray-400 rounded-full border h-10 w-10"  />
+                        {grp.icon ? (<img src={grp.icon} alt="preview" className="absolute top-0 left-0 h-10 w-10 rounded-full border"/>) : (<div className="absolute pointer-events-none top-0 opacity-30 bg-gray-400 rounded-full border h-10 w-10"></div>)}
+                      </div>
+                      <div className="col-start-2 col-end-4 ">
+                        <label htmlFor="Name" className="text-sm font-thin text-gray-600">Group Name</label>
+                        <input type="text" name="Name" id="Name" className="ps-2 w-full py-1 border border-cblue rounded-md mb-2" required />
+                        
+                        <label htmlFor="Description" className="text-sm font-thin text-gray-600">Group Description</label>
+                        <textarea name="Description" id="Description" cols="38" rows="2" className="ps-2 resize-none border border-cblue rounded mb-2"></textarea>
+
+                        <div className="flex justify-between items-center">
+                            <div className="flex flex-col">
+                              <label htmlFor="type" className="text-[0.7rem] font-thin text-gray-600">Group Type</label>
+                              <label htmlFor="type" className="inline-flex items-center p-1 rounded-md cursor-pointer dark:text-gray-100">
+                                <input id="type" type="checkbox" className="hidden peer" />
+                                <span className="px-2 py-[0.1rem] rounded-l-md dark:bg-cblue peer-checked:dark:bg-gray-600">Open</span>
+                                <span className="px-2 py-[0.1rem] rounded-r-md dark:bg-gray-600 peer-checked:dark:bg-cblue">Close</span>
+                              </label>
+                            </div>
+                            <div className="flex flex-col">
+                              <label htmlFor="Karma" className="text-[0.7rem] font-thin text-gray-600">Karma Req.</label>
+                              <input type="number" name="Karma" id="Karma" className="w-16 border border-cblue rounded-md px-2 text-gray-700" max={100}/>
+                            </div>
+                        </div>
+
+                      </div>
+                      <div className="col-start-3 col-end-6  text-sm mt-2">
+                          <button onSubmit={createGrp} className="bg-cblue m-1 px-2 rounded-md py-[0.2rem] text-white">Create</button>
+                          <button onClick={cancelGrp} className="bg-gray-300 m-1 px-2 rounded-md py-[0.2rem] text-black">Cancel</button>
+                      </div>
+                    </div>
+                  </form>
+         
+              </div>
+            </div>
+          )
+        }
+
         <aside
           className={`md:block flex md:w-[32vw] flex-col border-r bg-white px-5 `}
         >
@@ -99,9 +198,11 @@ const Dashboard = () => {
                       <img src={girl} className="rounded-full h-10 w-10" />
                     </div>
                     <div className="flex space-between gap-3 text-white text-bold">
-                      <IoLocationSharp className="text-2xl" />
-                      <FaPlus className="text-2xl" />
-                      <HiBellAlert className="text-2xl" />
+                      <IoLocationSharp className="text-2xl pointer-events-auto" />
+                      <button  onClick={handleGrpCreation}>
+                        <FaPlus className="text-2xl"/>
+                      </button>
+                      <HiBellAlert className="text-2xl pointer-events-auto" />
                     </div>
                   </div>
 
@@ -123,9 +224,9 @@ const Dashboard = () => {
                         >
                           <path
                             stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                           />
                         </svg>

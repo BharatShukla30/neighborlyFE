@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loadUser, loginUser, logoutUser, registerUser } from "../actions/authActions";
 
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {
@@ -12,7 +13,7 @@ const authSlice = createSlice({
     reducers : {},
     extraReducers: (builder) => {
         builder
-        .addCase(loginUser.pending, (state, action) => {
+        .addCase(loginUser.pending, (state) => {
             state.loading = true;
             state.user = null;
             state.isAuthenticated = false;
@@ -32,7 +33,7 @@ const authSlice = createSlice({
         })
 
         // Register User 
-        .addCase(registerUser.pending, (state, action) => {
+        .addCase(registerUser.pending, (state) => {
             state.loading = true;
             state.user = null;
             state.isAuthenticated = false;
@@ -52,7 +53,7 @@ const authSlice = createSlice({
         })
 
         //Load User
-        .addCase(loadUser.pending, (state, action) => {
+        .addCase(loadUser.pending, (state) => {
             state.loading = true;
             state.user = null;
             state.isAuthenticated = false;
@@ -66,10 +67,10 @@ const authSlice = createSlice({
         })
 
         //Logout User
-        .addCase(logoutUser.pending, (state, action) => {
+        .addCase(logoutUser.pending, (state) => {
             state.loading = true;
         })
-        .addCase(logoutUser.fulfilled, (state, action) => {
+        .addCase(logoutUser.fulfilled, (state) => {
             state.loading = false;
             state.user = null;
             state.isAuthenticated = false;

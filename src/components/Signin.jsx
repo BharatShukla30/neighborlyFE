@@ -8,7 +8,7 @@ const SignIn = ({ setSignin }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { error, user, isAuthenticated } = useSelector((state) => state.auth)
+  const { error, isAuthenticated } = useSelector((state) => state.auth)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -17,7 +17,7 @@ const SignIn = ({ setSignin }) => {
   }, [isAuthenticated])
 
   const [formData, setFormData] = useState({
-    email: "",
+    userId: "",
     password: "",
   })
 
@@ -30,34 +30,8 @@ const SignIn = ({ setSignin }) => {
   }
 
   const handleForm = (e) => {
+    
     e.preventDefault()
-
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(
-    //     (position) => {
-    //       const { longitude, latitude } = position.coords
-    //       const updatedData = { ...formData, location: { longitude, latitude } }
-         
-    //       dispatch(loginUser(updatedData)).then((result) => {
-    //         if (result.payload.success) {
-    //           navigate("/dashboard")
-    //         }
-    //       })
-    //     },
-    //     (error) => {
-    //       console.log(error.message)
-    //       setErrors({
-    //         location: "Location is blocked. Please enable it to continue",
-    //       })
-    //     }
-    //     )
-        // // TODO: remove this 
-        // navigate("/dashboard")
-    // } else {
-    //   setErrors({ location: "Location is not supported in your browser" })
-    // }
-
-
     dispatch(loginUser(formData)).then((result) => {
       // console.log(result)
       if (result?.payload?.success) {
@@ -65,12 +39,14 @@ const SignIn = ({ setSignin }) => {
       }
     }).catch((e)=>{
       console.log(error.message)
+      alert(e.message)
       setErrors(
         {error: e.message}
       )
     })
-
   }
+
+  
 
   return (
     <section className="   ">
@@ -126,14 +102,14 @@ const SignIn = ({ setSignin }) => {
                
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="userId"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Email
+                    Email / Username
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                      <svg
+                       <svg
                         className="w-4 h-4 text-gray-500 dark:text-gray-400"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
@@ -142,19 +118,19 @@ const SignIn = ({ setSignin }) => {
                       >
                         <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
                         <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
-                      </svg>
+                      </svg> 
                     </div>
                     <input
-                      type="email"
-                      name="email"
+                      type="text"
+                      name="userId"
                       onChange={handleChange}
-                      id="email"
+                      id="userId"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 "
-                      placeholder="name@abc.com"
+                      placeholder=""
                       required
                     />
-                    {errors.email && (
-                      <div className="text-red-700 ps-2">*{errors.email}</div>
+                    {errors.userId && (
+                      <div className="text-red-700 ps-2">*{errors.userId}</div>
                     )}
                   </div>
                 </div>

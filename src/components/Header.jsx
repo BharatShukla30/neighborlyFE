@@ -61,7 +61,7 @@ const Header = () => {
         <div className="flex lg:flex-1">
           <a href="/" className="">
             <span >
-              <img src={logo} className="h-8 " />
+              <img src={logo} className="h-10 " />
             </span>
           </a>
         </div>

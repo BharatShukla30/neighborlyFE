@@ -3,12 +3,13 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import store from "./redux/store"
 import './App.css'
 import Header from './components/Header';
-import Home from './pages/home';
+import Home from './pages/Home';
 import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import { loadUser } from './redux/actions/authActions';
 import ProtectedRoute from './components/ProtectedRoute';
 import Error404Boundary from './pages/404ErrorBoundary';
+import Profile from './pages/Profile';
 
 function App() {
   React.useEffect(() => {
@@ -25,6 +26,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path='/dashboard' element={<Dashboard />} />
             </Route>
+            <Route path='profile' element={<Profile />} />
             <Route path='*' element={<Error404Boundary />} />
           </Routes>
         </div>

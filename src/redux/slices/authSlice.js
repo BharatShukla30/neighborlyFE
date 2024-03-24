@@ -4,7 +4,7 @@ import { loadUser, loginUser, logoutUser, registerUser } from "../actions/authAc
 const authSlice = createSlice({
     name: "auth",
     initialState: {
-        loading: true,
+        loading: false,
         user: null,
         isAuthenticated: false,
         error: null,
@@ -12,6 +12,7 @@ const authSlice = createSlice({
     reducers : {},
     extraReducers: (builder) => {
         builder
+        // Login User
         .addCase(loginUser.pending, (state, action) => {
             state.loading = true;
             state.user = null;

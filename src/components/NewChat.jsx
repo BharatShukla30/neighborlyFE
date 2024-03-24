@@ -4,7 +4,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { ImLocation } from "react-icons/im";
 import Location from "../assets/location.svg"
 
-export default function Example(props) {
+export default function NewChat(props) {
   // const [open, setOpen] = useState()
   const [formData, setFormData] = useState({
     name: "",
@@ -31,8 +31,14 @@ export default function Example(props) {
     
     if(Object.keys(validationErrors).length == 0){
       console.log(formData);
+      
+      props.changeState(false);
+        
     }
+
+
   }
+
 
 
   return (

@@ -39,7 +39,11 @@ function Navbar() {
       if (result.success) {
         navigate("/signin")
       }
+    }).catch((err) => {
+      console.log(err)
+      alert.error("An error occurred. Please try again")
     })
+
   }
 
   return (

@@ -14,7 +14,7 @@ const Home = () => {
   }, [isAuthenticated]);
 
   return (
-    <div className="   ">
+    <div className="">
       <HeroSection />
     </div>
   );

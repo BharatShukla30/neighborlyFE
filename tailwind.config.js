@@ -8,9 +8,15 @@ export default {
     extend: {
       colors:{
         primary: "#3a8df5",
-        chatBg: "#f1f6fb"
+        chatBg: "#f1f6fb",
+        cblue: "#177a8d"
+      }, height: {
+        page: 'calc(100vh - 10rem)'
       }
     },
+    fontFamily: {
+      sans: ['Inter', 'sans-serif']
+    }
   },
   plugins: [],
 }

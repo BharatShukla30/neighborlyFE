@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
 
-const SignUp = () => {
+import PropTypes from "prop-types";
+
+const SignUp = ({ setSignin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -20,6 +22,7 @@ const SignUp = () => {
     username: "",
     email: "",
     password: "",
+    confirm_password: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -35,6 +38,7 @@ const SignUp = () => {
   const handleForm = (e) => {
     e.preventDefault();
     const validationErrors = {};
+
 
     if (!formData.username.trim()) {
       validationErrors.username = "Username is required";
@@ -54,37 +58,49 @@ const SignUp = () => {
       validationErrors.password = "Password must contain atleast 8 characters";
     }
 
+    if (!formData.confirm_password.trim()) {
+      validationErrors.confirm_password = "Confirm password is required";
+    }
+
+    if (formData.password.trim() !== formData.confirm_password.trim()) {
+      validationErrors.confirm_password = "Password does not match";
+    }
+
+ 
     setErrors(validationErrors);
     
     if (Object.keys(validationErrors).length === 0) {
       
       dispatch(registerUser(formData)).then((result) => {
-        if (result.payload.username) {
+        if (result.payload?.username) {
           navigate("/dashboard");
         }
       });
     }
   };
 
+
+
   return (
-    <section className="bg-slate-900 h-full">
-      <div className="grid grid-cols-1 lg:grid-cols-2  pt-10">
-        <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-18">
-          <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
-            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl">
-              Sign up
-            </h2>
-            <p className="mt-2 text-base text-gray-300">
+    <section className="h-full w-full ">
+      <div className=" ">
+        <div className="h-full w-full flex my-auto items-center justify-center">
+          <div className=" md:bg-white h-2/3 md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
+          <div className="flex gap-4 items-baseline ">
+            <button className=" leading-tight " onClick={()=>setSignin(1)}>Sign in</button>
+            <button className=" font-bold leading-tight   text-cblue text-2xl" onClick={()=>setSignin(0)}>Sign up</button>
+          </div>
+            {/* <p className="mt-2 text-base text-gray-800">
               Already have an account? {" "}
               <a
                 href="/signin"
                 title=""
-                className="font-medium text-white transition-all duration-200 hover:underline"
+                className="font-medium text-black transition-all duration-200 hover:underline"
               >
                 Sign In
               </a>
-            </p>
-            <form className="mt-8" onSubmit={handleForm}>
+            </p> */}
+            <form className="mt-8 " onSubmit={handleForm}>
               <div className="space-y-2">
                 {error && (
                   <div
@@ -133,23 +149,34 @@ const SignUp = () => {
                   </div>
                 </div>
                 <div>
-                  <label
+                <label
                     htmlFor="email"
-                    className="text-base font-medium text-gray-900"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    {" "}
-                    Email address{" "}
+                    Email
                   </label>
-                  <div className="mt-2">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                      <svg
+                        className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 20 16"
+                      >
+                        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
+                        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
+                      </svg>
+                    </div>
                     <input
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="email"
                       name="email"
-                      placeholder="Email"
-                      id="email"
-                      required
                       onChange={handleChange}
-                    ></input>
+                      id="email"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 "
+                      placeholder="name@abc.com"
+                      required
+                    />
                     {errors.email && (
                       <div className="text-red-700 ps-2">*{errors.email}</div>
                     )}
@@ -159,7 +186,7 @@ const SignUp = () => {
                   <div className="flex items-center justify-between">
                     <label
                       htmlFor="password"
-                      className="text-base font-medium text-gray-900"
+                      className="block mb-2 text-sm font-medium text-gray-900"
                     >
                       {" "}
                       Password{" "}
@@ -182,10 +209,42 @@ const SignUp = () => {
                     )}
                   </div>
                 </div>
+                    
+
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="confirm_password"
+                      className="block mb-2 text-sm font-medium text-gray-900"
+                    >
+                      {" "}
+                       Confirm Password{" "}
+                    </label>
+                  </div>
+                  <div className="mt-2">
+                    <input
+                      className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      type="password"
+                      name="confirm_password"
+                      placeholder="Confirm password"
+                      id="confirm_password"
+                      required
+                      onChange={handleChange}
+                    ></input>
+                    {errors.password && (
+                      <div className="text-red-700 ps-2">
+                        *{errors.confirm_password}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+             
+ 
                 <div>
                   <button
                     type="submit"
-                    className="inline-flex mt-5 w-full items-center justify-center rounded-md bg-green-600 px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    className="inline-flex mt-5 w-full items-center justify-center rounded-md  bg-cblue px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >
                     Create Account
                   </button>
@@ -228,17 +287,14 @@ const SignUp = () => {
             </div> */}
           </div>
         </div>
-        <div className="hidden lg:h-full lg:w-full lg:flex lg:items-center">
-          <img
-            style={{ height: "80%", width: "80%" , objectFit: "contain"}}
-            className="mx-auto h-full w-full rounded-md object-cover"
-            src={svgImage}
-            alt=""
-          />
-        </div>
+  
       </div>
     </section>
   );
+};
+
+SignUp.propTypes = {
+  setSignin: PropTypes.func.isRequired,
 };
 
 export default SignUp;

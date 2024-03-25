@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import Loader from "./Loader";
@@ -20,7 +19,7 @@ const ProtectedRoute = () => {
 
   if (!loading) {
     if (!isAuthenticated) {
-      return <Navigate to="/signin" />;
+      return <Navigate to="/" />;
     } else return <Outlet />;
   }
 

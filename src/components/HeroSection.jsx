@@ -5,37 +5,46 @@ import { LiaUserFriendsSolid } from "react-icons/lia";
 import { IoChatboxOutline } from "react-icons/io5";
 import { FaEarthAfrica } from "react-icons/fa6";
 import { FiActivity } from "react-icons/fi";
+import Signin from "./Signin";
+import Signup from "./Signup";
+import { useState } from "react";
+import ppl from "../assets/ppl.png"
 
 const HeroSection = () => {
+
+  const [signIn , setSignin] = useState(1);
+// 1 -> signin
+// 0 -> Signup
+
   return (
-    <div className="block w-screen  bg-slate-900">
+    <div className="block w-screen bg-vector bg-cover bg-top">
       <div className="max-w-screen-lg mx-auto">
-        <div className="mx-auto   flex flex-col-reverse gap-15 justify-around items-center md:flex-row ">
-          <div className="relative">
-          <div className = "absolute blur-3xl w-[200px] h-[200px] opacity-40 z-0 rounded top-1/3 inset-0 mx-auto -translate-x-10  abstract_motion"></div>
-            <div className="w-full max-w-[450px] ">
-              <h1 className="text-white text-center md:text-left text-3xl text-wrap m-5 ">
-                Explore, Connect, Share , Chat and Learn
-              </h1>
+        <div className=" mx-auto pt-20  flex flex-col gap-15 justify-around items-center md:flex-row  ">
+          <div className="relative md:pl-3">
+          {/* <div className = "absolute blur-3xl w-[200px] h-[200px] opacity-40 z-0 rounded top-1/3 inset-0 mx-auto -translate-x-10  abstract_motion"></div> */}
+            <div className="w-full max-w-[550px] text-b font-bold ">
+              <h1 className="text-balck  text-center md:text-left text-3xl text-wrap m-5 ">
+                Explore,
+                 <span className="text-cblue"> Connect</span>
+                 , Share , Chat and  
+                 <span className="text-cblue"> Spread</span>
+              </h1> 
             </div>
-            <p className="text-center md:text-left text-sm text-gray-200 m-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, ipsa!</p>
-            <div className="w-full m-5 flex justify-center md:justify-start">
-              <button
-                className="middle none center mr-4 rounded-lg  bg-green-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" >
-                Group Chat
-              </button>
-            </div>
+            <p className="text-center md:text-left text-sm text-cblue m-5 font-semibold">Connecting People <br/> Connecting Communities</p>
+            <img className="mx-auto" src = {ppl} />
           </div>
-          <div className=" w-full relative min-h-[500px] m-5   ">
-            <div className = "absolute blur-3xl w-[350px] h-[300px] opacity-40 z-0 rounded top-1/3 inset-0 mx-auto -translate-x-10  abstract_motion"></div>
-            <img src={graphic} alt="graphic" className="absolute  w-[368px] h-[368px] top-16 inset-0 mx-auto  z-20  " />
-            <img src={blob1} alt="blob1" className=" absolute w-[396px] h-[457px]   -translate-x-4 -translate-y-2  top-16 inset-0 mx-auto  z-10 " />
-            <img src={blob2} alt="blob2" className=" absolute w-[396px] h-[457px]     top-16 inset-0 mx-auto  z-0 " />
+          <div className=" w-full  h-full  mb-16  md:pl-3 ">
+             <div className=" ">
+
+                {signIn==1 && <Signin setSignin={setSignin}/>}
+                {!signIn==1 && <Signup setSignin={setSignin}/>}
+
+             </div>
           </div>
         </div>
  
-
-        <div className="mx-auto flex">
+{/* --------------------feature Section ---------------------------- */}
+        {/* <div className="mx-auto flex">
               <div className="pb-16">
             
               <section className="max-w-8xl mx-auto container  pt-16">
@@ -47,7 +56,7 @@ const HeroSection = () => {
                         <div  aria-label="card 1" className="focus:outline-none flex sm:w-full md:w-5/12 pb-20">
                           <div className="w-20 h-20 relative mr-5">
                             <div className="absolute top-0 right-0 bg-indigo-100 rounded w-16 h-16 mt-2 mr-1"></div>
-                            <div className="absolute text-white bottom-0 left-0 bg-indigo-700 rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
+                            <div className="absolute text-white bottom-0 left-0 bg-cblue rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
                               <LiaUserFriendsSolid className="text-2xl" />                            </div>
                           </div>
                           <div className="w-10/12">
@@ -58,7 +67,7 @@ const HeroSection = () => {
                         <div  aria-label="card 2" className="focus:outline-none flex sm:w-full md:w-5/12 pb-20">
                           <div className="w-20 h-20 relative mr-5">
                             <div className="absolute top-0 right-0 bg-indigo-100 rounded w-16 h-16 mt-2 mr-1"></div>
-                            <div className="absolute text-white bottom-0 left-0 bg-indigo-700 rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
+                            <div className="absolute text-white bottom-0 left-0 bg-cblue rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
                               <IoChatboxOutline className="text-2xl"/>
                             </div>
                           </div>
@@ -70,7 +79,7 @@ const HeroSection = () => {
                         <div  aria-label="card 3" className="focus:outline-none flex sm:w-full md:w-5/12 pb-20">
                           <div className="w-20 h-20 relative mr-5">
                             <div className="absolute top-0 right-0 bg-indigo-100 rounded w-16 h-16 mt-2 mr-1"></div>
-                            <div className="absolute text-white bottom-0 left-0 bg-indigo-700 rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
+                            <div className="absolute text-white bottom-0 left-0 bg-cblue rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
                             <FaEarthAfrica className="text-2xl"/>
                             </div>
                           </div>
@@ -82,7 +91,7 @@ const HeroSection = () => {
                         <div  aria-label="card 4" className="focus:outline-none flex sm:w-full md:w-5/12 pb-20">
                           <div className="w-20 h-20 relative mr-5">
                             <div className="absolute top-0 right-0 bg-indigo-100 rounded w-16 h-16 mt-2 mr-1"></div>
-                            <div className="absolute text-white bottom-0 left-0 bg-indigo-700 rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
+                            <div className="absolute text-white bottom-0 left-0 bg-cblue rounded w-16 h-16 flex items-center justify-center mt-2 mr-3">
                             <FiActivity className="text-2xl"/>
                             </div>
                           </div>
@@ -96,7 +105,7 @@ const HeroSection = () => {
                   </section>
               
               </div>
-        </div>
+        </div> */}
 
  
 

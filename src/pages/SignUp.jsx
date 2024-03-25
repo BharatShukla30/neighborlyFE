@@ -67,25 +67,25 @@ const SignUp = () => {
   };
 
   return (
-    <section>
-      <div className="grid grid-cols-1 lg:grid-cols-2 mb-10 pt-10">
+    <section className="bg-slate-900 h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2  pt-10">
         <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-18">
           <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
-            <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl">
+            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl">
               Sign up
             </h2>
-            <p className="mt-2 text-base text-gray-600">
-              Already have an account?{" "}
+            <p className="mt-2 text-base text-gray-300">
+              Already have an account? {" "}
               <a
                 href="/signin"
                 title=""
-                className="font-medium text-black transition-all duration-200 hover:underline"
+                className="font-medium text-white transition-all duration-200 hover:underline"
               >
                 Sign In
               </a>
             </p>
             <form className="mt-8" onSubmit={handleForm}>
-              <div className="space-y-5">
+              <div className="space-y-2">
                 {error && (
                   <div
                     className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 "
@@ -185,7 +185,7 @@ const SignUp = () => {
                 <div>
                   <button
                     type="submit"
-                    className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    className="inline-flex mt-5 w-full items-center justify-center rounded-md bg-green-600 px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >
                     Create Account
                   </button>

@@ -26,7 +26,7 @@ const HeroSection = () => {
               <h1 className="text-balck  text-center md:text-left text-3xl text-wrap m-5 ">
                 Explore,
                  <span className="text-cblue"> Connect</span>
-                 , Share , Chat and  
+                 , Share, Chat and  
                  <span className="text-cblue"> Spread</span>
               </h1> 
             </div>

@@ -51,7 +51,7 @@ const Header = () => {
   };
 
   return (
-    <header className=" inset-x-0 z-50    fixed top-0">
+    <header className={`inset-x-0 z-50  top-0 `}>
 
 
       <nav

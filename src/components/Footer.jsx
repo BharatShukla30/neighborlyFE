@@ -5,8 +5,8 @@ const Footer = () => {
 
   return (
     
-<footer className={`  w-screen bg-cblue h-40 px-10 py-4 ${location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? "hidden" : ""}`}>
-    <div className="w-full max-w-screen-xl mx-auto">
+<footer className={` overflow-x-hidden w-screen bg-cblue h-40  py-4 ${location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? "hidden" : ""}`}>
+    <div className="w-full max-w-screen-xl mx-auto px-2 ">
         <div className="sm:flex sm:items-center sm:justify-between">
             <div className=''>
                 <a href="/" className="flex items-center sm:mb-0">

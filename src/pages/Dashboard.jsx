@@ -135,7 +135,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <section className="flex max-h-screen  bg-chatBg pt-16">
+      <section className="flex max-h-screen  bg-chatBg ">
         {/* {openNewChatBox && <NewChat changeState={setOpenNewChatBox} />} */}
 
         {
@@ -309,7 +309,7 @@ const Dashboard = () => {
           }`}
         >
           <div>
-            <div className="shadow-lg py-3 px-3 flex items-center justify-between sticky top-16 bg-white z-40">
+            <div className="shadow-lg py-3 px-3 flex items-center justify-between  bg-white z-40">
               <div className="text-xl font-medium flex items-center">
                 <div className="me-3 md:me-4 bg-slate-200 px-3 py-3 rounded-full cursor-pointer">
                   <BsPeople />

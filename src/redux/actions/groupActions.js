@@ -11,6 +11,22 @@ import axiosInstance from "../../config/axios";
 // router.route("/fetch-group-messages/:groupId").get(isAuthenticated, fetchLastMessages);
 // router.route("/fetch-group-details/:groupId").get(isAuthenticated, fetchGroupDetails);
 // router.route("/update-group-details").put(isAuthenticated, updateGroupDetails);
+ 
+// router.route("/get-user-groups").get(isAuthenticated, getUserGroups);
+
+export const getUserGroups = createAsyncThunk(
+  "user/get-user-groups",
+  async (_, {rejectWithValue}) => {
+    try{
+      const request = await axiosInstance.get("/user/get-user-groups");
+      const response = await request.data;
+      return response;
+    }
+    catch(error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+)
 
 
 export const createGroup = createAsyncThunk(
@@ -31,6 +47,7 @@ export const fetchGroupDetails = createAsyncThunk(
     "group/fetch-group-details",
     async (groupId, {rejectWithValue}) => {
         try{
+            console.log("fetching group details", groupId)
             const request = await axiosInstance.get(`/group/fetch-group-details/${groupId}`);
             const response = await request.data;
             return response;
@@ -72,9 +89,9 @@ export const updateGroupDetails = createAsyncThunk(
 
 export const nearestGroup = createAsyncThunk(
     "group/nearest-group",
-    async (_, {rejectWithValue}) => {
+    async ({coordinates}, {rejectWithValue}) => {
         try{
-            const request = await axiosInstance.get("/group/nearest-group");
+            const request = await axiosInstance.get(`/group/nearest-group?latitude=${coordinates[0]}&longitude=${coordinates[1]}`);
             const response = await request.data;
             return response;
         }
@@ -83,6 +100,8 @@ export const nearestGroup = createAsyncThunk(
         }
     }
 )
+
+
 
 
 export const addUser = createAsyncThunk(
@@ -118,7 +137,7 @@ export const makeGroupPermanent = createAsyncThunk(
     "group/make-group-permanent",
     async (groupId, {rejectWithValue}) => {
         try{
-            const request = await axiosInstance.put("/group/make-group-permanent", groupId);
+            const request = await axiosInstance.put("/group/make-group-permanent", {groupId: groupId});
             const response = await request.data;
             return response;
         }
@@ -134,6 +153,7 @@ export const fetchNearbyUsers = createAsyncThunk(
         try{
             const request = await axiosInstance.get("/group/fetch-nearby-users");
             const response = await request.data;
+            console.log("fetch ", response)
             return response;
         }
         catch (error) {

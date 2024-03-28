@@ -4,13 +4,14 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { RxAvatar } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/actions/authActions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation } from "react-router-dom";
 import logo from "../assets/websiteName.png"
 
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,9 +38,8 @@ const Header = () => {
     setMenuOpen(false);
     setMobileMenuOpen(false);
     dispatch(logoutUser()).then((result) => {
-      if (result.success) {
+        console.log(result);
         navigate("/");
-      }
     });
   };
 
@@ -49,6 +49,12 @@ const Header = () => {
     setMobileMenuOpen(false);
     navigate("/profile");
   };
+
+  const handleDashboard = () => {
+    setMenuOpen(false);
+    setMobileMenuOpen(false);
+    navigate("/dashboard");
+  }
 
   return (
     <header className={`inset-x-0 z-50  top-0 `}>
@@ -107,11 +113,21 @@ const Header = () => {
                   ))
               } 
             */}
-              <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+              {location.pathname=="/dashboard" ?(<li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
                 onClick={handleProfile}
               >
                 Profile
+              </li>):
+              (
+                <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+                onClick={handleDashboard}
+              >
+                Dashboard
               </li>
+              )
+              
+              
+              }
               <li
                 className="px-12 py-2 cursor-pointer hover:bg-gray-300"
                 onClick={handleSignOut}
@@ -162,19 +178,19 @@ const Header = () => {
           <div className="mt-6 md:flow-root hidden ">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="py-6">
-                <a
-                  href="#"
+                <Link
+                  href="/profile"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
+                  >
                   Profile
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   onClick={handleSignOut}
                 >
                   Sign Out
-                </a>
+                </Link>
               </div>
             </div>
           </div>

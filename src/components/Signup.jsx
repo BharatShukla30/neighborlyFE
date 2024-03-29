@@ -1,95 +1,101 @@
-import { useEffect, useState } from "react";
-import svgImage from "../assets/signup.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/actions/authActions";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react"
+import svgImage from "../assets/signup.svg"
+import { useDispatch, useSelector } from "react-redux"
+import { registerUser } from "../redux/actions/authActions"
+import { useNavigate } from "react-router-dom"
 
-import PropTypes from "prop-types";
+import PropTypes from "prop-types"
 
 const SignUp = ({ setSignin }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const {error, user, isAuthenticated} = useSelector(state => state.auth);
+  const { error, user, isAuthenticated } = useSelector((state) => state.auth)
 
   useEffect(() => {
-    if(isAuthenticated){
-      navigate('/dashboard');
+    if (isAuthenticated) {
+      navigate("/location")
     }
-  },[isAuthenticated]);
+  }, [isAuthenticated])
 
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirm_password: "",
-  });
+  })
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value,
-    });
-  };
+    })
+  }
 
   const handleForm = (e) => {
-    e.preventDefault();
-    const validationErrors = {};
-
-
+    e.preventDefault()
+    const validationErrors = {}
     if (!formData.username.trim()) {
-      validationErrors.username = "Username is required";
+      validationErrors.username = "Username is required"
     } else if (!/^[a-zA-Z0-9]+$/.test(formData.username)) {
-      validationErrors.username = "Username must be alphanumeric";
+      validationErrors.username = "Username must be alphanumeric"
     }
     if (!formData.email.trim()) {
-      validationErrors.email = "Email is required";
+      validationErrors.email = "Email is required"
     } else if (
       !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(formData.email)
     ) {
-      validationErrors.email = "Invalid email format";
+      validationErrors.email = "Invalid email format"
     }
     if (!formData.password.trim()) {
-      validationErrors.password = "Password is required";
+      validationErrors.password = "Password is required"
     } else if (formData.password.trim().length < 8) {
-      validationErrors.password = "Password must contain atleast 8 characters";
+      validationErrors.password = "Password must contain atleast 8 characters"
     }
 
     if (!formData.confirm_password.trim()) {
-      validationErrors.confirm_password = "Confirm password is required";
+      validationErrors.confirm_password = "Confirm password is required"
     }
 
     if (formData.password.trim() !== formData.confirm_password.trim()) {
-      validationErrors.confirm_password = "Password does not match";
+      validationErrors.confirm_password = "Password does not match"
     }
 
- 
-    setErrors(validationErrors);
-    
+    setErrors(validationErrors)
+    console.log(validationErrors)
+    console.log(error)
+    console.log(errors)
+
     if (Object.keys(validationErrors).length === 0) {
-      
       dispatch(registerUser(formData)).then((result) => {
-        if (result.payload?.username) {
-          navigate("/dashboard");
+        console.log(result)
+        if (result.payload?.user) {
+          console.log("User registered successfully")
+          navigate("/location")
         }
-      });
+      })
     }
-  };
-
-
+  }
 
   return (
     <section className="h-full w-full ">
       <div className=" ">
-        <div className="h-full w-full flex my-auto items-center justify-center">
-          <div className=" md:bg-white h-2/3 md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
-          <div className="flex gap-4 items-baseline ">
-            <button className=" leading-tight " onClick={()=>setSignin(1)}>Login</button>
-            <button className=" font-bold leading-tight   text-cblue text-2xl" onClick={()=>setSignin(0)}>Sign up</button>
-          </div>
+        <div className="h-full w-full flex my-auto items-center justify-center ">
+          <div className=" md:bg-white   md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] h-[650px] md:w-[500px]">
+            <div className="flex gap-4 items-baseline ">
+              <button className=" leading-tight " onClick={() => setSignin(1)}>
+                Login
+              </button>
+              <button
+                className=" font-bold leading-tight   text-cblue text-2xl"
+                onClick={() => setSignin(0)}
+              >
+                Sign up
+              </button>
+            </div>
             {/* <p className="mt-2 text-base text-gray-800">
               Already have an account? {" "}
               <a
@@ -122,11 +128,11 @@ const SignUp = ({ setSignin }) => {
                     </div>
                   </div>
                 )}
-
+            
                 <div>
                   <label
                     htmlFor="name"
-                    className="text-base font-medium text-gray-900"
+                    className=" font-medium text-sm text-gray-900"
                   >
                     {" "}
                     Username{" "}
@@ -149,7 +155,7 @@ const SignUp = ({ setSignin }) => {
                   </div>
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
@@ -209,7 +215,6 @@ const SignUp = ({ setSignin }) => {
                     )}
                   </div>
                 </div>
-                    
 
                 <div>
                   <div className="flex items-center justify-between">
@@ -218,7 +223,7 @@ const SignUp = ({ setSignin }) => {
                       className="block mb-2 text-sm font-medium text-gray-900"
                     >
                       {" "}
-                       Confirm Password{" "}
+                      Confirm Password{" "}
                     </label>
                   </div>
                   <div className="mt-2">
@@ -231,7 +236,7 @@ const SignUp = ({ setSignin }) => {
                       required
                       onChange={handleChange}
                     ></input>
-                    {errors.password && (
+                    {errors.confirm_password && (
                       <div className="text-red-700 ps-2">
                         *{errors.confirm_password}
                       </div>
@@ -239,8 +244,6 @@ const SignUp = ({ setSignin }) => {
                   </div>
                 </div>
 
-             
- 
                 <div>
                   <button
                     type="submit"
@@ -287,14 +290,13 @@ const SignUp = ({ setSignin }) => {
             </div> */}
           </div>
         </div>
-  
       </div>
     </section>
-  );
-};
+  )
+}
 
 SignUp.propTypes = {
   setSignin: PropTypes.func.isRequired,
-};
+}
 
-export default SignUp;
+export default SignUp

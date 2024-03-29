@@ -49,10 +49,10 @@ const SignIn = ({ setSignin }) => {
   
 
   return (
-    <section className="   ">
-      <div className="">
-        <div className="h-full w-full flex my-auto items-center justify-center ">
-          <div className="md:bg-white h-2/3 md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
+    <section className="h-full   ">
+      <div className="h-full">
+        <div className=" w-full flex my-auto items-center justify-center ">
+          <div className="md:bg-white h-full md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
             <div className="flex gap-4 items-baseline ">
               <button
                 className=" font-bold  leading-tight text-cblue text-2xl"
@@ -78,7 +78,7 @@ const SignIn = ({ setSignin }) => {
               </a>
             </p> */}
             <form onSubmit={handleForm} className="mt-8">
-              <div className="space-y-5">
+              <div className="space-y-6">
                 {error && (
                   <div
                     className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 "
@@ -166,7 +166,7 @@ const SignIn = ({ setSignin }) => {
                 <div>
                   <button
                     type="submit"
-                    className="inline-flex w-full items-center justify-center rounded-md bg-cblue px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    className="mt-1 inline-flex w-full items-center justify-center rounded-md bg-cblue px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >
                     Get started
                   </button>

@@ -10,6 +10,7 @@ import { loadUser } from './redux/actions/authActions';
 import ProtectedRoute from './components/ProtectedRoute';
 import Error404Boundary from './pages/404ErrorBoundary';
 import Profile from './pages/Profile';
+import Location from './pages/Location';
 
 function App() {
   React.useEffect(() => {
@@ -27,6 +28,7 @@ function App() {
               <Route path='/dashboard' element={<Dashboard />} />
             </Route>
             <Route path='profile' element={<Profile />} />
+            <Route path='location' element={<Location />} />
             <Route path='*' element={<Error404Boundary />} />
           </Routes>
         </div>

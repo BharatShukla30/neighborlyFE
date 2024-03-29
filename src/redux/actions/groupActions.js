@@ -47,7 +47,6 @@ export const fetchGroupDetails = createAsyncThunk(
     "group/fetch-group-details",
     async (groupId, {rejectWithValue}) => {
         try{
-            console.log("fetching group details", groupId)
             const request = await axiosInstance.get(`/group/fetch-group-details/${groupId}`);
             const response = await request.data;
             return response;

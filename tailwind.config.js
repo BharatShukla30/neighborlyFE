@@ -12,7 +12,8 @@ export default {
         cblue: "#177a8d"
       },
       height: {
-        page: 'calc(100vh - 10rem)'
+        page: 'calc(100vh - 10rem)',
+        chat: 'calc(500px+10rem)',
       },
       backgroundImage: () => ({
         'logo': "url('/src/assets/chatBg.png')",
@@ -21,8 +22,12 @@ export default {
     fontFamily: {
       sans: ['Inter', 'sans-serif']
     },
+    
 
   },
   plugins: [],
+  corePlugins: {
+    scrollbarHide: true,
+  },
 }
 

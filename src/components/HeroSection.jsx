@@ -1,10 +1,4 @@
-import graphic from "../assets/graphic.png";
-import blob1 from "../assets/blob1.png";
-import blob2 from "../assets/blob2.png";
-import { LiaUserFriendsSolid } from "react-icons/lia";
-import { IoChatboxOutline } from "react-icons/io5";
-import { FaEarthAfrica } from "react-icons/fa6";
-import { FiActivity } from "react-icons/fi";
+ 
 import Signin from "./Signin";
 import Signup from "./Signup";
 import { useState } from "react";
@@ -33,8 +27,12 @@ const HeroSection = () => {
             <p className="text-center md:text-left text-sm text-cblue m-5 font-semibold">Connecting People <br/> Connecting Communities</p>
             <img className="mx-auto" src = {ppl} />
           </div>
-          <div className=" w-full  h-full  mb-16  md:pl-3 ">
-             <div className=" ">
+          <div className=" w-full   h-[650px]  mb-16  md:pl-3 ">
+             
+             
+             <div className="h-[584px] ">
+
+
 
                 {signIn==1 && <Signin setSignin={setSignin}/>}
                 {!signIn==1 && <Signup setSignin={setSignin}/>}

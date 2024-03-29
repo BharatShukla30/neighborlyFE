@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { FaUserEdit, FaTrash, FaKey, FaStar } from "react-icons/fa"
 import {getUserGroups } from "../redux/actions/groupActions"
 import { Link, useNavigate } from "react-router-dom"
 import girl from "../assets/girl.jpg"
-import { v4 as uuidv4 } from "uuid"
 import { RiBubbleChartFill } from "react-icons/ri"
 import Modal from "react-modal"
+import {fetchGroupDetails} from "../redux/actions/groupActions"
 
 const Profile = () => {
   const navigate = useNavigate()
@@ -15,14 +14,13 @@ const Profile = () => {
   
 //-----------------------Selectors-----------------------
   let user = useSelector((state) => state.auth.user)
-  let groups = useSelector((state) => state.groups.grps)
   const { isAuthenticated } = useSelector((state) => state.auth)
 
 //-----------------------State-----------------------
   let [error , setError] = useState(null)
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [deleteAccModal, setDeleteAccModal] = useState(false)
-
+  const [showAllGroups, setShowAllGroups] = useState(false);
 //-----------------------useEffect-----------------------
   useEffect(() => {
     if (!isAuthenticated) {
@@ -138,116 +136,120 @@ const Profile = () => {
         </div>
       </aside>
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Change Password"
-        className="flex items-center justify-center outline-none "
-        style={{
-          overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          },
-          content: { width: "40vw", height: "40vh", margin: "auto" },
-        }}
-      >
-        <div className="bg-white p-12 rounded shadow-lg">
-          <h2 className="text-2xl font-bold mb-4">Change Password</h2>
-          {error && (
-            <div className="bg-red-100 text-red-500 p-2 rounded text-sm mb-4 ">
-              {error}
-            </div>
-          )}
-          <form onSubmit={handleUpdatePassword}>
-            <label className="block mb-2">
-              <span className="text-gray-700">Old Password</span>
-              <input
-                type="password"
-                name="oldPassword"
-                className="mt-1 block w-full rounded-md ps-2  bg-gray-200 ring-1 shadow-sm"
-                required
-              />
-            </label>
-            <label className="block mb-2">
-              <span className="text-gray-700">New Password</span>
-              <input
-                type="password"
-                name="newPassword"
-                className="mt-1 block w-full rounded-md ps-2 bg-gray-200 ring-1 shadow-sm"
-                required
-              />
-            </label>
-            <label className="block mb-4">
-              <span className="text-gray-700">Confirm New Password</span>
-              <input
-                type="password"
-                name="confirmNewPassword"
-                className="mt-1 block w-full rounded-md ps-2 bg-gray-200 ring-1 shadow-sm"
-                required
-              />
-            </label>
-            <button
-              type="submit"
-              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Change Password
-            </button>
-          </form>
-        </div>
-      </Modal>
+    <Modal
+  isOpen={modalIsOpen}
+  onRequestClose={closeModal}
+  contentLabel="Change Password"
+  className="flex items-center justify-center outline-none "
+  style={{
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.75)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    content: { width: "40vw", height: "50vh", margin: "auto", borderRadius: "20px" },
+  }}
+>
+  <div className="bg-white p-12 rounded-lg shadow-2xl">
+    <h2 className="text-2xl font-bold mb-4 text-gray-800">Change Password</h2>
+    {error && (
+      <div className="bg-red-100 text-red-500 p-2 rounded text-sm mb-4 ">
+        {error}
+      </div>
+    )}
+    <form onSubmit={handleUpdatePassword}>
+      <label className="block mb-2">
+        <span className="text-gray-700">Old Password</span>
+        <input
+          type="password"
+          name="oldPassword"
+          className="mt-1 block w-full rounded-md ps-2  bg-gray-200 ring-1 shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+          required
+        />
+      </label>
+      <label className="block mb-2">
+        <span className="text-gray-700">New Password</span>
+        <input
+          type="password"
+          name="newPassword"
+          className="mt-1 block w-full rounded-md ps-2 bg-gray-200 ring-1 shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+          required
+        />
+      </label>
+      <label className="block mb-4">
+        <span className="text-gray-700">Confirm New Password</span>
+        <input
+          type="password"
+          name="confirmNewPassword"
+          className="mt-1 block w-full rounded-md ps-2 bg-gray-200 ring-1 shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+          required
+        />
+      </label>
+      <div className="flex items-center justify-center gap-3">
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-800 w-1/2 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"
+        >
+          Change
+        </button>
+        <button onClick={()=>{closeModal();}} className="bg-gray-500 hover:bg-gray-400 w-1/2 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105">
+            Cancel
+          </button>
+      </div>
+    </form>
+  </div>
+</Modal>
 
-      <Modal
-        isOpen={deleteAccModal}
-        onRequestClose={closeDeleteAccModal}
-        contentLabel="Delete Account"
-        className="flex items-center justify-center outline-none "
-        style={{
-          overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          },
-          content: { width: "50vw", height: "40vh", margin: "auto" },
-        }}
-      >
-        <div className="bg-white p-12 rounded shadow-lg">
-          <h2 className="text-2xl font-bold mb-4">Delete Account</h2>
-          <p className="text-gray-700 mb-4">
-            Are you sure you want to delete your account?
-          </p>
-          {error && (
-            <div className="bg-red-100 text-red-500 p-2 rounded text-sm mb-4 ">
-              {error}
-            </div>
-            )  
-          }
-          <form onSubmit={handleDeletion}>
-            {/* check for password */}
-            <label className="block mb-6">
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password to confirm deletion"
-                className="mt-1 block w-full rounded-md ps-2  bg-gray-200 ring-1 shadow-sm"
-                required
-              />
-            </label>
-            <button
-              type="submit"
-              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              Delete Account
-            </button>
-          </form>
-
-        </div>
-      </Modal>
-
-
-
+    <Modal
+  isOpen={deleteAccModal}
+  onRequestClose={closeDeleteAccModal}
+  contentLabel="Delete Account"
+  className="flex items-center justify-center outline-none "
+  style={{
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.75)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    content: { width: "40vw", height: "50vh", margin: "auto", borderRadius: "20px" },
+  }}
+>
+  <div className="bg-white p-12 rounded-lg shadow-2xl transition-all duration-500 ease-in-out">
+    <h2 className="text-2xl font-bold mb-4 text-gray-800">Delete Account</h2>
+    <p className="text-gray-700 mb-4">
+      Are you sure you want to delete your account?
+    </p>
+    {error && (
+      <div className="bg-red-100 text-red-500 p-2 rounded text-sm mb-4 ">
+        {error}
+      </div>
+    )}
+    <form onSubmit={handleDeletion}>
+      <label className="block mb-6">
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter your password to confirm deletion"
+          className="mt-1 block w-full rounded-md ps-2  bg-gray-200 ring-1 shadow-sm transition duration-200 ease-in-out transform hover:scale-105"
+          required
+        />
+      </label>
+      <div className="flex gap-4 items-center w-full justify-center">
+        <button
+          type="submit"
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-1/2 transition duration-200 ease-in-out transform hover:scale-105"
+        >
+          Delete Account
+        </button>
+        <button onClick={()=>{closeDeleteAccModal();}} className="bg-gray-500 hover:bg-gray-700 w-1/2 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</Modal>
 
 
       <main className="w-full min-h-screen py-1 md:w-2/3 lg:w-3/4">
@@ -333,10 +335,15 @@ const Profile = () => {
               <div className="item-center mt-4">
                 <h1 className="text-md font-bold mb-2">Groups</h1>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {groups.map((group) => (
+                  {user.groups.slice(0,10).map((group) => {
+   
+                    dispatch(fetchGroupDetails(group))
+                    .then((grp) => {
+                      // console.log(grp)
+                    return (
                     <div
                       className="group-item flex flex-col items-center "
-                      key={uuidv4()}
+                      key={group}
                     >
                       <img
                         src={girl}
@@ -345,7 +352,23 @@ const Profile = () => {
                       />
                       <p className="text-sm text-center">{group.group_name}</p>
                     </div>
-                  ))}
+                  )}
+                  )}
+                  )}
+                {user.groups.length > 10 && !showAllGroups && (
+                  <div className="group-item flex flex-col items-center cursor-pointer" onClick={() => setShowAllGroups(true)}>
+                    <div className="w-16 h-16 flex justify-center items-center rounded-full bg-gray-200 mb-2">
+                      <div className="flex space-x-2">
+                        <div className="w-2 h-2 bg-black rounded-full"></div>
+                        <div className="w-2 h-2 bg-black rounded-full"></div>
+                        <div className="w-2 h-2 bg-black rounded-full"></div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-center">Show all groups</p>
+                  </div>
+                )}
+                  
+
                 </div>
               </div>
             </div>

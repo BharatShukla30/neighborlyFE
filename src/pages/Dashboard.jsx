@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { BsPeople, BsSend } from "react-icons/bs"
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -20,14 +20,16 @@ import { FaCircleUser } from "react-icons/fa6"
 import { IoIosAttach } from "react-icons/io"
 import Dropzone from "../components/Dropzone"
 import girl from "../assets/girl.jpg"
-import { motion , AnimatePresence} from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import GroupDetails from "../components/GroupDetails"
+import io from "socket.io-client"
+
+const socket = io("http://localhost:3001") // Adjust the URL accordingly
 
 const Dashboard = () => {
   // ----------------------------Selector-----------------------------
   let coords = useSelector((state) => state.auth.user?.current_coordinates)
   let { nearGroup } = useSelector((state) => state.groups.nearbyGrps)
-  let chat = useSelector((state) => state.chats.chats)
   let user = useSelector((state) => state.auth.user)
 
   //  ----------------------------State-----------------------------
@@ -68,7 +70,27 @@ const Dashboard = () => {
     "pink-900",
   ]
   let chatRef = useRef(null)
-  const randomColor = colors[Math.floor(Math.random() * colors.length)]
+
+  // ----------------------------socket-----------------------------
+  
+  const joinRoom = () => {
+    if (user.username && activeChat?.groupId) {
+      socket.emit("join-room", {
+        username: user.username,
+        group_id: activeChat.groupId,
+      })
+    }
+  }
+
+  const leaveRoom = () => {
+    console.log("leave-room")
+    if (user.username && activeChat?.groupId) {
+      socket.emit("leave-room", {
+        username: user.username,
+        group_id: activeChat.groupId,
+      })
+    }
+  }
 
   // ----------------------------UseEffect-----------------------------
 
@@ -81,7 +103,7 @@ const Dashboard = () => {
   }, [dispatch])
 
   useEffect(() => {
-    console.log(activeChat)
+
     if (activeChat?.group_id) {
       dispatch(fetchGroupDetails(activeChat.group_id)).then((result) => {
         setGroupDetails(result.payload)
@@ -93,7 +115,9 @@ const Dashboard = () => {
           )
         )
       })
+      joinRoom()
     }
+
   }, [activeChat])
 
   useEffect(() => {
@@ -125,13 +149,36 @@ const Dashboard = () => {
     chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" })
   }, [messages])
 
+  useMemo(() => {
+    socket.on("receive_message", (data) => {
+      console.log(data)
+      setMessages((list) => [...list, data])
+    });
+    return () => {
+      socket.off("receive_message");
+    };
+  }, [socket]);
+
+
   const handleEnterKey = (e) => {
+    
     if (e.keyCode === 13 && !e.shiftKey) {
       e.preventDefault()
       const message = e.target.value
-      console.log(message)
+      if (message !== "") {
+        const messageData = {
+          group_id: activeChat.group_id,
+          senderName: user.username,
+          msg: message,
+          time: new Date(Date.now()).toISOString(),
+        }
+        socket.emit("send-message", messageData)
+        setMessages((list) => [...list, messageData])
+        setNewMessage("")
+      }
       e.target.value = ""
     }
+    
   }
 
   const handleGrpCreation = () => {
@@ -161,6 +208,7 @@ const Dashboard = () => {
     }
     return hash
   }
+
 
   const createGrp = (e) => {
     e.preventDefault()
@@ -224,14 +272,19 @@ const Dashboard = () => {
 
   const handleMessageSubmit = (e) => {
     e.preventDefault()
-    if (newMessage) {
-      // TODO: socket integration
-      // dispatch(sendMessage({groupId: activeChat.group_id, message: newMessage}))
-      // .then((result) => {
-      //   console.log(result)
-      // })
-      setNewMessage("")
-    }
+    console.log(newMessage)
+      if (newMessage ) {
+        const messageData = {
+          group_id: activeChat.group_id,
+          senderName: user.username,
+          msg: newMessage,
+          time: new Date(Date.now()).toISOString(),
+        }
+        socket.emit("send-message", messageData)
+        setMessages((list) => [...list, messageData])
+        setNewMessage("")
+      }
+      e.target.value = ""
   }
 
   return (
@@ -546,7 +599,7 @@ const Dashboard = () => {
                       initial={{ x: "100vw" }}
                       animate={{ x: 0 }}
                       exit={{ x: "100vw" }}
-                      transition={{ type: "easeInOut", duration:0.2 }}
+                      transition={{ type: "easeInOut", duration: 0.2 }}
                     >
                       {groupDetails ? (
                         <GroupDetails {...groupDetails} />
@@ -569,7 +622,7 @@ const Dashboard = () => {
                             ? "flex-row"
                             : "flex-row-reverse"
                         } gap-2.5 my-4  w-full  `}
-                        key={uuidv4()}
+                        key={index}
                         ref={isLastMessage ? chatRef : null}
                       >
                         <FaCircleUser
@@ -607,6 +660,7 @@ const Dashboard = () => {
                                     hour12: true,
                                   }
                                 )}
+                                {/* {new Date(msg.time).getHours()}:{new Date(msg.time).getMinutes()} */}
                               </span>
                             </p>
                           </div>
@@ -657,7 +711,7 @@ const Dashboard = () => {
                   ></textarea>
                   <button
                     type="button"
-                    onSubmit={handleMessageSubmit}
+                    onClick={handleMessageSubmit}
                     className="ms-5 rounded-full bg-primary px-3 py-3 text-xl font-semibold text-white shadow-sm hover:bg-black-bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   >
                     <BsSend />

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'; 
 import store from "./redux/store"
 import './App.css'
@@ -12,11 +12,17 @@ import Error404Boundary from './pages/404ErrorBoundary';
 import Profile from './pages/Profile';
 import Location from './pages/Location';
 
+
 function App() {
+
+
+ 
   React.useEffect(() => {
     store.dispatch(loadUser());
   }, []);
  
+
+
   return (
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>

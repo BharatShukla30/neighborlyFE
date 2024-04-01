@@ -17,7 +17,9 @@ export default {
       },
       backgroundImage: () => ({
         'logo': "url('/src/assets/chatBg.png')",
+        "world": "url('/src/assets/world.jpg')",
       })
+
     },
     fontFamily: {
       sans: ['Inter', 'sans-serif']

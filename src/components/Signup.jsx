@@ -247,7 +247,7 @@ const SignUp = ({ setSignin }) => {
                 <div>
                   <button
                     type="submit"
-                    className="inline-flex mt-5 w-full items-center justify-center rounded-md  bg-cblue px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-cblue px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80 transform hover:scale-105  transition-all duration-100 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cblue focus:ring-opacity-50"
                   >
                     Create Account
                   </button>

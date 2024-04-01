@@ -13,9 +13,13 @@ const GroupDetails = ({location ,name ,topic,  description , radius , members , 
     dispatch(makeGroupPermanent(_id))
   }
 
+  const handleLeaveGrp = () => {
+    // TODO: w8ing for backend to make api 
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full bg-white overflow-y-scroll">
-      <div className="py-4 px-6 w-full flex flex-col items-center">
+    <div className="flex flex-col w-full h-full bg-white overflow-y-scroll z-60">
+      <div className="py-4 px-6 w-full flex flex-col items-center  pointer-events-none">
         <div className="flex-shrink-0 mb-4">
           <img
             className="h-25 w-25 rounded-full ring-2 ring-offset-2 ring-fuchsia-900"
@@ -71,12 +75,18 @@ const GroupDetails = ({location ,name ,topic,  description , radius , members , 
      
       </div>
 
-      <div className=" py-4 px-6 w-full mt-4 flex items-center justify-center">
+      <div className=" py-4 px-6 w-full mt-4 flex flex-col gap-3 items-center justify-center mb-3">
         <button
-          className="bg-sky-400 hover:bg-sky-500 px-4 py-2 rounded-md transition-colors ease-in"
+          className="bg-blue-400 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-md transition-colors ease-in"
           onClick={handleGroupPermanent}
         >
           Make Permanent
+        </button>
+        <button
+          className="bg-rose-500 hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors ease-in "
+          onClick={handleLeaveGrp}
+        >
+          Leave Group
         </button>
       </div>
     </div>

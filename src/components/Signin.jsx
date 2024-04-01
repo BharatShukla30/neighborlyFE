@@ -52,7 +52,7 @@ const SignIn = ({ setSignin }) => {
     <section className="h-full   ">
       <div className="h-full">
         <div className=" w-full flex my-auto items-center justify-center ">
-          <div className="md:bg-white h-full md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
+          <div className="md:bg-white h-full md:bg-opacity-50  md:backdrop-blur-2xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
             <div className="flex gap-4 items-baseline ">
               <button
                 className=" font-bold  leading-tight text-cblue text-2xl"
@@ -166,7 +166,7 @@ const SignIn = ({ setSignin }) => {
                 <div>
                   <button
                     type="submit"
-                    className="mt-1 inline-flex w-full items-center justify-center rounded-md bg-cblue px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    className="mt-1 inline-flex w-full items-center justify-center rounded-md bg-cblue px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80 transform hover:scale-105  transition-all duration-100 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cblue focus:ring-opacity-50"
                   >
                     Get started
                   </button>

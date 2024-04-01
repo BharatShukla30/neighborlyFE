@@ -14,19 +14,21 @@ import {
 import { getChatMessages } from "../redux/actions/chatActions"
 import { IoLocationSharp } from "react-icons/io5"
 import { GoThumbsup, GoThumbsdown } from "react-icons/go"
-import { FaCamera, FaPlus } from "react-icons/fa"
+import { FaCamera, FaHamburger, FaPlus } from "react-icons/fa"
 import { HiBellAlert } from "react-icons/hi2"
 import { FaCircleUser } from "react-icons/fa6"
 import { IoIosAttach } from "react-icons/io"
+import { FaRunning } from "react-icons/fa"
+import { HiOutlineDotsVertical } from "react-icons/hi"
 import Dropzone from "../components/Dropzone"
 import girl from "../assets/girl.jpg"
 import { motion, AnimatePresence } from "framer-motion"
 import GroupDetails from "../components/GroupDetails"
 import io from "socket.io-client"
 
-const socket = io("http://localhost:3001") // Adjust the URL accordingly
-
 const Dashboard = () => {
+  const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL
+  const socket = io(socketServer)
   // ----------------------------Selector-----------------------------
   let coords = useSelector((state) => state.auth.user?.current_coordinates)
   let { nearGroup } = useSelector((state) => state.groups.nearbyGrps)
@@ -45,6 +47,8 @@ const Dashboard = () => {
     latitude: coords.coordinates[0],
     longitude: coords.coordinates[1],
   })
+  const [nearbySlider, setNearbySlider] = useState(50)
+  const [search, setSearch] = useState("")
 
   let groups = useSelector((state) => state.groups.grps)
   let [activeChat, setActiveChat] = useState({
@@ -72,7 +76,7 @@ const Dashboard = () => {
   let chatRef = useRef(null)
 
   // ----------------------------socket-----------------------------
-  
+
   const joinRoom = () => {
     if (user.username && activeChat?.groupId) {
       socket.emit("join-room", {
@@ -103,7 +107,6 @@ const Dashboard = () => {
   }, [dispatch])
 
   useEffect(() => {
-
     if (activeChat?.group_id) {
       dispatch(fetchGroupDetails(activeChat.group_id)).then((result) => {
         setGroupDetails(result.payload)
@@ -117,7 +120,6 @@ const Dashboard = () => {
       })
       joinRoom()
     }
-
   }, [activeChat])
 
   useEffect(() => {
@@ -153,15 +155,13 @@ const Dashboard = () => {
     socket.on("receive_message", (data) => {
       console.log(data)
       setMessages((list) => [...list, data])
-    });
+    })
     return () => {
-      socket.off("receive_message");
-    };
-  }, [socket]);
-
+      socket.off("receive_message")
+    }
+  }, [socket])
 
   const handleEnterKey = (e) => {
-    
     if (e.keyCode === 13 && !e.shiftKey) {
       e.preventDefault()
       const message = e.target.value
@@ -171,6 +171,7 @@ const Dashboard = () => {
           senderName: user.username,
           msg: message,
           time: new Date(Date.now()).toISOString(),
+          votes: 0,
         }
         socket.emit("send-message", messageData)
         setMessages((list) => [...list, messageData])
@@ -178,7 +179,6 @@ const Dashboard = () => {
       }
       e.target.value = ""
     }
-    
   }
 
   const handleGrpCreation = () => {
@@ -208,7 +208,6 @@ const Dashboard = () => {
     }
     return hash
   }
-
 
   const createGrp = (e) => {
     e.preventDefault()
@@ -273,23 +272,36 @@ const Dashboard = () => {
   const handleMessageSubmit = (e) => {
     e.preventDefault()
     console.log(newMessage)
-      if (newMessage ) {
-        const messageData = {
-          group_id: activeChat.group_id,
-          senderName: user.username,
-          msg: newMessage,
-          time: new Date(Date.now()).toISOString(),
-        }
-        socket.emit("send-message", messageData)
-        setMessages((list) => [...list, messageData])
-        setNewMessage("")
+    if (newMessage) {
+      const messageData = {
+        group_id: activeChat.group_id,
+        senderName: user.username,
+        msg: newMessage,
+        time: new Date(Date.now()).toISOString(),
       }
-      e.target.value = ""
+      socket.emit("send-message", messageData)
+      setMessages((list) => [...list, messageData])
+      setNewMessage("")
+    }
+    e.target.value = ""
   }
+
+  const HandleSearch = (value) => {
+    setSearch(value)
+    // TODO: add some filter highlight logic
+  }
+
+  //   const handleThumbsUp = (msg_id) => {
+  //   socket.emit('up-vote', { msg_id });
+  // };
+
+  // const handleThumbsDown = (msg_id) => {
+  //   socket.emit('down-vote', { msg_id });
+  // };
 
   return (
     <>
-      <section className="flex h-rest  bg-chatBg ">
+      <section className="flex h-rest max-w-[1400px] mx-auto bg-chatBg ">
         {/* {openNewChatBox && <NewChat changeState={setOpenNewChatBox} />} */}
 
         {newGrpPanel && (
@@ -496,33 +508,60 @@ const Dashboard = () => {
                 <div className="h-aside overflow-y-scroll mt-0">
                   {/* TODO: mockup ,  */}
                   <div className=" grp-section ">
-                    {nearbyGrpPanel === false
-                      ? groups?.map((grp) => {
-                          return (
-                            <div
-                              className="flex justify-between px-6 py-5 mb-2 border-b-2 hover:bg-gray-200 transition-all ease-in-out"
-                              key={grp.group_id}
-                              onClick={() =>
-                                setActiveChat({
-                                  group_id: grp.group_id,
-                                  group_name: grp.group_name,
-                                })
-                              }
-                            >
-                              <div className="flex gap-3">
-                                <img
-                                  src={girl}
-                                  alt="girl"
-                                  className="h-8 w-8 rounded-full"
-                                />
-                                <h1 className="font-light">{grp.group_name}</h1>
-                              </div>
-                            </div>
-                          )
-                        })
-                      : nearGroup?.map((grp) => (
+                    {nearbyGrpPanel === false ? (
+                      groups?.map((grp) => {
+                        return (
                           <div
-                            className="flex justify-between px-6 py-5  border-b-2 hover:bg-gray-200 transition-all ease-in-out "
+                            className="flex justify-between px-6 py-5 mb-2 border-b-2 hover:bg-gray-200 transition-all ease-in-out"
+                            key={grp.group_id}
+                            onClick={() =>
+                              setActiveChat({
+                                group_id: grp.group_id,
+                                group_name: grp.group_name,
+                              })
+                            }
+                          >
+                            <div className="flex gap-3">
+                              <img
+                                src={girl}
+                                alt="girl"
+                                className="h-8 w-8 rounded-full"
+                              />
+                              <h1 className="font-light">{grp.group_name}</h1>
+                            </div>
+                          </div>
+                        )
+                      })
+                    ) : (
+                      <>
+                        <div className=" ms-2 mb-1 flex justify-center items-center gap-4">
+                          <input
+                            id="default-range"
+                            type="range"
+                            min="0"
+                            max="50"
+                            value={nearbySlider}
+                            step="5"
+                            className="w-3/4 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                            onChange={(e) => setNearbySlider(e.target.value)}
+                            onMouseUp={() => {
+                              // trigger api here  or make a function
+                              console.log("Slider drag is over")
+                            }}
+                            style={{
+                              background: `linear-gradient(90deg, #a5b4fc ${
+                                nearbySlider * 2
+                              }%, #d3d3d3 ${nearbySlider * 2}%)`,
+                            }}
+                            title={` ${nearbySlider}km`}
+                          />
+                          <FaRunning className="text-cblue font-bold text-xl" />
+                        </div>
+                        {nearGroup?.map((grp, idx) => (
+                          <div
+                            className={`flex justify-between px-6 py-5  border-b-2 hover:bg-gray-200 transition-all ease-in-out ${
+                              idx == 0 ? "border-t-2" : ""
+                            } `}
                             key={uuidv4()}
                             onClick={() =>
                               setActiveChat({
@@ -548,13 +587,15 @@ const Dashboard = () => {
                               onClick={() => {
                                 handleJoinGroup(grp.group_id, grp.groupname)
                               }}
-                              className="font-medium hover:text-cblue text-sm"
+                              className="font-medium hover:text-cblue text-sm "
                             >
                               {" "}
                               Join{" "}
                             </button>
                           </div>
                         ))}
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -563,21 +604,54 @@ const Dashboard = () => {
         </aside>
 
         {/* Left Chatting Section */}
-        <div className={`md:block w-full  block h-full`}>
+        <div className={`md:block w-full  block h-full relative`}>
           <div className="h-full">
             {activeChat.group_name && (
-              <div
-                className="shadow-inner py-3 px-3 flex items-center justify-between  bg-white z-40"
-                onClick={() => {
-                  setGrpPanel(!grpPanel)
-                }}
-              >
+              <div className="shadow-inner py-3 px-3 flex items-center justify-between  bg-white z-40">
                 <div className="text-xl font-medium flex items-center">
                   <div className="me-3 md:me-4 bg-slate-200 px-3 py-3 rounded-full cursor-pointer">
                     <BsPeople />
                   </div>
                   <p className="font-medium capitalize">
                     {activeChat?.group_name}
+                  </p>
+                </div>
+                <div className="flex gap-6 items-center justify-center">
+                  <div className="relative flex items-center  h-8 rounded-lg shadow-inner  bg-gray-100 overflow-hidden">
+                    <div className="grid place-items-center h-full w-8 text-gray-300 ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      className="peer h-full w-full outline-none text-sm text-gray-700 pr-2 bg-gray-100"
+                      type="text"
+                      id="search"
+                      placeholder="Search ..."
+                      onChange={(e) => {
+                        HandleSearch(e.target.value)
+                      }}
+                      value = {search}
+                    />
+                  </div>
+                  <p>
+                    <HiOutlineDotsVertical
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setGrpPanel(!grpPanel)
+                      }}
+                    />
                   </p>
                 </div>
               </div>
@@ -591,11 +665,11 @@ const Dashboard = () => {
                   : "bg-logo bg-no-repeat bg-center bg-opacity-5"
               } h-chatWindow  items-stretch justify-stretch  relative`}
             >
-              <div className="  overflow-y-scroll px-4 relative h-chatWindow">
+              <div className=" h-full overflow-y-scroll px-4  h-chatWindow">
                 <AnimatePresence>
                   {grpPanel && (
                     <motion.div
-                      className="absolute w-4/12 right-0 bg-white rounded-md shadow-lg z-20"
+                      className="absolute w-4/12 right-0 bg-white rounded-md shadow-lg z-60 h-full"
                       initial={{ x: "100vw" }}
                       animate={{ x: 0 }}
                       exit={{ x: "100vw" }}
@@ -671,6 +745,7 @@ const Dashboard = () => {
                                 rotate: -45,
                                 color: "aqua",
                               }}
+                              onClick={() => handleThumbsDown(msg._id)}
                               className="mr-2 "
                             >
                               <GoThumbsup />
@@ -681,6 +756,7 @@ const Dashboard = () => {
                                 rotate: 45,
                                 color: "red",
                               }}
+                              onClick={() => handleThumbsDown(msg._id)}
                               className="mr-2 "
                             >
                               <GoThumbsdown />
@@ -696,7 +772,7 @@ const Dashboard = () => {
 
               {/* Message Input */}
               {activeChat.group_name && (
-                <div className=" flex items-center justify-center  sticky bottom-3 w-full bg-chatBg  ">
+                <div className=" flex items-center justify-center  sticky bottom-3 w-full bg-chatBg  pt-2 pb-2">
                   <button className="h-10 w-10 me-5 ms-2 rounded-full bg-slate-300 shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
                     <IoIosAttach className="mx-2 my-2 text-gray-600 font-bold text-2xl rotate-45" />
                     <Dropzone />
@@ -712,7 +788,7 @@ const Dashboard = () => {
                   <button
                     type="button"
                     onClick={handleMessageSubmit}
-                    className="ms-5 rounded-full bg-primary px-3 py-3 text-xl font-semibold text-white shadow-sm hover:bg-black-bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    className="ms-5 me-3 rounded-full bg-primary px-3 py-3 text-xl font-semibold text-white shadow-sm hover:bg-black-bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   >
                     <BsSend />
                   </button>

@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from "uuid"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { BsPeople, BsSend } from "react-icons/bs"
-import { useDispatch, useSelector } from "react-redux"
+import { v4 as uuidv4 } from "uuid";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BsPeople, BsSend } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
 import {
   nearestGroup,
   createGroup,
@@ -10,34 +10,45 @@ import {
   makeGroupPermanent,
   addUser,
   fetchGroupDetails,
-} from "../redux/actions/groupActions"
-import { getChatMessages } from "../redux/actions/chatActions"
-import { IoLocationSharp } from "react-icons/io5"
-import { GoThumbsup, GoThumbsdown } from "react-icons/go"
-import { FaCamera, FaHamburger, FaPlus } from "react-icons/fa"
-import { HiBellAlert } from "react-icons/hi2"
-import { FaCircleUser } from "react-icons/fa6"
-import { IoIosAttach } from "react-icons/io"
-import { FaRunning } from "react-icons/fa"
-import { HiOutlineDotsVertical } from "react-icons/hi"
-import Dropzone from "../components/Dropzone"
-import girl from "../assets/girl.jpg"
-import { motion, AnimatePresence } from "framer-motion"
-import GroupDetails from "../components/GroupDetails"
-import io from "socket.io-client"
+} from "../redux/actions/groupActions";
+import { getChatMessages } from "../redux/actions/chatActions";
+import { IoLocationSharp } from "react-icons/io5";
+import { GoThumbsup, GoThumbsdown } from "react-icons/go";
+import { FaCamera, FaHamburger, FaPlus } from "react-icons/fa";
+import { HiBellAlert } from "react-icons/hi2";
+import { FaCircleUser } from "react-icons/fa6";
+import { IoIosAttach } from "react-icons/io";
+import { FaRunning } from "react-icons/fa";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import Dropzone from "../components/Dropzone";
+import girl from "../assets/girl.jpg";
+import { motion, AnimatePresence } from "framer-motion";
+import GroupDetails from "../components/GroupDetails";
+import io from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL
-  const socket = io(socketServer)
+  const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
+  const socket = io(socketServer);
+  const navigate = useNavigate();
+
   // ----------------------------Selector-----------------------------
-  let coords = useSelector((state) => state.auth.user?.current_coordinates)
-  let { nearGroup } = useSelector((state) => state.groups.nearbyGrps)
-  let user = useSelector((state) => state.auth.user)
+  let coords = useSelector((state) => state.auth.user?.current_coordinates);
+  let { nearGroup } = useSelector((state) => state.groups.nearbyGrps);
+  let user = useSelector((state) => state.auth.user);
+  //Check if user coordinates are not set
+
+  if (
+    user?.current_coordinates?.coordinates[0] === 0 &&
+    user?.current_coordinates?.coordinates[1] === 0
+  ) {
+    navigate("/location");
+  }
 
   //  ----------------------------State-----------------------------
-  const [newGrpPanel, setNewGrpPanel] = useState(false)
-  const dispatch = useDispatch()
-  const [nearbyGrpPanel, setNearbyGrpPanel] = useState(false)
+  const [newGrpPanel, setNewGrpPanel] = useState(false);
+  const dispatch = useDispatch();
+  const [nearbyGrpPanel, setNearbyGrpPanel] = useState(false);
   const [newGrpCreation, setNewGrpCreation] = useState({
     name: "",
     description: "",
@@ -46,19 +57,19 @@ const Dashboard = () => {
     icon: "",
     latitude: coords.coordinates[0],
     longitude: coords.coordinates[1],
-  })
-  const [nearbySlider, setNearbySlider] = useState(50)
-  const [search, setSearch] = useState("")
+  });
+  const [nearbySlider, setNearbySlider] = useState(50);
+  const [search, setSearch] = useState("");
 
-  let groups = useSelector((state) => state.groups.grps)
+  let groups = useSelector((state) => state.groups.grps);
   let [activeChat, setActiveChat] = useState({
     groupId: groups[0]?.group_id,
     group_name: groups[0]?.group_name,
-  })
-  let [messages, setMessages] = useState([])
-  let [newMessage, setNewMessage] = useState("")
-  const [groupDetails, setGroupDetails] = useState(null)
-  let [grpPanel, setGrpPanel] = useState(false)
+  });
+  let [messages, setMessages] = useState([]);
+  let [newMessage, setNewMessage] = useState("");
+  const [groupDetails, setGroupDetails] = useState(null);
+  let [grpPanel, setGrpPanel] = useState(false);
   const colors = [
     "red-800",
     "yellow-600",
@@ -72,8 +83,8 @@ const Dashboard = () => {
     "blue-600",
     "indigo-400",
     "pink-900",
-  ]
-  let chatRef = useRef(null)
+  ];
+  let chatRef = useRef(null);
 
   // ----------------------------socket-----------------------------
 
@@ -82,56 +93,56 @@ const Dashboard = () => {
       socket.emit("join-room", {
         username: user.username,
         group_id: activeChat.groupId,
-      })
+      });
     }
-  }
+  };
 
   const leaveRoom = () => {
-    console.log("leave-room")
+    console.log("leave-room");
     if (user.username && activeChat?.groupId) {
       socket.emit("leave-room", {
         username: user.username,
         group_id: activeChat.groupId,
-      })
+      });
     }
-  }
+  };
 
   // ----------------------------UseEffect-----------------------------
 
   useEffect(() => {
-    dispatch(getUserGroups())
+    dispatch(getUserGroups());
     setActiveChat({
       group_id: groups[0]?.group_id,
       group_name: groups[0]?.group_name,
-    })
-  }, [dispatch])
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     if (activeChat?.group_id) {
       dispatch(fetchGroupDetails(activeChat.group_id)).then((result) => {
-        setGroupDetails(result.payload)
-      })
+        setGroupDetails(result.payload);
+      });
       dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
         setMessages(
           [...result.payload].sort(
             (a, b) => new Date(a.sent_at) - new Date(b.sent_at)
           )
-        )
-      })
-      joinRoom()
+        );
+      });
+      joinRoom();
     }
-  }, [activeChat])
+  }, [activeChat]);
 
   useEffect(() => {
     if (coords) {
-      dispatch(nearestGroup(coords))
+      dispatch(nearestGroup(coords));
       setNewGrpCreation({
         ...newGrpCreation,
         latitude: coords.coordinates[0],
         longitude: coords.coordinates[1],
-      })
+      });
     }
-  }, [coords, dispatch])
+  }, [coords, dispatch]);
 
   useEffect(() => {
     if (activeChat && activeChat.group_id) {
@@ -141,30 +152,30 @@ const Dashboard = () => {
             [...result.payload].sort(
               (a, b) => new Date(a.sent_at) - new Date(b.sent_at)
             )
-          )
+          );
         }
-      )
+      );
     }
-  }, [activeChat, dispatch])
+  }, [activeChat, dispatch]);
 
   useEffect(() => {
-    chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" })
-  }, [messages])
+    chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages]);
 
   useMemo(() => {
     socket.on("receive_message", (data) => {
-      console.log(data)
-      setMessages((list) => [...list, data])
-    })
+      console.log(data);
+      setMessages((list) => [...list, data]);
+    });
     return () => {
-      socket.off("receive_message")
-    }
-  }, [socket])
+      socket.off("receive_message");
+    };
+  }, [socket]);
 
   const handleEnterKey = (e) => {
     if (e.keyCode === 13 && !e.shiftKey) {
-      e.preventDefault()
-      const message = e.target.value
+      e.preventDefault();
+      const message = e.target.value;
       if (message !== "") {
         const messageData = {
           group_id: activeChat.group_id,
@@ -172,18 +183,18 @@ const Dashboard = () => {
           msg: message,
           time: new Date(Date.now()).toISOString(),
           votes: 0,
-        }
-        socket.emit("send-message", messageData)
-        setMessages((list) => [...list, messageData])
-        setNewMessage("")
+        };
+        socket.emit("send-message", messageData);
+        setMessages((list) => [...list, messageData]);
+        setNewMessage("");
       }
-      e.target.value = ""
+      e.target.value = "";
     }
-  }
+  };
 
   const handleGrpCreation = () => {
-    setNewGrpPanel(!newGrpPanel)
-  }
+    setNewGrpPanel(!newGrpPanel);
+  };
 
   const cancelGrp = () => {
     setNewGrpCreation({
@@ -192,32 +203,32 @@ const Dashboard = () => {
       type: "open",
       karma: 0,
       icon: "",
-    })
-    setNewGrpPanel(false)
-  }
+    });
+    setNewGrpPanel(false);
+  };
 
   const handleGrpCreationChange = (e) => {
-    setNewGrpCreation({ ...newGrpCreation, [e.target.name]: e.target.value })
-  }
+    setNewGrpCreation({ ...newGrpCreation, [e.target.name]: e.target.value });
+  };
 
   // TODO: remove this
   const hashing = (name) => {
-    let hash = 0
+    let hash = 0;
     for (let i = 0; i < name?.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash)
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
-    return hash
-  }
+    return hash;
+  };
 
   const createGrp = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       // TODO: waiting for backend to be ready
 
       dispatch(createGroup(newGrpCreation))
         .then((result) => {
-          console.log(result)
+          console.log(result);
           setNewGrpCreation({
             name: "",
             description: "",
@@ -226,70 +237,70 @@ const Dashboard = () => {
             icon: "",
             latitude: coords.coordinates[0],
             longitude: coords.coordinates[1],
-          })
+          });
         })
         .catch((err) => {
-          console.log(err)
-          alert("Error in creating group")
-        })
+          console.log(err);
+          alert("Error in creating group");
+        });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-    setNewGrpPanel(false)
-  }
+    setNewGrpPanel(false);
+  };
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      let img = e.target.files[0]
-      setNewGrpCreation({ ...newGrpCreation, icon: URL.createObjectURL(img) })
+      let img = e.target.files[0];
+      setNewGrpCreation({ ...newGrpCreation, icon: URL.createObjectURL(img) });
     }
-  }
+  };
 
   const handleNearbyPanel = () => {
-    setNearbyGrpPanel(true)
-  }
+    setNearbyGrpPanel(true);
+  };
 
   const handleChatPanel = () => {
-    setNearbyGrpPanel(false)
-  }
+    setNearbyGrpPanel(false);
+  };
 
   const handleJoinGroup = (grpId, grpName) => {
     try {
-      setActiveChat({ group_id: grpId, group_name: grpName })
+      setActiveChat({ group_id: grpId, group_name: grpName });
       dispatch(addUser({ group_id: grpId, userId: user._id }))
         .then((result) => {
-          console.log(result)
+          console.log(result);
         })
         .catch((err) => {
-          alert("Error in joining group")
-          console.log(err)
-        })
+          alert("Error in joining group");
+          console.log(err);
+        });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const handleMessageSubmit = (e) => {
-    e.preventDefault()
-    console.log(newMessage)
+    e.preventDefault();
+    console.log(newMessage);
     if (newMessage) {
       const messageData = {
         group_id: activeChat.group_id,
         senderName: user.username,
         msg: newMessage,
         time: new Date(Date.now()).toISOString(),
-      }
-      socket.emit("send-message", messageData)
-      setMessages((list) => [...list, messageData])
-      setNewMessage("")
+      };
+      socket.emit("send-message", messageData);
+      setMessages((list) => [...list, messageData]);
+      setNewMessage("");
     }
-    e.target.value = ""
-  }
+    e.target.value = "";
+  };
 
   const HandleSearch = (value) => {
-    setSearch(value)
+    setSearch(value);
     // TODO: add some filter highlight logic
-  }
+  };
 
   //   const handleThumbsUp = (msg_id) => {
   //   socket.emit('up-vote', { msg_id });
@@ -530,7 +541,7 @@ const Dashboard = () => {
                               <h1 className="font-light">{grp.group_name}</h1>
                             </div>
                           </div>
-                        )
+                        );
                       })
                     ) : (
                       <>
@@ -546,7 +557,7 @@ const Dashboard = () => {
                             onChange={(e) => setNearbySlider(e.target.value)}
                             onMouseUp={() => {
                               // trigger api here  or make a function
-                              console.log("Slider drag is over")
+                              console.log("Slider drag is over");
                             }}
                             style={{
                               background: `linear-gradient(90deg, #a5b4fc ${
@@ -585,7 +596,7 @@ const Dashboard = () => {
                             </div>
                             <button
                               onClick={() => {
-                                handleJoinGroup(grp.group_id, grp.groupname)
+                                handleJoinGroup(grp.group_id, grp.groupname);
                               }}
                               className="font-medium hover:text-cblue text-sm "
                             >
@@ -640,16 +651,16 @@ const Dashboard = () => {
                       id="search"
                       placeholder="Search ..."
                       onChange={(e) => {
-                        HandleSearch(e.target.value)
+                        HandleSearch(e.target.value);
                       }}
-                      value = {search}
+                      value={search}
                     />
                   </div>
                   <p>
                     <HiOutlineDotsVertical
                       className="cursor-pointer"
                       onClick={() => {
-                        setGrpPanel(!grpPanel)
+                        setGrpPanel(!grpPanel);
                       }}
                     />
                   </p>
@@ -688,7 +699,7 @@ const Dashboard = () => {
 
                 <div className="flex flex-col w-full">
                   {messages?.map((msg, index) => {
-                    const isLastMessage = messages.length - 1 === index
+                    const isLastMessage = messages.length - 1 === index;
                     return (
                       <div
                         className={`flex ${
@@ -765,7 +776,7 @@ const Dashboard = () => {
                           </div>
                         </div>
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -799,6 +810,6 @@ const Dashboard = () => {
         </div>
       </section>
     </>
-  )
-}
-export default Dashboard
+  );
+};
+export default Dashboard;

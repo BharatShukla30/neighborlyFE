@@ -19,7 +19,6 @@ const SignUp = ({ setSignin }) => {
   }, [isAuthenticated])
 
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
     confirm_password: "",
@@ -38,11 +37,7 @@ const SignUp = ({ setSignin }) => {
   const handleForm = (e) => {
     e.preventDefault()
     const validationErrors = {}
-    if (!formData.username.trim()) {
-      validationErrors.username = "Username is required"
-    } else if (!/^[a-zA-Z0-9]+$/.test(formData.username)) {
-      validationErrors.username = "Username must be alphanumeric"
-    }
+    
     if (!formData.email.trim()) {
       validationErrors.email = "Email is required"
     } else if (
@@ -50,6 +45,7 @@ const SignUp = ({ setSignin }) => {
     ) {
       validationErrors.email = "Invalid email format"
     }
+    
     if (!formData.password.trim()) {
       validationErrors.password = "Password is required"
     } else if (formData.password.trim().length < 8) {
@@ -128,32 +124,7 @@ const SignUp = ({ setSignin }) => {
                     </div>
                   </div>
                 )}
-            
-                <div>
-                  <label
-                    htmlFor="name"
-                    className=" font-medium text-sm text-gray-900"
-                  >
-                    {" "}
-                    Username{" "}
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      type="text"
-                      name="username"
-                      placeholder="Username"
-                      id="name"
-                      required
-                      onChange={handleChange}
-                    ></input>
-                    {errors.username && (
-                      <div className="text-red-700 ps-2">
-                        *{errors.username}
-                      </div>
-                    )}
-                  </div>
-                </div>
+
                 <div>
                   <label
                     htmlFor="email"

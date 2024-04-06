@@ -37,7 +37,7 @@ function Navbar() {
     setMobileMenuOpen(false)
     dispatch(logoutUser()).then((result) => {
       if (result.success) {
-        navigate("/signin")
+        navigate("/")
       }
     }).catch((err) => {
       console.log(err)

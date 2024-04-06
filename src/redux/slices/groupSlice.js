@@ -1,36 +1,60 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGroup , fetchGroupDetails, fetchGroupMessages , updateGroupDetails , nearestGroup ,
-  addUser , removeUser , makeGroupPermanent , fetchNearbyUsers 
-} from "../actions/groupAction";
+import { getUserGroups, nearestGroup } from "../actions/groupActions";
 
 const groupSlice = createSlice({
   name :"groups",
   initialState: {
+    grps: [],
     loading: false,
-    groups: [],
+    nearbyGrps: [],
     error: null
   },
   reducers: {},
   extraReducers: (builder) => {
     builder 
-    .addCase(createGroup.pending, (state) => {
+
+//---------------------------------getUserGroups---------------------------------
+    .addCase(getUserGroups.pending, (state) => {
+        state.loading = true;
+        state.grps = [];
+        state.error = null;
+    })
+    .addCase(getUserGroups.fulfilled, (state, action) => {
+        state.loading = false;
+        state.grps = action.payload.groups;
+        state.error = null;
+    })
+    .addCase(getUserGroups.rejected, (state, action) => {
+        state.loading = false;
+        state.grps = null;
+        state.error = action.payload;
+    })
+
+
+//---------------------------------nearestGroup---------------------------------
+    .addCase(nearestGroup.pending, (state) => {
       state.loading = true;
-      state.groups = [];
+      state.nearbyGrps = [];
       state.error = null;
     }
     )
-    .addCase(createGroup.fulfilled, (state, action) => {
+    .addCase(nearestGroup.fulfilled, (state, action) => {
       state.loading = false;
-      state.groups = action.payload;
+      state.nearbyGrps = action.payload;
       state.error = null;
     })
-    .addCase(createGroup.rejected, (state, action) => {
+    .addCase(nearestGroup.rejected, (state, action) => {
       state.loading = false;
-      state.groups = null;
+      state.nearbyGrps = null;
       state.error = action.payload;
     })
 
 
+
+//---------------------------------createGroup---------------------------------
+   
+
+    
   }
 })
 

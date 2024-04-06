@@ -1,198 +1,448 @@
-import  { useCallback, useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { BsPeople, BsSend } from "react-icons/bs"
 import { useDispatch, useSelector } from "react-redux"
-import { getChatMessages, getUserChats } from "../redux/actions/chatActions"
-// import { getUserGroups } from "../redux/actions/userAction"
-import girl from "../assets/girl.jpg"
+import {
+  nearestGroup,
+  createGroup,
+  getUserGroups,
+  fetchGroupMessages,
+  makeGroupPermanent,
+  addUser,
+  fetchGroupDetails,
+} from "../redux/actions/groupActions"
+import { getChatMessages } from "../redux/actions/chatActions"
 import { IoLocationSharp } from "react-icons/io5"
-import { FaCamera, FaPlus } from "react-icons/fa"
+import { GoThumbsup, GoThumbsdown } from "react-icons/go"
+import { FaCamera, FaHamburger, FaPlus } from "react-icons/fa"
 import { HiBellAlert } from "react-icons/hi2"
 import { FaCircleUser } from "react-icons/fa6"
-import { IoIosAttach } from "react-icons/io";
+import { IoIosAttach } from "react-icons/io"
+import { FaRunning } from "react-icons/fa"
+import { HiOutlineDotsVertical } from "react-icons/hi"
 import Dropzone from "../components/Dropzone"
-import {createGroup } from "../redux/actions/groupAction"
+import girl from "../assets/girl.jpg"
+import { motion, AnimatePresence } from "framer-motion"
+import GroupDetails from "../components/GroupDetails"
+import io from "socket.io-client"
 
 const Dashboard = () => {
+  const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL
+  const socket = io(socketServer)
+  // ----------------------------Selector-----------------------------
+  let coords = useSelector((state) => state.auth.user?.current_coordinates)
+  let { nearGroup } = useSelector((state) => state.groups.nearbyGrps)
+  let user = useSelector((state) => state.auth.user)
 
-  const [files, setFiles] = useState([])
-  const [newGrp , setNewGrp] = useState(false)
-
-  const onDrop = useCallback(acceptedFiles => {
-    if(acceptedFiles[0].size < 5000000 && acceptedFiles.length === 1){
-      setFiles(acceptedFiles.map(file => Object.assign(file, {
-        preview: URL.createObjectURL(file)
-      })))
-    }
-  }, [])
-  
-
-
-  const { auth } = useSelector((state) => state.auth)
-  const { user } = useSelector((state) => state.user)
-
+  //  ----------------------------State-----------------------------
+  const [newGrpPanel, setNewGrpPanel] = useState(false)
   const dispatch = useDispatch()
-
-  const [chats, setChats] = useState([])
-
-  const [activeChat, setActiveChat] = useState(
-    chats && chats.length > 0 ? chats[0] : {}
-  )
-
-  const [openRecentChats, setOpenRecentChats] = useState(true)
-  const [openNewChatBox, setOpenNewChatBox] = useState(false)
-  const [messages, setMessages] = useState([])
-
-
-
-  // useEffect(() => {
-  //   dispatch(getUserChats()).then((result) => setChats(result.payload.groups))
-  // }, [])
-
-  // useEffect(() => {
-  //   if (activeChat && activeChat.group_id) {
-  //     dispatch(getChatMessages(activeChat.group_id)).then((result) => {
-  //       setActiveChat((chat) => {
-  //         dispatch(getChatMessages(chat.group_id)).then((result) => {
-  //           setMessages(result.payload)
-  //         })
-  //         return chat
-  //       })
-  //     })
-  //   }
-  // }, [activeChat])
-
-  const [fileUpload , setFileUpload] = useState(false)
-
-  const [grp , setGrp]  = useState({
+  const [nearbyGrpPanel, setNearbyGrpPanel] = useState(false)
+  const [newGrpCreation, setNewGrpCreation] = useState({
     name: "",
     description: "",
-    type: "",
+    type: "open",
     karma: 0,
-    icon: ""
+    icon: "",
+    latitude: coords.coordinates[0],
+    longitude: coords.coordinates[1],
   })
- 
+  const [nearbySlider, setNearbySlider] = useState(50)
+  const [search, setSearch] = useState("")
+
+  let groups = useSelector((state) => state.groups.grps)
+  let [activeChat, setActiveChat] = useState({
+    groupId: groups[0]?.group_id,
+    group_name: groups[0]?.group_name,
+  })
+  let [messages, setMessages] = useState([])
+  let [newMessage, setNewMessage] = useState("")
+  const [groupDetails, setGroupDetails] = useState(null)
+  let [grpPanel, setGrpPanel] = useState(false)
+  const colors = [
+    "red-800",
+    "yellow-600",
+    "green-700",
+    "blue-800",
+    "indigo-800",
+    "purple-700",
+    "pink-500",
+    "zinc-700",
+    "red-600",
+    "blue-600",
+    "indigo-400",
+    "pink-900",
+  ]
+  let chatRef = useRef(null)
+
+  // ----------------------------socket-----------------------------
+
+  const joinRoom = () => {
+    if (user.username && activeChat?.groupId) {
+      socket.emit("join-room", {
+        username: user.username,
+        group_id: activeChat.groupId,
+      })
+    }
+  }
+
+  const leaveRoom = () => {
+    console.log("leave-room")
+    if (user.username && activeChat?.groupId) {
+      socket.emit("leave-room", {
+        username: user.username,
+        group_id: activeChat.groupId,
+      })
+    }
+  }
+
+  // ----------------------------UseEffect-----------------------------
+
+  useEffect(() => {
+    dispatch(getUserGroups())
+    setActiveChat({
+      group_id: groups[0]?.group_id,
+      group_name: groups[0]?.group_name,
+    })
+  }, [dispatch])
+
+  useEffect(() => {
+    if (activeChat?.group_id) {
+      dispatch(fetchGroupDetails(activeChat.group_id)).then((result) => {
+        setGroupDetails(result.payload)
+      })
+      dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
+        setMessages(
+          [...result.payload].sort(
+            (a, b) => new Date(a.sent_at) - new Date(b.sent_at)
+          )
+        )
+      })
+      joinRoom()
+    }
+  }, [activeChat])
+
+  useEffect(() => {
+    if (coords) {
+      dispatch(nearestGroup(coords))
+      setNewGrpCreation({
+        ...newGrpCreation,
+        latitude: coords.coordinates[0],
+        longitude: coords.coordinates[1],
+      })
+    }
+  }, [coords, dispatch])
+
+  useEffect(() => {
+    if (activeChat && activeChat.group_id) {
+      dispatch(getChatMessages({ groupId: activeChat.group_id, page: 1 })).then(
+        (result) => {
+          setMessages(
+            [...result.payload].sort(
+              (a, b) => new Date(a.sent_at) - new Date(b.sent_at)
+            )
+          )
+        }
+      )
+    }
+  }, [activeChat, dispatch])
+
+  useEffect(() => {
+    chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" })
+  }, [messages])
+
+  useMemo(() => {
+    socket.on("receive_message", (data) => {
+      console.log(data)
+      setMessages((list) => [...list, data])
+    })
+    return () => {
+      socket.off("receive_message")
+    }
+  }, [socket])
 
   const handleEnterKey = (e) => {
     if (e.keyCode === 13 && !e.shiftKey) {
       e.preventDefault()
       const message = e.target.value
-      console.log(message)
+      if (message !== "") {
+        const messageData = {
+          group_id: activeChat.group_id,
+          senderName: user.username,
+          msg: message,
+          time: new Date(Date.now()).toISOString(),
+          votes: 0,
+        }
+        socket.emit("send-message", messageData)
+        setMessages((list) => [...list, messageData])
+        setNewMessage("")
+      }
       e.target.value = ""
     }
   }
 
   const handleGrpCreation = () => {
-    setNewGrp(!newGrp)
+    setNewGrpPanel(!newGrpPanel)
   }
 
   const cancelGrp = () => {
-    setGrp({
+    setNewGrpCreation({
       name: "",
       description: "",
-      type: "",
+      type: "open",
       karma: 0,
-      icon: ""
+      icon: "",
     })
-    setNewGrp(!newGrp)
+    setNewGrpPanel(false)
+  }
+
+  const handleGrpCreationChange = (e) => {
+    setNewGrpCreation({ ...newGrpCreation, [e.target.name]: e.target.value })
+  }
+
+  // TODO: remove this
+  const hashing = (name) => {
+    let hash = 0
+    for (let i = 0; i < name?.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return hash
   }
 
   const createGrp = (e) => {
-    e.preventDefault()  
-    console.log("create grp")
-    // post info to server
-    try{
-      
-      dispatch(createGroup(grp)).
-      then((result) => {
-        console.log(result)
-      })
-      
-    }catch(err){
+    e.preventDefault()
+
+    try {
+      // TODO: waiting for backend to be ready
+
+      dispatch(createGroup(newGrpCreation))
+        .then((result) => {
+          console.log(result)
+          setNewGrpCreation({
+            name: "",
+            description: "",
+            type: "open",
+            karma: 0,
+            icon: "",
+            latitude: coords.coordinates[0],
+            longitude: coords.coordinates[1],
+          })
+        })
+        .catch((err) => {
+          console.log(err)
+          alert("Error in creating group")
+        })
+    } catch (err) {
       console.log(err)
     }
-    setNewGrp(false)
+    setNewGrpPanel(false)
   }
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      let img = e.target.files[0];
-      console.log(img)
-      setGrp({...grp, icon: URL.createObjectURL(img)})
+      let img = e.target.files[0]
+      setNewGrpCreation({ ...newGrpCreation, icon: URL.createObjectURL(img) })
     }
-  };
+  }
 
+  const handleNearbyPanel = () => {
+    setNearbyGrpPanel(true)
+  }
 
+  const handleChatPanel = () => {
+    setNearbyGrpPanel(false)
+  }
 
+  const handleJoinGroup = (grpId, grpName) => {
+    try {
+      setActiveChat({ group_id: grpId, group_name: grpName })
+      dispatch(addUser({ group_id: grpId, userId: user._id }))
+        .then((result) => {
+          console.log(result)
+        })
+        .catch((err) => {
+          alert("Error in joining group")
+          console.log(err)
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
+  const handleMessageSubmit = (e) => {
+    e.preventDefault()
+    console.log(newMessage)
+    if (newMessage) {
+      const messageData = {
+        group_id: activeChat.group_id,
+        senderName: user.username,
+        msg: newMessage,
+        time: new Date(Date.now()).toISOString(),
+      }
+      socket.emit("send-message", messageData)
+      setMessages((list) => [...list, messageData])
+      setNewMessage("")
+    }
+    e.target.value = ""
+  }
 
+  const HandleSearch = (value) => {
+    setSearch(value)
+    // TODO: add some filter highlight logic
+  }
 
+  //   const handleThumbsUp = (msg_id) => {
+  //   socket.emit('up-vote', { msg_id });
+  // };
 
-
-
-
-
-
+  // const handleThumbsDown = (msg_id) => {
+  //   socket.emit('down-vote', { msg_id });
+  // };
 
   return (
     <>
-      <section className="flex max-h-screen  bg-chatBg ">
+      <section className="flex h-rest max-w-[1400px] mx-auto bg-chatBg ">
         {/* {openNewChatBox && <NewChat changeState={setOpenNewChatBox} />} */}
 
-        {
-          newGrp && (
-            <div className="flex flex-col items-center justify-center w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
-              <div className="bg-white  rounded-md p-5">
-                <h1 className="text-2xl  text-cblue m-2 font-bold">Create New Group</h1>
-                  <form className="my-5 max-w-md  ">
-                    <div className="grid grid-col-6 gap-x-6 mx-auto ">
-                      <div className="col-span-1 relative">
-                        <label htmlFor="grpIcon" className="absolute text-black left-3 top-[10px] ">
-                          <FaCamera  className="pointer-events-auto"/>
+        {newGrpPanel && (
+          <div className="flex flex-col items-center justify-center w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
+            <div className="bg-white  rounded-md p-5">
+              <h1 className="text-2xl  text-cblue m-2 font-bold">
+                Create New Group
+              </h1>
+              <form className="my-5 max-w-md" onSubmit={createGrp}>
+                <div className="grid grid-col-6 gap-x-6 mx-auto ">
+                  <div className="col-span-1 relative">
+                    <label
+                      htmlFor="grpIcon"
+                      className="absolute text-black left-3 top-[10px] "
+                    >
+                      <FaCamera className="pointer-events-auto" />
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="grpIcon"
+                      name="grpIcon"
+                      onChange={handleImageChange}
+                      className="opacity-5 bg-gray-400 rounded-full border h-10 w-10"
+                    />
+                    {newGrpCreation.icon ? (
+                      <img
+                        src={newGrpCreation.icon}
+                        alt="preview"
+                        className="absolute top-0 left-0 h-10 w-10 rounded-full border"
+                      />
+                    ) : (
+                      <div className="absolute pointer-events-none top-0 opacity-30 bg-gray-400 rounded-full border h-10 w-10"></div>
+                    )}
+                  </div>
+                  <div className="col-start-2 col-end-4 ">
+                    <label
+                      htmlFor="name"
+                      className="text-sm font-thin text-gray-600"
+                    >
+                      Group Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      className="ps-2 w-full py-1 border border-cblue rounded-md mb-2"
+                      onChange={handleGrpCreationChange}
+                      value={newGrpCreation.name}
+                      required
+                    />
+
+                    <label
+                      htmlFor="description"
+                      className="text-sm font-thin text-gray-600"
+                    >
+                      Group Description
+                    </label>
+                    <textarea
+                      name="description"
+                      id="description"
+                      cols="38"
+                      rows="2"
+                      className="ps-2 resize-none border border-cblue rounded mb-2"
+                      onChange={handleGrpCreationChange}
+                      value={newGrpCreation.description}
+                    ></textarea>
+
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                        <label
+                          htmlFor="type"
+                          className="text-[0.7rem] font-thin text-gray-600"
+                        >
+                          Group Type
                         </label>
-                        <input  type="file" accept="image/*" id="grpIcon" name="grpIcon"  onChange={handleImageChange}  className="opacity-5 bg-gray-400 rounded-full border h-10 w-10"  />
-                        {grp.icon ? (<img src={grp.icon} alt="preview" className="absolute top-0 left-0 h-10 w-10 rounded-full border"/>) : (<div className="absolute pointer-events-none top-0 opacity-30 bg-gray-400 rounded-full border h-10 w-10"></div>)}
+                        <label
+                          htmlFor="type"
+                          className="inline-flex items-center p-1 rounded-md cursor-pointer dark:text-gray-100"
+                        >
+                          <input
+                            id="type"
+                            type="checkbox"
+                            className="hidden peer"
+                            onChange={handleGrpCreationChange}
+                            value={newGrpCreation.type}
+                          />
+                          <span className="px-2 py-[0.1rem] rounded-l-md dark:bg-cblue peer-checked:dark:bg-gray-600">
+                            Open
+                          </span>
+                          <span className="px-2 py-[0.1rem] rounded-r-md dark:bg-gray-600 peer-checked:dark:bg-cblue">
+                            Close
+                          </span>
+                        </label>
                       </div>
-                      <div className="col-start-2 col-end-4 ">
-                        <label htmlFor="Name" className="text-sm font-thin text-gray-600">Group Name</label>
-                        <input type="text" name="Name" id="Name" className="ps-2 w-full py-1 border border-cblue rounded-md mb-2" required />
-                        
-                        <label htmlFor="Description" className="text-sm font-thin text-gray-600">Group Description</label>
-                        <textarea name="Description" id="Description" cols="38" rows="2" className="ps-2 resize-none border border-cblue rounded mb-2"></textarea>
-
-                        <div className="flex justify-between items-center">
-                            <div className="flex flex-col">
-                              <label htmlFor="type" className="text-[0.7rem] font-thin text-gray-600">Group Type</label>
-                              <label htmlFor="type" className="inline-flex items-center p-1 rounded-md cursor-pointer dark:text-gray-100">
-                                <input id="type" type="checkbox" className="hidden peer" />
-                                <span className="px-2 py-[0.1rem] rounded-l-md dark:bg-cblue peer-checked:dark:bg-gray-600">Open</span>
-                                <span className="px-2 py-[0.1rem] rounded-r-md dark:bg-gray-600 peer-checked:dark:bg-cblue">Close</span>
-                              </label>
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="Karma" className="text-[0.7rem] font-thin text-gray-600">Karma Req.</label>
-                              <input type="number" name="Karma" id="Karma" className="w-16 border border-cblue rounded-md px-2 text-gray-700" max={100}/>
-                            </div>
-                        </div>
-
-                      </div>
-                      <div className="col-start-3 col-end-6  text-sm mt-2">
-                          <button onSubmit={createGrp} className="bg-cblue m-1 px-2 rounded-md py-[0.2rem] text-white">Create</button>
-                          <button onClick={cancelGrp} className="bg-gray-300 m-1 px-2 rounded-md py-[0.2rem] text-black">Cancel</button>
+                      <div className="flex flex-col">
+                        <label
+                          htmlFor="karma"
+                          className="text-[0.7rem] font-thin text-gray-600"
+                        >
+                          Karma Req.
+                        </label>
+                        <input
+                          type="number"
+                          name="karma"
+                          id="karma"
+                          className="w-16 border border-cblue rounded-md px-2 text-gray-700"
+                          max={100}
+                          onChange={handleGrpCreationChange}
+                          value={newGrpCreation.karma}
+                        />
                       </div>
                     </div>
-                  </form>
-         
-              </div>
+                  </div>
+                  <div className="col-start-3 col-end-6  text-sm mt-2">
+                    <button
+                      type="submit"
+                      className="bg-cblue m-1 px-2 rounded-md py-[0.2rem] text-white"
+                    >
+                      Create
+                    </button>
+                    <button
+                      type="button"
+                      onClick={cancelGrp}
+                      className="bg-gray-300 m-1 px-2 rounded-md py-[0.2rem] text-black"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
-          )
-        }
+          </div>
+        )}
 
         <aside
-          className={`md:block flex md:w-[38vw] flex-col border-r bg-white px-5 `}
+          className={`md:block flex md:w-[38vw] flex-col border-r bg-white px-5`}
         >
-          <div className="flex flex-1 flex-col justify-between">
-            <nav className="-mx-4 space-y-6">
-              <div className="space-y-3 ">
+          <div className="flex flex-1 flex-col justify-between h-full">
+            <nav className="-mx-4 space-y-6 h-full">
+              <div className="space-y-3 h-full">
                 <div className="mb-5 p-5 space-y-8 bg-indigo-300">
                   <div className="flex flex-row justify-between items-center">
                     <div className="img">
@@ -200,8 +450,8 @@ const Dashboard = () => {
                     </div>
                     <div className="flex space-between gap-3 text-white text-bold">
                       <IoLocationSharp className="text-2xl pointer-events-auto" />
-                      <button  onClick={handleGrpCreation}>
-                        <FaPlus className="text-2xl"/>
+                      <button onClick={handleGrpCreation}>
+                        <FaPlus className="text-2xl" />
                       </button>
                       <HiBellAlert className="text-2xl pointer-events-auto" />
                     </div>
@@ -244,57 +494,108 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex  gap-x-3 items-center">
-                  <button className="px-0.5 w-1/2">Nearby Groups</button>
+                  <button className="px-0.5 w-1/2" onClick={handleNearbyPanel}>
+                    Nearby Groups
+                  </button>
                   <p>|</p>
-                  <button className="px-0.5 w-1/2">Chats </button>
+                  <button className="px-0.5 w-1/2" onClick={handleChatPanel}>
+                    Chats{" "}
+                  </button>
                 </div>
 
                 <hr />
 
-                <div className="h-[60vh] overflow-y-scroll">
+                <div className="h-aside overflow-y-scroll mt-0">
                   {/* TODO: mockup ,  */}
-                  <div className="block ">
-                    <div className="flex justify-between px-6 py-5 mb-2 border-b-2">
-                      <div className="flex gap-3">
-                        <img
-                          src={girl}
-                          alt="girl"
-                          className="h-8 w-8 rounded-full"
-                        />
-                        <h1 className="font-light">John Doe</h1>
-                      </div>
-                      <button className="font-medium text-cblue hover:text-blue-800">
-                        Join
-                      </button>
-                    </div>
-
-                    <div className="flex justify-between px-6 py-5 mb-2 border-b-2">
-                      <div className="flex gap-3">
-                        <img
-                          src={girl}
-                          alt="girl"
-                          className="h-8 w-8 rounded-full"
-                        />
-                        <h1 className="font-light">John Doe</h1>
-                      </div>
-                      <button className="font-medium text-cblue hover:text-blue-800">
-                        Join
-                      </button>
-                    </div>
-
-                    <div className="flex justify-between px-6 py-5 mb-2 border-b-2">
-                      <div className="flex gap-3">
-                        <img
-                          src={girl}
-                          alt="girl"
-                          className="h-8 w-8 rounded-full"
-                        />
-                        <h1 className="font-light">John Doe</h1>
-                      </div>
-                      <button className="font-medium text-cblue hover:text-blue-800">
-                        Join
-                      </button>
-                    </div>
+                  <div className=" grp-section ">
+                    {nearbyGrpPanel === false ? (
+                      groups?.map((grp) => {
+                        return (
+                          <div
+                            className="flex justify-between px-6 py-5 mb-2 border-b-2 hover:bg-gray-200 transition-all ease-in-out"
+                            key={grp.group_id}
+                            onClick={() =>
+                              setActiveChat({
+                                group_id: grp.group_id,
+                                group_name: grp.group_name,
+                              })
+                            }
+                          >
+                            <div className="flex gap-3">
+                              <img
+                                src={girl}
+                                alt="girl"
+                                className="h-8 w-8 rounded-full"
+                              />
+                              <h1 className="font-light">{grp.group_name}</h1>
+                            </div>
+                          </div>
+                        )
+                      })
+                    ) : (
+                      <>
+                        <div className=" ms-2 mb-1 flex justify-center items-center gap-4">
+                          <input
+                            id="default-range"
+                            type="range"
+                            min="0"
+                            max="50"
+                            value={nearbySlider}
+                            step="5"
+                            className="w-3/4 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                            onChange={(e) => setNearbySlider(e.target.value)}
+                            onMouseUp={() => {
+                              // trigger api here  or make a function
+                              console.log("Slider drag is over")
+                            }}
+                            style={{
+                              background: `linear-gradient(90deg, #a5b4fc ${
+                                nearbySlider * 2
+                              }%, #d3d3d3 ${nearbySlider * 2}%)`,
+                            }}
+                            title={` ${nearbySlider}km`}
+                          />
+                          <FaRunning className="text-cblue font-bold text-xl" />
+                        </div>
+                        {nearGroup?.map((grp, idx) => (
+                          <div
+                            className={`flex justify-between px-6 py-5  border-b-2 hover:bg-gray-200 transition-all ease-in-out ${
+                              idx == 0 ? "border-t-2" : ""
+                            } `}
+                            key={uuidv4()}
+                            onClick={() =>
+                              setActiveChat({
+                                group_id: grp.group_id,
+                                group_name: grp.groupname,
+                              })
+                            }
+                          >
+                            <div className="flex gap-3">
+                              <img
+                                src={girl}
+                                alt="girl"
+                                className="h-8 w-8 rounded-full"
+                              />
+                              <div className="flex flex-col">
+                                <h1 className="font-light">{grp.groupname}</h1>
+                                <p className="text-sm block font-light text-gray-500">
+                                  {grp.topic}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                handleJoinGroup(grp.group_id, grp.groupname)
+                              }}
+                              className="font-medium hover:text-cblue text-sm "
+                            >
+                              {" "}
+                              Join{" "}
+                            </button>
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -303,84 +604,196 @@ const Dashboard = () => {
         </aside>
 
         {/* Left Chatting Section */}
-        <div
-          className={`md:block w-full  ${
-            openRecentChats ? "hidden w-screen" : "block"
-          }`}
-        >
-          <div>
-            <div className="shadow-lg py-3 px-3 flex items-center justify-between  bg-white z-40">
-              <div className="text-xl font-medium flex items-center">
-                <div className="me-3 md:me-4 bg-slate-200 px-3 py-3 rounded-full cursor-pointer">
-                  <BsPeople />
+        <div className={`md:block w-full  block h-full relative`}>
+          <div className="h-full">
+            {activeChat.group_name && (
+              <div className="shadow-inner py-3 px-3 flex items-center justify-between  bg-white z-40">
+                <div className="text-xl font-medium flex items-center">
+                  <div className="me-3 md:me-4 bg-slate-200 px-3 py-3 rounded-full cursor-pointer">
+                    <BsPeople />
+                  </div>
+                  <p className="font-medium capitalize">
+                    {activeChat?.group_name}
+                  </p>
                 </div>
-                <p className="font-medium capitalize">john</p>
+                <div className="flex gap-6 items-center justify-center">
+                  <div className="relative flex items-center  h-8 rounded-lg shadow-inner  bg-gray-100 overflow-hidden">
+                    <div className="grid place-items-center h-full w-8 text-gray-300 ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      className="peer h-full w-full outline-none text-sm text-gray-700 pr-2 bg-gray-100"
+                      type="text"
+                      id="search"
+                      placeholder="Search ..."
+                      onChange={(e) => {
+                        HandleSearch(e.target.value)
+                      }}
+                      value = {search}
+                    />
+                  </div>
+                  <p>
+                    <HiOutlineDotsVertical
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setGrpPanel(!grpPanel)
+                      }}
+                    />
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Chats Section */}
-            <div className=" py-5 bg-chatBg w-full items-stretch justify-stretch">
-              <div className="h-[66vh] overflow-y-scroll px-4">
+            <div
+              className={` ${
+                activeChat.group_name
+                  ? "bg-chatBg"
+                  : "bg-logo bg-no-repeat bg-center bg-opacity-5"
+              } h-chatWindow  items-stretch justify-stretch  relative`}
+            >
+              <div className=" h-full overflow-y-scroll px-4  h-chatWindow">
+                <AnimatePresence>
+                  {grpPanel && (
+                    <motion.div
+                      className="absolute w-4/12 right-0 bg-white rounded-md shadow-lg z-60 h-full"
+                      initial={{ x: "100vw" }}
+                      animate={{ x: 0 }}
+                      exit={{ x: "100vw" }}
+                      transition={{ type: "easeInOut", duration: 0.2 }}
+                    >
+                      {groupDetails ? (
+                        <GroupDetails {...groupDetails} />
+                      ) : (
+                        <div className="flex justify-center items-center h-screen">
+                          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <div className="flex flex-col w-full">
-                  
-
-                  {/* TODO: */}
-                  <div className="flex item-start gap-2.5 my-4  w-full item-center  ">
-                    <FaCircleUser className="w-8 h-8 rounded-full text-blue-600" />
-                    <div className="flex justify-between items-center w-full leading-1.5 ">
-                      <p className="text-sm font-normal py-2.5 px-4 text-left bg-blue-400 text-white border-gray-200 backdrop-blur-md rounded-e-xl rounded-es-xl  backdrop-brightness-125 shadow-md  ">
-                        Simpsons adfadfkvj
-                      </p>
-                      <p className="text-sm ">
-                        <span className="text-sm pr-3 font-normal text-gray-500 dark:text-gray-400 text-right">
-                          11.45
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-
-
-                  <div className="flex item-start gap-2.5 my-4  w-full item-center  ">
-                    <FaCircleUser className="w-8 h-8 rounded-full text-blue-600" />
-                    <div className="flex justify-between items-center w-full leading-1.5 ">
-                      <p className="text-sm font-normal py-2.5 px-4 text-left bg-blue-400 text-white border-gray-200 backdrop-blur-md rounded-e-xl rounded-es-xl  backdrop-brightness-125 shadow-md  ">
-                        Miles Morales 
-                      </p>
-                      <p className="text-sm ">
-                        <span className="text-sm pr-3 font-normal text-gray-500 dark:text-gray-400 text-right">
-                          11.45
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-
-
-
-
-
+                  {messages?.map((msg, index) => {
+                    const isLastMessage = messages.length - 1 === index
+                    return (
+                      <div
+                        className={`flex ${
+                          msg.senderName == user?.username
+                            ? "flex-row"
+                            : "flex-row-reverse"
+                        } gap-2.5 my-4  w-full  `}
+                        key={index}
+                        ref={isLastMessage ? chatRef : null}
+                      >
+                        <FaCircleUser
+                          className={`w-8 h-8 rounded-full  text-${
+                            colors[hashing(msg.senderName) % colors.length]
+                          }`}
+                        />
+                        <div className="flex flex-col justify-between items-center  leading-1.5 ">
+                          <div
+                            className={`px-[0.2rem] bg-white  border-gray-200 backdrop-blur-md ${
+                              msg.senderName == user?.username
+                                ? "rounded-tr-xl rounded-br-xl rounded-bl-xl"
+                                : "rounded-tl-xl rounded-br-xl rounded-bl-xl"
+                            }   backdrop-brightness-125 shadow-md`}
+                          >
+                            <h1
+                              className={`font-bold text-sm ps-2 pe-3 capitalize text-${
+                                colors[hashing(msg.senderName) % colors.length]
+                              }`}
+                            >
+                              {msg.senderName == user?.username
+                                ? "You"
+                                : msg.senderName}
+                            </h1>
+                            <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left  ">
+                              {msg.msg}
+                            </p>
+                            <p className="text-[11px] font-thin text-right ps-1">
+                              <span className=" pr-1 text-gray-500 dark:text-gray-400 text-right">
+                                {new Date(msg.sent_at).toLocaleTimeString(
+                                  "en-US",
+                                  {
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    hour12: true,
+                                  }
+                                )}
+                                {/* {new Date(msg.time).getHours()}:{new Date(msg.time).getMinutes()} */}
+                              </span>
+                            </p>
+                          </div>
+                          <div className="flex justify-end text-gray-700 mt-2 text-sm">
+                            <motion.button
+                              whileTap={{
+                                scale: 0.9,
+                                rotate: -45,
+                                color: "aqua",
+                              }}
+                              onClick={() => handleThumbsDown(msg._id)}
+                              className="mr-2 "
+                            >
+                              <GoThumbsup />
+                            </motion.button>
+                            <motion.button
+                              whileTap={{
+                                scale: 0.9,
+                                rotate: 45,
+                                color: "red",
+                              }}
+                              onClick={() => handleThumbsDown(msg._id)}
+                              className="mr-2 "
+                            >
+                              <GoThumbsdown />
+                            </motion.button>
+                            <p className="text-gray-600 text-sm">{msg.votes}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
 
               {/* Message Input */}
-              <div className=" flex items-center justify-center  sticky bottom-0 w-full bg-chatBg py-3">
-                  <button className="h-10 w-10 me-5 rounded-full bg-slate-300 shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
+              {activeChat.group_name && (
+                <div className=" flex items-center justify-center  sticky bottom-3 w-full bg-chatBg  pt-2 pb-2">
+                  <button className="h-10 w-10 me-5 ms-2 rounded-full bg-slate-300 shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
                     <IoIosAttach className="mx-2 my-2 text-gray-600 font-bold text-2xl rotate-45" />
-                    <Dropzone  />
+                    <Dropzone />
                   </button>
-                    <textarea
-                      className=" resize-none pl-3 w-[60vw] lg:w-[40vw] py-3 rounded-md shadow-md"
-                      placeholder="Type a message"
-                      rows={1}
-                      onKeyDown={handleEnterKey}
-                      >
-                      </textarea>
-                <button
-                  type="button"
-                  className="ms-5 rounded-full bg-primary px-3 py-3 text-xl font-semibold text-white shadow-sm hover:bg-black-bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                >
-                  <BsSend />
-                </button>
-              </div>
+                  <textarea
+                    className=" resize-none pl-3 w-[60vw] lg:w-[40vw] py-3 rounded-md shadow-md"
+                    placeholder="Type a message"
+                    rows={1}
+                    onKeyDown={handleEnterKey}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    value={newMessage}
+                  ></textarea>
+                  <button
+                    type="button"
+                    onClick={handleMessageSubmit}
+                    className="ms-5 me-3 rounded-full bg-primary px-3 py-3 text-xl font-semibold text-white shadow-sm hover:bg-black-bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  >
+                    <BsSend />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -388,5 +801,4 @@ const Dashboard = () => {
     </>
   )
 }
-
 export default Dashboard

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loadUser, loginUser, logoutUser, registerUser, updateUserLocation } from "../actions/authActions";
+import { fetchCitiesList, loadUser, loginUser, logoutUser, registerUser, updateUserLocation } from "../actions/authActions";
 
 const authSlice = createSlice({
     name: "auth",
@@ -77,6 +77,21 @@ const authSlice = createSlice({
             state.user = action.payload.user;
             state.isAuthenticated = true;
             state.error = null;
+        })
+
+        //Fetch Cities List
+        .addCase(fetchCitiesList.pending, (state, action) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchCitiesList.fulfilled, (state, action) => {
+            state.loading = false;
+            state.availableCities = action.payload.cities
+            state.error = null;
+        })
+        .addCase(fetchCitiesList.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
         })
 
         //Logout User

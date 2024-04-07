@@ -2,16 +2,28 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import explore from "../assets/explore.png";
 import current from "../assets/current.png";
-import { updateUserLocation } from "../redux/actions/authActions";
+import {
+  fetchCitiesList,
+  updateUserLocation,
+} from "../redux/actions/authActions";
 import ReactCardFlip from "react-card-flip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageBox from "../components/ImageBox";
+import { cityMapping } from "../utils/helpers";
 
 function Location() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, availableCities } = useSelector(
+    (state) => state.auth
+  );
   const [cardFlipped, setCardFlipped] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCitiesList());
+    }
+  }, [isAuthenticated]);
 
   const successLocationHandler = (position) => {
     console.log(position);
@@ -45,18 +57,18 @@ function Location() {
   };
 
   const chooseCityHandler = (cityName) => {
-    console.log('Chosen city: ' + cityName);
-    try{
+    console.log("Chosen city: " + cityName);
+    try {
       const locationDetails = {
-        cityLocation: cityName
-      }
+        cityLocation: cityName,
+      };
       dispatch(updateUserLocation(locationDetails)).then((result) => {
         console.log(result);
         if (result?.payload?.success) {
           navigate("/dashboard");
         }
       });
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
@@ -111,24 +123,18 @@ function Location() {
               </div>
             </div>
             <div className="pt-3 pb-3 w-full h-[22rem] flex flex-wrap justify-center gap-4">
-              <ImageBox
-                src="https://cdn2.iconfinder.com/data/icons/indian-cities/64/Delhi-512.png"
-                label="Delhi"
-                value="delhi"
-                selectHandler={chooseCityHandler}
-              />
-              <ImageBox
-                src="https://static.thenounproject.com/png/1497628-200.png"
-                label="Noida"
-                value="noida"
-                selectHandler={chooseCityHandler}
-              />
-              <ImageBox
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ57V33MB0LVUj61MkUzKoFauZAPqugDRfaetF-lCECRQ&s"
-                label="Gurugram"
-                value="gurugram"
-                selectHandler={chooseCityHandler}
-              />
+              {availableCities?.map((city) => {
+                const { label, imageSource } = cityMapping[city];
+                return (
+                  <ImageBox
+                    key={city}
+                    label={label}
+                    src={imageSource}
+                    value={city}
+                    selectHandler={chooseCityHandler}
+                  />
+                );
+              })}
             </div>
           </ReactCardFlip>
         </div>

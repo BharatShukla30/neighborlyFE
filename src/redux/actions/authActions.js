@@ -73,3 +73,16 @@ export const loadUser = createAsyncThunk(
     }
   }
 );
+
+export const fetchCitiesList = createAsyncThunk(
+  "user/fetch-cities",
+  async (_, { rejectWithValue }) => {
+    try {
+      const request = await axios.get("/user/fetch-cities");
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);

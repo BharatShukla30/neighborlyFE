@@ -10,7 +10,10 @@ const userHasCoordinates = (user) => {
   return true;
 };
 
-export const formUserCoordinatesObject = (locationDetails, responseCoordinates) => {
+export const formUserCoordinatesObject = (
+  locationDetails,
+  responseCoordinates
+) => {
   const body = {};
   if (locationDetails.userLocation) {
     body.current_coordinates = {
@@ -24,6 +27,23 @@ export const formUserCoordinatesObject = (locationDetails, responseCoordinates) 
     };
   }
   return body;
+};
+
+export const cityMapping = {
+  delhi: {
+    label: "Delhi",
+    imageSource:
+      "https://cdn2.iconfinder.com/data/icons/indian-cities/64/Delhi-512.png",
+  },
+  noida: {
+    label: "Noida",
+    imageSource: "https://static.thenounproject.com/png/1497628-200.png",
+  },
+  gurugram: {
+    label: "Gurugram",
+    imageSource:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ57V33MB0LVUj61MkUzKoFauZAPqugDRfaetF-lCECRQ&s",
+  },
 };
 
 export default userHasCoordinates;

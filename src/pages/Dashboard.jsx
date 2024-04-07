@@ -312,7 +312,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <section className="flex h-rest max-w-[1400px] mx-auto bg-chatBg ">
+      <section className="flex max-w-[1400px] mx-auto bg-chatBg ">
         {/* {openNewChatBox && <NewChat changeState={setOpenNewChatBox} />} */}
 
         {newGrpPanel && (

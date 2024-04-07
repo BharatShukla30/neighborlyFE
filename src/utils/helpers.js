@@ -10,17 +10,17 @@ const userHasCoordinates = (user) => {
   return true;
 };
 
-export const formUserCoordinatesObject = (locationDetails) => {
+export const formUserCoordinatesObject = (locationDetails, responseCoordinates) => {
   const body = {};
   if (locationDetails.userLocation) {
     body.current_coordinates = {
       type: "Point",
-      coordinates: locationDetails.userLocation,
+      coordinates: responseCoordinates,
     };
   } else if (locationDetails.cityLocation) {
     body.city = {
       type: "Point",
-      coordinates: locationDetails.cityLocation,
+      coordinates: responseCoordinates,
     };
   }
   return body;

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import svgImage from "../assets/signup.svg"
 import { useDispatch, useSelector } from "react-redux"
 import { registerUser } from "../redux/actions/authActions"
 import { useNavigate } from "react-router-dom"
@@ -10,7 +9,7 @@ const SignUp = ({ setSignin }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { error, user, isAuthenticated } = useSelector((state) => state.auth)
+  const { error, isAuthenticated } = useSelector((state) => state.auth)
 
   useEffect(() => {
     if (isAuthenticated) {

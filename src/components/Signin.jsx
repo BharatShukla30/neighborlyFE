@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import userHasCoordinates from "../utils/helpers";
 
 const SignIn = ({ setSignin }) => {
   const dispatch = useDispatch();
@@ -37,13 +38,10 @@ const SignIn = ({ setSignin }) => {
         const { payload } = result;
         if (payload?.success) {
           //Check if user coordinates are not set
-          if (
-            payload?.user?.current_coordinates?.coordinates[0] === 0 &&
-            payload?.user?.current_coordinates?.coordinates[1] === 0
-          ) {
-            navigate("/location");
-          } else {
+          if (userHasCoordinates(payload?.user)) {
             navigate("/dashboard");
+          } else {
+            navigate("/location");
           }
         }
       })

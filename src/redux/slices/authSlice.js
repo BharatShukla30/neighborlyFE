@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loadUser, loginUser, logoutUser, registerUser } from "../actions/authActions";
+import { loadUser, loginUser, logoutUser, registerUser, updateUserLocation } from "../actions/authActions";
 
 const authSlice = createSlice({
     name: "auth",
@@ -50,6 +50,19 @@ const authSlice = createSlice({
             state.user = null;
             state.isAuthenticated = false;
             state.error = action.payload;
+        })
+
+        //Update User Location
+        .addCase(updateUserLocation.pending, (state, action) => {
+            console.log(action)
+            state.loading = true;
+        })
+        .addCase(updateUserLocation.fulfilled, (state, action) => {
+            console.log(action)
+            state.loading = false;
+            state.user = {...state.user, ...action.payload.locationDetails};
+            state.isAuthenticated = true;
+            state.error = null;
         })
 
         //Load User

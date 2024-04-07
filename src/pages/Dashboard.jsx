@@ -7,14 +7,13 @@ import {
   createGroup,
   getUserGroups,
   fetchGroupMessages,
-  makeGroupPermanent,
   addUser,
   fetchGroupDetails,
 } from "../redux/actions/groupActions";
 import { getChatMessages } from "../redux/actions/chatActions";
 import { IoLocationSharp } from "react-icons/io5";
 import { GoThumbsup, GoThumbsdown } from "react-icons/go";
-import { FaCamera, FaHamburger, FaPlus } from "react-icons/fa";
+import { FaCamera, FaPlus } from "react-icons/fa";
 import { HiBellAlert } from "react-icons/hi2";
 import { FaCircleUser } from "react-icons/fa6";
 import { IoIosAttach } from "react-icons/io";
@@ -26,6 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import GroupDetails from "../components/GroupDetails";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
+import userHasCoordinates from "../utils/helpers";
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
@@ -36,14 +36,6 @@ const Dashboard = () => {
   let coords = useSelector((state) => state.auth.user?.current_coordinates);
   let { nearGroup } = useSelector((state) => state.groups.nearbyGrps);
   let user = useSelector((state) => state.auth.user);
-  //Check if user coordinates are not set
-
-  if (
-    user?.current_coordinates?.coordinates[0] === 0 &&
-    user?.current_coordinates?.coordinates[1] === 0
-  ) {
-    navigate("/location");
-  }
 
   //  ----------------------------State-----------------------------
   const [newGrpPanel, setNewGrpPanel] = useState(false);
@@ -108,6 +100,14 @@ const Dashboard = () => {
   };
 
   // ----------------------------UseEffect-----------------------------
+
+  useEffect(() => {
+    //Check if user coordinates are not set
+    console.log("in useEffect", user);
+    if (!userHasCoordinates(user)) {
+      navigate("/location");
+    }
+  }, [user]);
 
   useEffect(() => {
     dispatch(getUserGroups());

@@ -1,38 +1,63 @@
-import { useNavigate } from "react-router-dom"
-import {useSelector} from "react-redux"
-import explore from "../assets/explore.png"
-import current from "../assets/current.png"
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import explore from "../assets/explore.png";
+import current from "../assets/current.png";
+import { updateUserLocation } from "../redux/actions/authActions";
 
 function Location() {
-  const navigate = useNavigate()
-  const {isAuthenticated} = useSelector((state) => state.auth) 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const successLocationHandler = (position) => {
+    console.log(position);
+    const locationDetails = {
+      userLocation: [position.coords.latitude, position.coords.longitude],
+      // userLocation: [0, 0],
+    };
+    dispatch(updateUserLocation(locationDetails)).then((result) => {
+      console.log(result);
+      if (result?.payload?.success) {
+        navigate("/dashboard");
+      }
+    });
+  };
+
+  const errorLocationHandler = (error) => {
+    console.log(error);
+  };
+
   const currentCityHandler = () => {
     try {
       //update the user's location here
+      if (navigator?.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          successLocationHandler,
+          errorLocationHandler
+        );
+      }
 
-      navigate("/dashboard")
+      // navigate("/dashboard")
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
 
   const chooseCityHandler = () => {
     try {
       //update the user's location here
 
-      navigate("/dashboard")
+      navigate("/dashboard");
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
 
-  return (
-    
-    isAuthenticated ? (
+  return isAuthenticated ? (
     <div className="w-screen ">
       <div className="max-w-2xl mx-auto md:mt-20 mt-16">
         <h1 className="font-bold text-zinc-700 text-4xl py-2 mb-4 ms-4 md:ms-0">
-          Start exploring from here
+          Start exploring from
         </h1>
         <div className="flex flex-col md:flex-row items-center gap-6 justify-center">
           <div className=" bg-white rounded-lg shadow-lg overflow-hidden max-w-lg w-full transition-all duration-500 ease-in-out transform hover:scale-105">
@@ -48,7 +73,7 @@ function Location() {
                   onClick={currentCityHandler}
                   className="outline-none focus:outline-none"
                 >
-                  Current City
+                  My Current Location
                 </button>
               </h2>
             </div>
@@ -66,7 +91,7 @@ function Location() {
                   onClick={chooseCityHandler}
                   className="outline-none focus:outline-none"
                 >
-                  Choose City
+                  City of Choice
                 </button>
               </h2>
             </div>
@@ -74,14 +99,9 @@ function Location() {
         </div>
       </div>
     </div>
-  ):(
+  ) : (
     navigate("/")
-  )
-  
-  
-  )
-
+  );
 }
 
-
-export default Location
+export default Location;

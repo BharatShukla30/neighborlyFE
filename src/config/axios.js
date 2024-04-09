@@ -1,9 +1,7 @@
 import axios from "axios";
 
-const axiosInstance = axios.create({
-    //Uncomment the local host for local testing purposes
- 
-    baseURL: "http://localhost:5000",
+const axiosInstance = axios.create({ 
+    baseURL: import.meta.env.VITE_REACT_APP_API_URL,
     withCredentials: true
 });
 

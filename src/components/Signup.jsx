@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import svgImage from "../assets/signup.svg"
 import { useDispatch, useSelector } from "react-redux"
 import { registerUser } from "../redux/actions/authActions"
 import { useNavigate } from "react-router-dom"
@@ -10,7 +9,7 @@ const SignUp = ({ setSignin }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { error, user, isAuthenticated } = useSelector((state) => state.auth)
+  const { error, isAuthenticated } = useSelector((state) => state.auth)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -19,7 +18,6 @@ const SignUp = ({ setSignin }) => {
   }, [isAuthenticated])
 
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
     confirm_password: "",
@@ -38,11 +36,7 @@ const SignUp = ({ setSignin }) => {
   const handleForm = (e) => {
     e.preventDefault()
     const validationErrors = {}
-    if (!formData.username.trim()) {
-      validationErrors.username = "Username is required"
-    } else if (!/^[a-zA-Z0-9]+$/.test(formData.username)) {
-      validationErrors.username = "Username must be alphanumeric"
-    }
+    
     if (!formData.email.trim()) {
       validationErrors.email = "Email is required"
     } else if (
@@ -50,6 +44,7 @@ const SignUp = ({ setSignin }) => {
     ) {
       validationErrors.email = "Invalid email format"
     }
+    
     if (!formData.password.trim()) {
       validationErrors.password = "Password is required"
     } else if (formData.password.trim().length < 8) {
@@ -84,13 +79,13 @@ const SignUp = ({ setSignin }) => {
     <section className="h-full w-full ">
       <div className=" ">
         <div className="h-full w-full flex my-auto items-center justify-center ">
-          <div className=" md:bg-white   md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] h-[650px] md:w-[500px]">
+          <div className=" md:bg-white md:bg-opacity-50 md:backdrop-blur-xl md:rounded md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
             <div className="flex gap-4 items-baseline ">
               <button className=" leading-tight " onClick={() => setSignin(1)}>
                 Login
               </button>
               <button
-                className=" font-bold leading-tight   text-cblue text-2xl"
+                className=" font-bold leading-tight text-cblue text-2xl"
                 onClick={() => setSignin(0)}
               >
                 Sign up
@@ -128,32 +123,7 @@ const SignUp = ({ setSignin }) => {
                     </div>
                   </div>
                 )}
-            
-                <div>
-                  <label
-                    htmlFor="name"
-                    className=" font-medium text-sm text-gray-900"
-                  >
-                    {" "}
-                    Username{" "}
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      type="text"
-                      name="username"
-                      placeholder="Username"
-                      id="name"
-                      required
-                      onChange={handleChange}
-                    ></input>
-                    {errors.username && (
-                      <div className="text-red-700 ps-2">
-                        *{errors.username}
-                      </div>
-                    )}
-                  </div>
-                </div>
+
                 <div>
                   <label
                     htmlFor="email"

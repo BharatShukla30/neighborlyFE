@@ -25,8 +25,7 @@ import { io } from "socket.io-client";
 
 
 const Dashboard = () => {
-  // const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
-  const socketServer = "http://localhost:3001"
+  const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
   const socket = io(socketServer);
   const navigate = useNavigate();
 
@@ -90,7 +89,7 @@ const Dashboard = () => {
 
   const leaveRoom = () => {
     console.log("leave-room");
-    if (user.username && activeChat?.groupId) {
+    if (user.username && activeChat?.group_id) {
       socket.emit("leave-room", {
         username: user.username,
         group_id: activeChat.group_id,
@@ -129,11 +128,8 @@ const Dashboard = () => {
         setGroupDetails(result.payload);
       });
       dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
-        console.log(result.payload);
         setMessages(
-          [...result.payload].sort(
-            (a, b) => new Date(a.sent_at) - new Date(b.sent_at)
-          )
+          [...result.payload]
         );
       });
       joinRoom();
@@ -145,14 +141,12 @@ const Dashboard = () => {
       dispatch(getChatMessages({ groupId: activeChat.group_id, page: 1 })).then(
         (result) => {
           setMessages(
-            [...result.payload].sort(
-              (a, b) => new Date(a.sent_at) - new Date(b.sent_at)
-            )
+            [...result.payload]
           );
         }
       );
     }
-  }, [activeChat, dispatch]);
+  }, [activeChat]);
 
   useEffect(() => {
     chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -160,8 +154,10 @@ const Dashboard = () => {
 
   useMemo(() => {
     socket.on("receive_message", (data) => {
-      console.log("Received message : " + data);
-      setMessages((list) => [...list, data]);
+      console.log("Received message : ", data);
+      if (data.senderName !== user.username) {
+        setMessages((list) => [data, ...list]);
+      }
     });
     return () => {
       socket.off("receive_message");
@@ -177,12 +173,12 @@ const Dashboard = () => {
           group_id: activeChat.group_id,
           senderName: user.username,
           msg: message,
-          time: new Date(Date.now()).toISOString(),
+          sent_at: new Date(),
           votes: 0,
         };
         socket.emit("send-message", messageData);
-        console.log(messageData);
-        setMessages((list) => [...list, messageData]);
+        // console.log(messageData);
+        setMessages((list) => [messageData, ...list]);
         setNewMessage("");
       }
       e.target.value = "";
@@ -206,10 +202,10 @@ const Dashboard = () => {
         group_id: activeChat.group_id,
         senderName: user.username,
         msg: newMessage,
-        time: new Date(Date.now()).toISOString(),
+        sent_at: new Date()
       };
       // socket.emit("send-message", messageData);
-      setMessages((list) => [...list, messageData]);
+      setMessages((list) => [messageData, ...list]);
       setNewMessage("");
     }
     e.target.value = "";
@@ -330,14 +326,14 @@ const Dashboard = () => {
                   </AnimatePresence>
 
                   <div className="flex flex-col w-full">
-                    {messages?.map((msg, index) => {
+                    {messages?.slice().reverse().map((msg, index) => {
                       const isLastMessage = messages.length - 1 === index;
                       return (
                         <div
                           className={`flex ${
                             msg.senderName == user?.username
-                              ? "flex-row"
-                              : "flex-row-reverse"
+                              ? "flex-row-reverse"
+                              : "flex-row"
                           } gap-2.5 my-4  w-full  `}
                           key={index}
                           ref={isLastMessage ? chatRef : null}

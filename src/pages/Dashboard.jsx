@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BsPeople, BsSend } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,10 +21,13 @@ import userHasCoordinates, { getUserCoordinates } from "../utils/helpers";
 import mainDashboard from "../assets/mainDashboard.png";
 import CreateGroupPopup from "../components/CreateGroupPopup";
 import GroupsListSidebar from "../components/GroupsListSidebar";
+import { io } from "socket.io-client";
+
 
 const Dashboard = () => {
   // const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
-  // const socket = io(socketServer);
+  const socketServer = "http://localhost:3001"
+  const socket = io(socketServer);
   const navigate = useNavigate();
 
   // ----------------------------Selector-----------------------------
@@ -50,7 +53,7 @@ const Dashboard = () => {
 
   let groups = useSelector((state) => state.groups.grps);
   let [activeChat, setActiveChat] = useState({
-    groupId: groups[0]?.group_id,
+    group_id: groups[0]?.group_id,
     group_name: groups[0]?.group_name,
   });
   let [messages, setMessages] = useState([]);
@@ -76,22 +79,23 @@ const Dashboard = () => {
   // ----------------------------socket-----------------------------
 
   const joinRoom = () => {
-    // if (user.username && activeChat?.groupId) {
-    //   socket.emit("join-room", {
-    //     username: user.username,
-    //     group_id: activeChat.groupId,
-    //   });
-    // }
+    console.log("Joining..");
+    if (user.username && activeChat?.group_id) {
+      socket.emit("join-room", {
+        username: user.username,
+        group_id: activeChat.group_id,
+      });
+    }
   };
 
   const leaveRoom = () => {
-    // console.log("leave-room");
-    // if (user.username && activeChat?.groupId) {
-    //   socket.emit("leave-room", {
-    //     username: user.username,
-    //     group_id: activeChat.groupId,
-    //   });
-    // }
+    console.log("leave-room");
+    if (user.username && activeChat?.groupId) {
+      socket.emit("leave-room", {
+        username: user.username,
+        group_id: activeChat.group_id,
+      });
+    }
   };
 
   // ----------------------------UseEffect-----------------------------
@@ -125,6 +129,7 @@ const Dashboard = () => {
         setGroupDetails(result.payload);
       });
       dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
+        console.log(result.payload);
         setMessages(
           [...result.payload].sort(
             (a, b) => new Date(a.sent_at) - new Date(b.sent_at)
@@ -153,34 +158,35 @@ const Dashboard = () => {
     chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
-  // useMemo(() => {
-  //   socket.on("receive_message", (data) => {
-  //     console.log(data);
-  //     setMessages((list) => [...list, data]);
-  //   });
-  //   return () => {
-  //     socket.off("receive_message");
-  //   };
-  // }, [socket]);
+  useMemo(() => {
+    socket.on("receive_message", (data) => {
+      console.log("Received message : " + data);
+      setMessages((list) => [...list, data]);
+    });
+    return () => {
+      socket.off("receive_message");
+    };
+  }, [socket]);
 
   const handleEnterKey = (e) => {
-    // if (e.keyCode === 13 && !e.shiftKey) {
-    //   e.preventDefault();
-    //   const message = e.target.value;
-    //   if (message !== "") {
-    //     const messageData = {
-    //       group_id: activeChat.group_id,
-    //       senderName: user.username,
-    //       msg: message,
-    //       time: new Date(Date.now()).toISOString(),
-    //       votes: 0,
-    //     };
-    //     socket.emit("send-message", messageData);
-    //     setMessages((list) => [...list, messageData]);
-    //     setNewMessage("");
-    //   }
-    //   e.target.value = "";
-    // }
+    if (e.keyCode === 13 && !e.shiftKey) {
+      e.preventDefault();
+      const message = e.target.value;
+      if (message !== "") {
+        const messageData = {
+          group_id: activeChat.group_id,
+          senderName: user.username,
+          msg: message,
+          time: new Date(Date.now()).toISOString(),
+          votes: 0,
+        };
+        socket.emit("send-message", messageData);
+        console.log(messageData);
+        setMessages((list) => [...list, messageData]);
+        setNewMessage("");
+      }
+      e.target.value = "";
+    }
   };
 
   // TODO: remove this
@@ -193,20 +199,20 @@ const Dashboard = () => {
   };
 
   const handleMessageSubmit = (e) => {
-    // e.preventDefault();
-    // console.log(newMessage);
-    // if (newMessage) {
-    //   const messageData = {
-    //     group_id: activeChat.group_id,
-    //     senderName: user.username,
-    //     msg: newMessage,
-    //     time: new Date(Date.now()).toISOString(),
-    //   };
-    //   socket.emit("send-message", messageData);
-    //   setMessages((list) => [...list, messageData]);
-    //   setNewMessage("");
-    // }
-    // e.target.value = "";
+    e.preventDefault();
+    console.log(newMessage);
+    if (newMessage) {
+      const messageData = {
+        group_id: activeChat.group_id,
+        senderName: user.username,
+        msg: newMessage,
+        time: new Date(Date.now()).toISOString(),
+      };
+      // socket.emit("send-message", messageData);
+      setMessages((list) => [...list, messageData]);
+      setNewMessage("");
+    }
+    e.target.value = "";
   };
 
   const HandleSearch = (value) => {

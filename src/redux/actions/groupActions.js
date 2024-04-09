@@ -50,6 +50,7 @@ export const fetchGroupMessages = createAsyncThunk(
         `/group/fetch-group-messages/${groupId}?page=1&limit=5`
       );
       const response = await request.data;
+      // console.log(response);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

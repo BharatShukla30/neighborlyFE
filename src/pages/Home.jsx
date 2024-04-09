@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import HeroSection from "../components/HeroSection";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -14,9 +15,10 @@ const Home = () => {
   }, [isAuthenticated]);
 
   return (
-    <div className="" >
+    <>
       <HeroSection />
-    </div>
+      {!isAuthenticated && <Footer />}
+    </>
   );
 };
 

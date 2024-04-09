@@ -53,9 +53,9 @@ const SignIn = ({ setSignin }) => {
   };
 
   return (
-    <section className="h-full   ">
+    <section className="h-[500px]">
       <div className="h-full">
-        <div className=" w-full flex my-auto items-center justify-center ">
+        <div className=" w-full h-full flex my-auto items-center justify-center ">
           <div className="md:bg-white h-full md:bg-opacity-50  md:backdrop-blur-2xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
             <div className="flex gap-4 items-baseline ">
               <button
@@ -81,7 +81,7 @@ const SignIn = ({ setSignin }) => {
                 Create a free account
               </a>
             </p> */}
-            <form onSubmit={handleForm} className="mt-8">
+            <form onSubmit={handleForm} className="mt-16">
               <div className="space-y-6">
                 {error && (
                   <div

@@ -18,21 +18,18 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-[100vh] bg-mainBg">
       <BrowserRouter>
         <Header />
-        <div className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-            <Route path="profile" element={<Profile />} />
-            <Route path="location" element={<Location />} />
-            <Route path="*" element={<Error404Boundary />} />
-          </Routes>
-        </div>
-        <Footer />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+          <Route path="profile" element={<Profile />} />
+          <Route path="location" element={<Location />} />
+          <Route path="*" element={<Error404Boundary />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );

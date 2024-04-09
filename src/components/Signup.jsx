@@ -79,13 +79,13 @@ const SignUp = ({ setSignin }) => {
     <section className="h-full w-full ">
       <div className=" ">
         <div className="h-full w-full flex my-auto items-center justify-center ">
-          <div className=" md:bg-white   md:bg-opacity-50  md:backdrop-blur-xl  md:rounded  md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] h-[650px] md:w-[500px]">
+          <div className=" md:bg-white md:bg-opacity-50 md:backdrop-blur-xl md:rounded md:shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] md:p-16  w-[350px] md:w-[500px]">
             <div className="flex gap-4 items-baseline ">
               <button className=" leading-tight " onClick={() => setSignin(1)}>
                 Login
               </button>
               <button
-                className=" font-bold leading-tight   text-cblue text-2xl"
+                className=" font-bold leading-tight text-cblue text-2xl"
                 onClick={() => setSignin(0)}
               >
                 Sign up

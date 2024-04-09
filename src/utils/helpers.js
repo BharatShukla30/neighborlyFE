@@ -29,6 +29,19 @@ export const formUserCoordinatesObject = (
   return body;
 };
 
+export const getUserCoordinates = (user) => {
+  if (
+    user?.current_coordinates?.coordinates[0] === 0 &&
+    user?.current_coordinates?.coordinates[1] === 0
+  ) {
+    return [user?.city?.coordinates[0], user?.city?.coordinates[1]];
+  }
+  return [
+    user?.current_coordinates?.coordinates[0],
+    user?.current_coordinates?.coordinates[1],
+  ];
+};
+
 export const cityMapping = {
   delhi: {
     label: "Delhi",

@@ -74,8 +74,13 @@ function Location() {
   };
 
   return isAuthenticated ? (
-    <div className="w-screen ">
-      <div className="max-w-2xl mx-auto md:mt-20 mt-16">
+    <div
+      className={`"w-screen h-[85vh] ${
+        isAuthenticated ? "mr-12 ml-12 mb-12" : ""
+      }"`}
+      style={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)" }}
+    >
+      <div className="max-w-2xl mx-auto mt-24">
         <h1 className="font-bold text-zinc-700 text-4xl py-2 mb-4 ms-4 md:ms-0">
           Start exploring from
         </h1>

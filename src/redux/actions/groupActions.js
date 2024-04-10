@@ -135,9 +135,9 @@ export const makeGroupPermanent = createAsyncThunk(
 
 export const fetchNearbyUsers = createAsyncThunk(
   "group/fetch-nearby-users",
-  async (_, { rejectWithValue }) => {
+  async (body, { rejectWithValue }) => {
     try {
-      const request = await axiosInstance.get("/group/fetch-nearby-users");
+      const request = await axiosInstance.get(`/group/fetch-nearby-users?latitude=${body?.latitude}&longitude=${body?.longitude}&karma_need=${body?.karma}`);
       const response = await request.data;
       console.log("fetch ", response);
       return response;

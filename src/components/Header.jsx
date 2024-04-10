@@ -97,7 +97,7 @@ const Header = () => {
                 setMenuOpen(!menuOpen);
               }}
             >
-              <RxAvatar size={40} />
+              <img src={user?.picture} alt="Profile Image" />
             </button>
           </>
         )}

@@ -158,7 +158,6 @@ export const checkGroupNameUniqueness = createAsyncThunk(
       );
       const response = await request.data;
       response.groupName = reqBody.name;
-      console.log("Response => ", response);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

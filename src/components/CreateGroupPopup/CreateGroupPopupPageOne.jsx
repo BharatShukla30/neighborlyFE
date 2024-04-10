@@ -51,6 +51,7 @@ const CreateGroupPopupPageOne = (props) => {
     };
     handleGroupCreationChange(payload);
   };
+  console.log("groupStatus => ", groupStatus);
   return (
     <>
       <h1 className="text-2xl mb-4 text-cblue font-bold">Create New Group</h1>
@@ -86,7 +87,7 @@ const CreateGroupPopupPageOne = (props) => {
               <label
                 htmlFor="name"
                 className={`text-sm font-thin ${
-                  groupStatus.error ? "text-red-500" : "text-gray-600"
+                  groupStatus.success ? "text-gray-600" : "text-red-500"
                 }`}
               >
                 Group Name<abbr className="text-red-500">*</abbr>
@@ -96,7 +97,7 @@ const CreateGroupPopupPageOne = (props) => {
                 name="name"
                 id="name"
                 className={`ps-2 w-full py-1 border ${
-                  groupStatus.error ? "border-red-500" : "border-cblue"
+                  groupStatus.success ? "border-cblue" : "border-red-500"
                 } rounded-md mb-2`}
                 onChange={handleGroupNameChange}
                 value={groupName}
@@ -104,11 +105,15 @@ const CreateGroupPopupPageOne = (props) => {
                 required
               />
               <div className="absolute top-7 right-2">
-                {groupStatus?.loading && <LoadingAnimationTwo />}
-                {groupStatus?.success &&
-                  !groupStatus?.loading &&
-                  groupStatus?.groupName && <p className="text-green-600">✓</p>}
-                {groupStatus.error && <p className="text-red-600">✕</p>}
+                {groupStatus?.loading ? (
+                  <LoadingAnimationTwo />
+                ) : groupStatus?.success && groupStatus?.groupName ? (
+                  <p className="text-green-600">✓</p>
+                ) : !groupStatus?.success || groupStatus?.error ? (
+                  <p className="text-red-600">✕</p>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
             <label
@@ -212,8 +217,10 @@ const CreateGroupPopupPageOne = (props) => {
           <div className="flex justify-end gap-4 text-sm mt-4">
             <button
               type="submit"
-              className="bg-cblue px-2 rounded-md py-[0.2rem] text-sm text-white"
-              disabled={groupStatus.error}
+              className={`bg-cblue px-2 rounded-md py-[0.2rem] text-sm text-white ${
+                groupStatus?.error || !groupStatus?.success ? "opacity-25" : ""
+              }`}
+              disabled={groupStatus?.error || !groupStatus?.success}
             >
               Next
             </button>

@@ -40,7 +40,7 @@ const NotificationPanel = (props) => {
           return (
             <li key={notificationId}>
               <div className="notification-card flex border-b-2 p-2 items-center">
-                <div className="notification-image rounded-full w-1/6">
+                <div className="notification-image rounded-full w-1/6 mx-auto">
                   <img
                     src={userImage}
                     className="h-8 w-8 rounded-full"

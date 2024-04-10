@@ -45,15 +45,16 @@ const CreateGroupPopupPageTwo = (props) => {
         ) : (
           <div className="h-[80%] flex gap-4 mt-2 mb-16 pl-4 flex-wrap min-h-[13rem] overflow-y-scroll">
             {nearByUsersList?.map((userObject) => {
-              const { userId, username } = userObject.user;
+              const { userId, karma } = userObject.user;
               return (
                 <div
                   key={userId}
                   className="group-item flex flex-col items-center w-[6rem]"
                 >
-                  <RxAvatar size={40} />
+                  {/* <RxAvatar size={40} /> */}
+                  <img src={"https://source.boringavatars.com/"} alt="avatar" />
                   <p className="text-wrap break-all text-center w-[5rem] text-overflow-ellipses-2">
-                    {username}
+                    {karma}
                   </p>
                 </div>
               );

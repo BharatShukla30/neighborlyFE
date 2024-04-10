@@ -60,12 +60,21 @@ const groupSlice = createSlice({
       })
       .addCase(checkGroupNameUniqueness.fulfilled, (state, action) => {
         state.uniqueGroup.loading = false;
-        state.uniqueGroup = { ...state.uniqueGroup, ...action.payload };
+        state.uniqueGroup = {
+          ...state.uniqueGroup,
+          ...action.payload,
+          error: false
+        };
         state.error = null;
       })
       .addCase(checkGroupNameUniqueness.rejected, (state, action) => {
         state.uniqueGroup.loading = false;
-        state.uniqueGroup = { ...state.uniqueGroup, ...action.payload };
+        state.uniqueGroup = {
+          ...state.uniqueGroup,
+          ...action.payload,
+          success: false,
+          error: true,
+        };
       })
 
       //---------------------------------Fetch Nearby Users---------------------------------

@@ -29,7 +29,9 @@ const CreateGroupPopupPageTwo = (props) => {
   return (
     <div className="h-full">
       <form className="h-full relative" onSubmit={handleSubmit}>
-        <h1>Found {nearByUsersList.length} users near you</h1>
+        <h1 className="text-cblue">
+          Found <u>{nearByUsersList.length}</u> users near you
+        </h1>
         {nearByUsersList?.length === 0 ? (
           <div>
             <img
@@ -41,16 +43,18 @@ const CreateGroupPopupPageTwo = (props) => {
             />
           </div>
         ) : (
-          <div className="h-full flex gap-4 mt-2 flex-wrap h-[13rem] overflow-y-scroll">
+          <div className="h-[80%] flex gap-4 mt-2 mb-16 pl-4 flex-wrap min-h-[13rem] overflow-y-scroll">
             {nearByUsersList?.map((userObject) => {
               const { userId, username } = userObject.user;
               return (
                 <div
                   key={userId}
-                  className="group-item flex flex-col items-center "
+                  className="group-item flex flex-col items-center w-[6rem]"
                 >
                   <RxAvatar size={40} />
-                  {username}
+                  <p className="text-wrap break-all text-center w-[5rem] text-overflow-ellipses-2">
+                    {username}
+                  </p>
                 </div>
               );
             })}

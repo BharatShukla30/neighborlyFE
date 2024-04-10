@@ -67,7 +67,7 @@ const CreateGroupPopup = (props) => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
-      <div className="bg-white rounded-md p-5 min-w-[25rem] min-h-[18rem] ">
+      <div className="bg-white rounded-md p-5 min-w-[25rem] min-h-[18rem] max-w-[40rem] max-h-[30rem]">
         {showLoadingAnimation ? (
           // <div>
           <LoadingAnimation />

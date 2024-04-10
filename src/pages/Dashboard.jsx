@@ -19,10 +19,9 @@ import GroupDetails from "../components/GroupDetails";
 import { useNavigate } from "react-router-dom";
 import userHasCoordinates, { getUserCoordinates } from "../utils/helpers";
 import mainDashboard from "../assets/mainDashboard.png";
-import CreateGroupPopup from "../components/CreateGroupPopup";
+import CreateGroupPopup from "../components/CreateGroupPopup/CreateGroupPopup";
 import GroupsListSidebar from "../components/GroupsListSidebar";
 import { io } from "socket.io-client";
-
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
@@ -41,19 +40,21 @@ const Dashboard = () => {
   const [newGroupCreation, setNewGroupCreation] = useState({
     name: "",
     description: "",
-    type: "open",
-    karma: 0,
+    isOpen: true,
+    karma: 1000,
     icon: "",
     latitude: userCoordinates[0],
     longitude: userCoordinates[1],
+    radius: 5,
+    list: [],
   });
 
   const [search, setSearch] = useState("");
 
   let groups = useSelector((state) => state.groups.grps);
   let [activeChat, setActiveChat] = useState({
-    group_id: groups[0]?.group_id,
-    group_name: groups[0]?.group_name,
+    group_id: null,
+    group_name: null,
   });
   let [messages, setMessages] = useState([]);
   let [newMessage, setNewMessage] = useState("");
@@ -128,25 +129,21 @@ const Dashboard = () => {
         setGroupDetails(result.payload);
       });
       dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
-        setMessages(
-          [...result.payload]
-        );
+        setMessages([...result.payload]);
       });
       joinRoom();
     }
   }, [activeChat]);
 
-  useEffect(() => {
-    if (activeChat && activeChat.group_id) {
-      dispatch(getChatMessages({ groupId: activeChat.group_id, page: 1 })).then(
-        (result) => {
-          setMessages(
-            [...result.payload]
-          );
-        }
-      );
-    }
-  }, [activeChat]);
+  // useEffect(() => {
+  //   if (activeChat && activeChat.group_id) {
+  //     dispatch(getChatMessages({ groupId: activeChat.group_id, page: 1 })).then(
+  //       (result) => {
+  //         setMessages([...result.payload]);
+  //       }
+  //     );
+  //   }
+  // }, [activeChat]);
 
   useEffect(() => {
     chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -163,6 +160,8 @@ const Dashboard = () => {
       socket.off("receive_message");
     };
   }, [socket]);
+
+  console.log("groupDetails => ", groupDetails);
 
   const handleEnterKey = (e) => {
     if (e.keyCode === 13 && !e.shiftKey) {
@@ -202,7 +201,7 @@ const Dashboard = () => {
         group_id: activeChat.group_id,
         senderName: user.username,
         msg: newMessage,
-        sent_at: new Date()
+        sent_at: new Date(),
       };
       // socket.emit("send-message", messageData);
       setMessages((list) => [messageData, ...list]);
@@ -240,6 +239,7 @@ const Dashboard = () => {
 
         <GroupsListSidebar
           groups={groups}
+          activeChat={activeChat}
           setActiveChat={setActiveChat}
           setNewGroupPanel={setNewGroupPanel}
         />
@@ -326,90 +326,93 @@ const Dashboard = () => {
                   </AnimatePresence>
 
                   <div className="flex flex-col w-full">
-                    {messages?.slice().reverse().map((msg, index) => {
-                      const isLastMessage = messages.length - 1 === index;
-                      return (
-                        <div
-                          className={`flex ${
-                            msg.senderName == user?.username
-                              ? "flex-row-reverse"
-                              : "flex-row"
-                          } gap-2.5 my-4  w-full  `}
-                          key={index}
-                          ref={isLastMessage ? chatRef : null}
-                        >
-                          <FaCircleUser
-                            className={`w-8 h-8 rounded-full  text-${
-                              colors[hashing(msg.senderName) % colors.length]
-                            }`}
-                          />
-                          <div className="flex flex-col justify-between items-center  leading-1.5 ">
-                            <div
-                              className={`px-[0.2rem] bg-white  border-gray-200 backdrop-blur-md ${
-                                msg.senderName == user?.username
-                                  ? "rounded-tr-xl rounded-br-xl rounded-bl-xl"
-                                  : "rounded-tl-xl rounded-br-xl rounded-bl-xl"
-                              }   backdrop-brightness-125 shadow-md`}
-                            >
-                              <h1
-                                className={`font-bold text-sm ps-2 pe-3 capitalize text-${
-                                  colors[
-                                    hashing(msg.senderName) % colors.length
-                                  ]
-                                }`}
+                    {messages
+                      ?.slice()
+                      .reverse()
+                      .map((msg, index) => {
+                        const isLastMessage = messages.length - 1 === index;
+                        return (
+                          <div
+                            className={`flex ${
+                              msg.senderName == user?.username
+                                ? "flex-row-reverse"
+                                : "flex-row"
+                            } gap-2.5 my-4  w-full  `}
+                            key={index}
+                            ref={isLastMessage ? chatRef : null}
+                          >
+                            <FaCircleUser
+                              className={`w-8 h-8 rounded-full  text-${
+                                colors[hashing(msg.senderName) % colors.length]
+                              }`}
+                            />
+                            <div className="flex flex-col justify-between items-center  leading-1.5 ">
+                              <div
+                                className={`px-[0.2rem] bg-white  border-gray-200 backdrop-blur-md ${
+                                  msg.senderName == user?.username
+                                    ? "rounded-tr-xl rounded-br-xl rounded-bl-xl"
+                                    : "rounded-tl-xl rounded-br-xl rounded-bl-xl"
+                                }   backdrop-brightness-125 shadow-md`}
                               >
-                                {msg.senderName == user?.username
-                                  ? "You"
-                                  : msg.senderName}
-                              </h1>
-                              <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left  ">
-                                {msg.msg}
-                              </p>
-                              <p className="text-[11px] font-thin text-right ps-1">
-                                <span className=" pr-1 text-gray-500 dark:text-gray-400 text-right">
-                                  {new Date(msg.sent_at).toLocaleTimeString(
-                                    "en-US",
-                                    {
-                                      hour: "numeric",
-                                      minute: "numeric",
-                                      hour12: true,
-                                    }
-                                  )}
-                                  {/* {new Date(msg.time).getHours()}:{new Date(msg.time).getMinutes()} */}
-                                </span>
-                              </p>
-                            </div>
-                            <div className="flex justify-end text-gray-700 mt-2 text-sm">
-                              <motion.button
-                                whileTap={{
-                                  scale: 0.9,
-                                  rotate: -45,
-                                  color: "aqua",
-                                }}
-                                onClick={() => handleThumbsDown(msg._id)}
-                                className="mr-2 "
-                              >
-                                <GoThumbsup />
-                              </motion.button>
-                              <motion.button
-                                whileTap={{
-                                  scale: 0.9,
-                                  rotate: 45,
-                                  color: "red",
-                                }}
-                                onClick={() => handleThumbsDown(msg._id)}
-                                className="mr-2 "
-                              >
-                                <GoThumbsdown />
-                              </motion.button>
-                              <p className="text-gray-600 text-sm">
-                                {msg.votes}
-                              </p>
+                                <h1
+                                  className={`font-bold text-sm ps-2 pe-3 capitalize text-${
+                                    colors[
+                                      hashing(msg.senderName) % colors.length
+                                    ]
+                                  }`}
+                                >
+                                  {msg.senderName == user?.username
+                                    ? "You"
+                                    : msg.senderName}
+                                </h1>
+                                <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left  ">
+                                  {msg.msg}
+                                </p>
+                                <p className="text-[11px] font-thin text-right ps-1">
+                                  <span className=" pr-1 text-gray-500 dark:text-gray-400 text-right">
+                                    {new Date(msg.sent_at).toLocaleTimeString(
+                                      "en-US",
+                                      {
+                                        hour: "numeric",
+                                        minute: "numeric",
+                                        hour12: true,
+                                      }
+                                    )}
+                                    {/* {new Date(msg.time).getHours()}:{new Date(msg.time).getMinutes()} */}
+                                  </span>
+                                </p>
+                              </div>
+                              <div className="flex justify-end text-gray-700 mt-2 text-sm">
+                                <motion.button
+                                  whileTap={{
+                                    scale: 0.9,
+                                    rotate: -45,
+                                    color: "aqua",
+                                  }}
+                                  onClick={() => handleThumbsDown(msg._id)}
+                                  className="mr-2 "
+                                >
+                                  <GoThumbsup />
+                                </motion.button>
+                                <motion.button
+                                  whileTap={{
+                                    scale: 0.9,
+                                    rotate: 45,
+                                    color: "red",
+                                  }}
+                                  onClick={() => handleThumbsDown(msg._id)}
+                                  className="mr-2 "
+                                >
+                                  <GoThumbsdown />
+                                </motion.button>
+                                <p className="text-gray-600 text-sm">
+                                  {msg.votes}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </div>
               </div>

@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import CreateGroupPopupPageOne from "./CreateGroupPopupPageOne";
 import CreateGroupPopupPageTwo from "./CreateGroupPopupPageTwo";
+import LoadingAnimation from "../LoadingAnimation/LoadingAnimation";
 // import { FaCamera } from "react-icons/fa";
 
 const CreateGroupPopup = (props) => {
@@ -30,11 +31,12 @@ const CreateGroupPopup = (props) => {
 
   const handleNextButton = (e) => {
     e.preventDefault();
-
+    setShowLoadingAnimation(true);
     dispatch(fetchNearbyUsers(newGroupCreation))
       .then((result) => {
         console.log("Nearby Users => ", result);
-        // setUserAdditionPage(true);
+        setShowLoadingAnimation(false);
+        setUserAdditionPage(true);
       })
       .catch((error) => {
         console.error(error);
@@ -65,13 +67,17 @@ const CreateGroupPopup = (props) => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
-      <div className="bg-white rounded-md p-5">
+      <div className="bg-white rounded-md p-5 min-w-[25rem] min-h-[18rem] ">
         {showLoadingAnimation ? (
-          <></>
-        ) : userAdditionPage ? (
+          // <div>
+          <LoadingAnimation />
+        ) : // </div>
+        userAdditionPage ? (
           <CreateGroupPopupPageTwo
             setNewGroupPanel={setNewGroupPanel}
+            newGroupCreation={newGroupCreation}
             setNewGroupCreation={setNewGroupCreation}
+            handleCancelButton={handleCancelButton}
           />
         ) : (
           <CreateGroupPopupPageOne

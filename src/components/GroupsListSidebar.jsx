@@ -9,13 +9,15 @@ import { addUser, nearestGroup } from "../redux/actions/groupActions";
 import { getUserCoordinates } from "../utils/helpers";
 
 const GroupsListSidebar = (props) => {
-  const { groups, activeChat, setActiveChat, setNewGroupPanel } = props;
+  const { activeChat, setActiveChat, setNewGroupPanel } = props;
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
+  const userGroups = useSelector((state) => state.groups.grps);
   const nearbyGrps = useSelector((state) => state.groups.nearbyGrps);
 
-  const [nearbyGroupPanel, setNearbyGroupPanel] = useState(true);
+  const [nearbyGroupPanel, setNearbyGroupPanel] = useState(false);
+
   const [nearbySlider, setNearbySlider] = useState(50);
 
   const handleNearbyPanel = () => {
@@ -121,7 +123,7 @@ const GroupsListSidebar = (props) => {
       </div>
       <div className="group-list">
         {nearbyGroupPanel === false ? (
-          groups?.map((grp) => {
+          userGroups?.map((grp) => {
             return (
               <div
                 className={`flex justify-between px-6 py-5 border-b-2 ${
@@ -175,8 +177,8 @@ const GroupsListSidebar = (props) => {
                 key={grp.groupId}
                 onClick={() =>
                   setActiveChat({
-                    group_id: grp.group_id,
-                    group_name: grp.groupname,
+                    group_id: grp.groupId,
+                    group_name: grp.groupName,
                   })
                 }
               >

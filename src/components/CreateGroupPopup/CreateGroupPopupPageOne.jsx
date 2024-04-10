@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { checkGroupNameUniqueness } from "../../redux/actions/groupActions";
+import { LoadingAnimationTwo } from "../LoadingAnimation/LoadingAnimation";
 
 /* eslint-disable react/prop-types */
 const CreateGroupPopupPageOne = (props) => {
@@ -9,7 +12,26 @@ const CreateGroupPopupPageOne = (props) => {
     handleGroupCreationChange,
   } = props;
 
+  const dispatch = useDispatch();
+  const [groupName, setGroupName] = useState("");
+  const groupStatus = useSelector((state) => state.groups.uniqueGroup);
   const [groupType, setGroupType] = useState(true);
+
+  useEffect(() => {
+    const reqBody = { name: groupName };
+    const timeoutID = setTimeout(() => {
+      dispatch(checkGroupNameUniqueness(reqBody)).then((response) => {
+        console.log("Response => ", response);
+      });
+    }, 1000);
+
+    return () => clearTimeout(timeoutID);
+  }, [groupName]);
+
+  const handleGroupNameChange = (e) => {
+    e.preventDefault();
+    setGroupName(e.target.value.replace(" ", ""));
+  };
 
   const handleGroupTypeChange = (e) => {
     e.preventDefault();
@@ -60,19 +82,35 @@ const CreateGroupPopupPageOne = (props) => {
             )}
             </div> */}
           <div className="col-start-2 col-end-4 ">
-            <label htmlFor="name" className="text-sm font-thin text-gray-600">
-              Group Name<abbr className="text-red-500">*</abbr>
-            </label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              className="ps-2 w-full py-1 border border-cblue rounded-md mb-2"
-              onChange={handleGroupCreationChange}
-              value={newGroupCreation.name}
-              required
-            />
-
+            <div className="relative">
+              <label
+                htmlFor="name"
+                className={`text-sm font-thin ${
+                  groupStatus.error ? "text-red-500" : "text-gray-600"
+                }`}
+              >
+                Group Name<abbr className="text-red-500">*</abbr>
+              </label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                className={`ps-2 w-full py-1 border ${
+                  groupStatus.error ? "border-red-500" : "border-cblue"
+                } rounded-md mb-2`}
+                onChange={handleGroupNameChange}
+                value={groupName}
+                pattern="[A-Za-z0-9]+"
+                required
+              />
+              <div className="absolute top-7 right-2">
+                {groupStatus?.loading && <LoadingAnimationTwo />}
+                {groupStatus?.success &&
+                  !groupStatus?.loading &&
+                  groupStatus?.groupName && <p className="text-green-600">✓</p>}
+                {groupStatus.error && <p className="text-red-600">✕</p>}
+              </div>
+            </div>
             <label
               htmlFor="description"
               className="text-sm font-thin text-gray-600"
@@ -175,6 +213,7 @@ const CreateGroupPopupPageOne = (props) => {
             <button
               type="submit"
               className="bg-cblue px-2 rounded-md py-[0.2rem] text-sm text-white"
+              disabled={groupStatus.error}
             >
               Next
             </button>

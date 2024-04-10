@@ -137,9 +137,28 @@ export const fetchNearbyUsers = createAsyncThunk(
   "group/fetch-nearby-users",
   async (body, { rejectWithValue }) => {
     try {
-      const request = await axiosInstance.get(`/group/fetch-nearby-users?latitude=${body?.latitude}&longitude=${body?.longitude}&karma_need=${body?.karma}`);
+      const request = await axiosInstance.get(
+        `/group/fetch-nearby-users?latitude=${body?.latitude}&longitude=${body?.longitude}&karma_need=${body?.karma}`
+      );
       const response = await request.data;
       console.log("fetch ", response);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const checkGroupNameUniqueness = createAsyncThunk(
+  "group/is-group-unique",
+  async (reqBody, { rejectWithValue }) => {
+    try {
+      const request = await axiosInstance.get(
+        `/group/is-group-unique?name=${reqBody.name}`
+      );
+      const response = await request.data;
+      response.groupName = reqBody.name;
+      console.log("Response => ", response);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

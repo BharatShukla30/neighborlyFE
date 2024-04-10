@@ -53,8 +53,8 @@ const Dashboard = () => {
 
   let groups = useSelector((state) => state.groups.grps);
   let [activeChat, setActiveChat] = useState({
-    group_id: groups[0]?.group_id,
-    group_name: groups[0]?.group_name,
+    group_id: null,
+    group_name: null,
   });
   let [messages, setMessages] = useState([]);
   let [newMessage, setNewMessage] = useState("");
@@ -135,15 +135,15 @@ const Dashboard = () => {
     }
   }, [activeChat]);
 
-  useEffect(() => {
-    if (activeChat && activeChat.group_id) {
-      dispatch(getChatMessages({ groupId: activeChat.group_id, page: 1 })).then(
-        (result) => {
-          setMessages([...result.payload]);
-        }
-      );
-    }
-  }, [activeChat]);
+  // useEffect(() => {
+  //   if (activeChat && activeChat.group_id) {
+  //     dispatch(getChatMessages({ groupId: activeChat.group_id, page: 1 })).then(
+  //       (result) => {
+  //         setMessages([...result.payload]);
+  //       }
+  //     );
+  //   }
+  // }, [activeChat]);
 
   useEffect(() => {
     chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -160,6 +160,8 @@ const Dashboard = () => {
       socket.off("receive_message");
     };
   }, [socket]);
+
+  console.log("groupDetails => ", groupDetails);
 
   const handleEnterKey = (e) => {
     if (e.keyCode === 13 && !e.shiftKey) {

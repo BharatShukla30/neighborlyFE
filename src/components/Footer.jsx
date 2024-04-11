@@ -5,7 +5,7 @@ const Footer = () => {
 
   return (
     <footer
-      className={` overflow-x-hidden bg-cblue w-full fixed bottom-0 h-30 px-10 pt-4 pb-2${
+      className={`grow-0 shrink-0 basis-auto bg-cblue w-full h-30 px-10 pt-4 pb-2${
         location.pathname === "/dashboard" || location.pathname === "/location"
           ? "hidden"
           : ""

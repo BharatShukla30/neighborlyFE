@@ -57,7 +57,7 @@ const Header = () => {
 
   return (
     <header
-      className={`inset-x-0 z-50  top-0 ${
+      className={`grow-0 shrink-0 basis-auto ${
         location.path == "/location" ? "hidden" : ""
       } ${isAuthenticated ? "pr-12 pl-12" : "pl-12"}`}
     >

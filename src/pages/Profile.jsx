@@ -12,7 +12,8 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   //-----------------------Selectors-----------------------
-  let user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
+  const { grps } = useSelector((state) => state.groups);
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   //-----------------------State-----------------------
@@ -282,7 +283,7 @@ const Profile = () => {
                 <div className="relative">
                   <img
                     className=" object-cover w-40 h-40 p-1 rounded-full ring-2 ring-cblue dark:ring-indigo-500"
-                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhY2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"
+                    src={user?.picture}
                     alt="Bordered avatar"
                   />
                 </div>
@@ -352,25 +353,24 @@ const Profile = () => {
               <div className="item-center mt-4">
                 <h1 className="text-md font-bold mb-2">Groups</h1>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {user.groups.slice(0, 10).map((group) => {
-                    dispatch(fetchGroupDetails(group)).then((grp) => {
-                      // console.log(grp)
-                      return (
-                        <div
-                          className="group-item flex flex-col items-center "
-                          key={group}
-                        >
-                          <img
-                            src={girl}
-                            alt={group.group_name}
-                            className="w-16 h-16 object-cover rounded-full mb-2"
-                          />
-                          <p className="text-sm text-center">
-                            {group.group_name}
-                          </p>
-                        </div>
-                      );
-                    });
+                  {grps.map((group) => {
+                    console.log("group", group);
+                    // console.log(grp)
+                    return (
+                      <div
+                        className="group-item flex flex-col items-center "
+                        key={group?.group_id}
+                      >
+                        <img
+                          src={girl}
+                          alt={group?.group_name}
+                          className="w-16 h-16 object-cover rounded-full mb-2"
+                        />
+                        <p className="text-sm text-center text-black">
+                          {group?.group_name}
+                        </p>
+                      </div>
+                    );
                   })}
                   {user.groups.length > 10 && !showAllGroups && (
                     <div

@@ -36,9 +36,9 @@ const GroupsListSidebar = (props) => {
   };
 
   const selectedButtonStyle =
-    "py-2.5 px-5 text-sm font-medium text-white focus:outline-none bg-cblue rounded-lg border border-cblue hover:bg-cblue hover:text-white focus:z-10  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700";
+    "py-2.5 px-5 text-sm font-medium text-white focus:outline-none bg-cblue rounded-lg border border-cblue hover:bg-cblue hover:text-white focus:z-10";
   const unselectedButtonStyle =
-    "py-2.5 px-5 text-sm font-medium text-cblue focus:outline-none bg-white rounded-lg border border-cblue hover:bg-cblue hover:text-white focus:z-10  dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700";
+    "py-2.5 px-5 text-sm font-medium text-cblue focus:outline-none bg-white rounded-lg border border-cblue hover:bg-cblue hover:text-white focus:z-10";
 
   const handleJoinGroup = (grpId, grpName) => {
     try {

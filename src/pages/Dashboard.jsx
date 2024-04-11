@@ -27,6 +27,7 @@ const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
   const socket = io(socketServer);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // ----------------------------Selector-----------------------------
 
@@ -34,7 +35,7 @@ const Dashboard = () => {
 
   //  ----------------------------State-----------------------------
   const [newGroupPanel, setNewGroupPanel] = useState(false);
-  const dispatch = useDispatch();
+  let groups = useSelector((state) => state.groups.grps);
 
   const userCoordinates = getUserCoordinates(user);
   const [newGroupCreation, setNewGroupCreation] = useState({
@@ -51,29 +52,16 @@ const Dashboard = () => {
 
   const [search, setSearch] = useState("");
 
-  let groups = useSelector((state) => state.groups.grps);
   let [activeChat, setActiveChat] = useState({
     group_id: null,
     group_name: null,
   });
+
   let [messages, setMessages] = useState([]);
   let [newMessage, setNewMessage] = useState("");
   const [groupDetails, setGroupDetails] = useState(null);
   let [grpPanel, setGrpPanel] = useState(false);
-  const colors = [
-    "red-800",
-    "yellow-600",
-    "green-700",
-    "blue-800",
-    "indigo-800",
-    "purple-700",
-    "pink-500",
-    "zinc-700",
-    "red-600",
-    "blue-600",
-    "indigo-400",
-    "pink-900",
-  ];
+
   let chatRef = useRef(null);
 
   // ----------------------------socket-----------------------------
@@ -182,15 +170,6 @@ const Dashboard = () => {
       }
       e.target.value = "";
     }
-  };
-
-  // TODO: remove this
-  const hashing = (name) => {
-    let hash = 0;
-    for (let i = 0; i < name?.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
   };
 
   const handleMessageSubmit = (e) => {
@@ -308,7 +287,7 @@ const Dashboard = () => {
                   <AnimatePresence>
                     {grpPanel && (
                       <motion.div
-                        className="absolute w-4/12 right-0 bg-white rounded-md shadow-lg z-60 h-full"
+                        className="absolute w-4/12 right-0 bg-white z-10 h-full"
                         initial={{ x: "100vw" }}
                         animate={{ x: 0 }}
                         exit={{ x: "100vw" }}
@@ -341,11 +320,7 @@ const Dashboard = () => {
                             key={index}
                             ref={isLastMessage ? chatRef : null}
                           >
-                            <FaCircleUser
-                              className={`w-8 h-8 rounded-full  text-${
-                                colors[hashing(msg.senderName) % colors.length]
-                              }`}
-                            />
+                            <FaCircleUser className={`w-8 h-8 rounded-full`} />
                             <div className="flex flex-col justify-between items-center  leading-1.5 ">
                               <div
                                 className={`px-[0.2rem] bg-white  border-gray-200 backdrop-blur-md ${
@@ -355,11 +330,7 @@ const Dashboard = () => {
                                 }   backdrop-brightness-125 shadow-md`}
                               >
                                 <h1
-                                  className={`font-bold text-sm ps-2 pe-3 capitalize text-${
-                                    colors[
-                                      hashing(msg.senderName) % colors.length
-                                    ]
-                                  }`}
+                                  className={`font-bold text-sm ps-2 pe-3 capitalize`}
                                 >
                                   {msg.senderName == user?.username
                                     ? "You"

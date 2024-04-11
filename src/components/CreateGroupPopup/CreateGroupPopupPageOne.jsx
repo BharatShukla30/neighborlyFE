@@ -10,6 +10,7 @@ const CreateGroupPopupPageOne = (props) => {
     handleCancelButton,
     newGroupCreation,
     handleGroupCreationChange,
+    setNewGroupCreation,
   } = props;
 
   const dispatch = useDispatch();
@@ -51,37 +52,23 @@ const CreateGroupPopupPageOne = (props) => {
     };
     handleGroupCreationChange(payload);
   };
-  console.log("groupStatus => ", groupStatus);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setNewGroupCreation((newGroupCreation) => {
+      return {
+        ...newGroupCreation,
+        name: groupName,
+      };
+    });
+    handleNextButton(e);
+  };
+
   return (
     <>
       <h1 className="text-2xl mb-4 text-cblue font-bold">Create New Group</h1>
-      <form className="max-w-md" onSubmit={handleNextButton}>
+      <form className="max-w-md" onSubmit={submitHandler}>
         <div>
-          {/* <div className="col-span-1 relative">
-            <label
-                htmlFor="grpIcon"
-                className="absolute text-black left-3 top-[10px] "
-            >
-                <FaCamera className="pointer-events-auto" />
-            </label>
-            <input
-                type="file"
-                accept="image/*"
-                id="grpIcon"
-                name="grpIcon"
-                onChange={handleImageChange}
-                className="opacity-5 bg-gray-400 rounded-full border h-10 w-10"
-            />
-            {newGrpCreation.icon ? (
-                <img
-                src={newGrpCreation.icon}
-                alt="preview"
-                className="absolute top-0 left-0 h-10 w-10 rounded-full border"
-                />
-            ) : (
-                <div className="absolute pointer-events-none top-0 opacity-30 bg-gray-400 rounded-full border h-10 w-10"></div>
-            )}
-            </div> */}
           <div className="col-start-2 col-end-4 ">
             <div className="relative">
               <label
@@ -168,31 +155,6 @@ const CreateGroupPopupPageOne = (props) => {
                   >
                     Close
                   </button>
-
-                  {/* <label
-                  htmlFor="type"
-                  className="text-sm font-thin text-gray-600"
-                >
-                  Group Type<abbr className="text-red-500">*</abbr>
-                </label>
-                <label
-                  htmlFor="type"
-                  className="inline-flex items-center p-1 rounded-md cursor-pointer dark:text-gray-100"
-                >
-                  <input
-                    id="type"
-                    type="checkbox"
-                    className="hidden peer"
-                    onChange={handleGroupCreationChange}
-                    value={newGroupCreation.type}
-                  />
-                  <span className="px-2 py-[0.1rem] rounded-l-md dark:bg-cblue peer-checked:dark:bg-gray-600">
-                    Open
-                  </span>
-                  <span className="px-2 py-[0.1rem] rounded-r-md dark:bg-gray-600 peer-checked:dark:bg-cblue">
-                    Close
-                  </span>
-                </label> */}
                 </div>
               </div>
               <div className="flex flex-col w-24">

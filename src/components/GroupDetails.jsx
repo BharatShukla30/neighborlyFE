@@ -64,7 +64,7 @@ const GroupDetails = ({location ,name ,topic,  description , radius , members , 
                         />
                     </div>
                     <div className="">
-                        <p className="font-semibold">{member.user.username}</p>
+                        {/* <p className="font-semibold">{member.user.username}</p> */}
                         <p className="text-sm text-gray-600">{member.status}</p>
                     </div>
                 </div>

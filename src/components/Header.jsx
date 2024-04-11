@@ -90,7 +90,7 @@ const Header = () => {
 
         {isAuthenticated && (
           <>
-            <p className="pr-4">{user?.username}</p>
+            <p className="pr-4 font-bold">{user?.username}</p>
             <button
               ref={avtarRef}
               className="hidden lg:inline-block md:inline-block text-3xl rounded-full cursor-pointer hover:bg-slate-200 hover:shadow-sm hover:text-4xl  hover:opacity-50 transition-all duration-300"
@@ -102,6 +102,7 @@ const Header = () => {
                 src={user?.picture}
                 alt="Profile Image"
                 className="h-10 w-10 rounded-full"
+                loading="lazy"
               />
             </button>
           </>

@@ -39,7 +39,10 @@ export const updateUserLocation = createAsyncThunk(
         locationDetails
       );
       const response = await request.data;
-      response.locationDetails = formUserCoordinatesObject(locationDetails, response.user_coordinates);
+      response.locationDetails = formUserCoordinatesObject(
+        locationDetails,
+        response.user_coordinates
+      );
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

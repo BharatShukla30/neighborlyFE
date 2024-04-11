@@ -1,21 +1,21 @@
-import   { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { RxAvatar } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux"
-import useNavigate from "react-router-dom"
-import { logoutUser } from "../redux/actions/authActions"
+import { useDispatch, useSelector } from "react-redux";
+import useNavigate from "react-router-dom";
+import { logoutUser } from "../redux/actions/authActions";
 
 function Navbar() {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { isAuthenticated } = useSelector((state) => state.auth)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const menuRef = useRef(null)
-  const avtarRef = useRef(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const avtarRef = useRef(null);
 
-  const menuItems = ["Profile", "Sign Out"]
+  const menuItems = ["Profile", "Sign Out"];
 
   const handleClickOutside = (event) => {
     if (
@@ -24,27 +24,28 @@ function Navbar() {
       !menuRef.current.contains(event.target) &&
       !avtarRef.current.contains(event.target)
     ) {
-      setMenuOpen(false)
+      setMenuOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOutside)
-  })
+    document.addEventListener("click", handleClickOutside);
+  });
 
   const handleSignOut = () => {
-    setMenuOpen(false)
-    setMobileMenuOpen(false)
-    dispatch(logoutUser()).then((result) => {
-      if (result.success) {
-        navigate("/signin")
-      }
-    }).catch((err) => {
-      console.log(err)
-      alert.error("An error occurred. Please try again")
-    })
-
-  }
+    setMenuOpen(false);
+    setMobileMenuOpen(false);
+    dispatch(logoutUser())
+      .then((result) => {
+        if (result.success) {
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert.error("An error occurred. Please try again");
+      });
+  };
 
   return (
     <nav
@@ -64,7 +65,7 @@ function Navbar() {
           ref={avtarRef}
           className="hidden lg:inline-block md:inline-block text-3xl rounded-full cursor-pointer hover:bg-slate-200 hover:shadow-sm hover:text-4xl  hover:opacity-50 transition-all duration-300"
           onClick={() => {
-            setMenuOpen(!menuOpen)
+            setMenuOpen(!menuOpen);
           }}
         >
           <RxAvatar />
@@ -73,15 +74,15 @@ function Navbar() {
       {isAuthenticated && menuOpen && (
         <div
           ref={menuRef}
-          className="md:block absolute hidden right-5 bg-gray-100 top-14 z-10 shadow-md border border-gray-300 text-sm rounded-md"
+          className="md:block absolute hidden top-15 right-10 bg-gray-100 z-10 shadow-md border border-gray-300 text-sm rounded-md"
         >
           <ul>
             {/* {menuItems.map((item, idx) => (
                 <li key={idx} className='px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300'>{item}</li>
               ))} */}
-            <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300">
+            {/* <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300">
               Profile
-            </li>
+            </li> */}
             <li
               className="px-12 py-2 cursor-pointer hover:bg-gray-300"
               onClick={handleSignOut}
@@ -107,7 +108,7 @@ function Navbar() {
         </button>
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

@@ -4,14 +4,14 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { RxAvatar } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/actions/authActions";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/websiteName.svg";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/websiteName.png"
+
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,10 +37,12 @@ const Header = () => {
     setMenuOpen(false);
     setMobileMenuOpen(false);
     dispatch(logoutUser()).then((result) => {
-      console.log(result);
-      window.location.href = "/";
+      if (result.success) {
+        navigate("/");
+      }
     });
   };
+
 
   const handleProfile = () => {
     setMenuOpen(false);
@@ -48,30 +50,22 @@ const Header = () => {
     navigate("/profile");
   };
 
-  const handleDashboard = () => {
-    setMenuOpen(false);
-    setMobileMenuOpen(false);
-    navigate("/dashboard");
-  };
-
   return (
-    <header
-      className={`grow-0 shrink-0 basis-auto ${
-        location.path == "/location" ? "hidden" : ""
-      } ${isAuthenticated ? "pr-12 pl-12" : "pl-12"}`}
-    >
+    <header className=" inset-x-0 z-50    fixed top-0">
+
+
       <nav
-        className="flex items-center justify-between py-4"
+        className="flex items-center justify-between p-4 lg:px-8"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
           <a href="/" className="">
-            <span>
+            <span >
               <img src={logo} className="h-10 " />
             </span>
           </a>
         </div>
-        {/* 
+      {/* 
         {!isAuthenticated && (
           
           <div className="flex lg:flex-1 justify-end">
@@ -85,32 +79,26 @@ const Header = () => {
                 </li>
             </ul>
           </div>
-        )} */}
+        )} */
+        }
+        
 
         {isAuthenticated && (
-          <>
-            <p className="pr-4 font-bold">{user?.username}</p>
-            <button
-              ref={avtarRef}
-              className="hidden lg:inline-block md:inline-block text-3xl rounded-full cursor-pointer hover:bg-slate-200 hover:shadow-sm hover:text-4xl  hover:opacity-50 transition-all duration-300"
-              onClick={() => {
-                setMenuOpen(!menuOpen);
-              }}
-            >
-              <img
-                src={user?.picture}
-                alt="Profile Image"
-                className="h-10 w-10 rounded-full"
-                loading="lazy"
-              />
-            </button>
-          </>
+          <div
+            ref={avtarRef}
+            className="hidden lg:inline-block md:inline-block text-3xl rounded-full cursor-pointer hover:bg-slate-200 hover:shadow-sm hover:text-4xl  hover:opacity-50 transition-all duration-300"
+            onClick={() => {
+              setMenuOpen(!menuOpen);
+            }}
+          >
+            <RxAvatar />
+          </div>
         )}
 
         {isAuthenticated && menuOpen && (
           <div
             ref={menuRef}
-            className="md:block w-36 text-right absolute hidden bg-gray-100 z-10 top-16 right-12 shadow-md border border-gray-300 text-sm rounded-md"
+            className="md:block absolute hidden right-5 bg-gray-100 top-14 z-10 shadow-md border border-gray-300 text-sm rounded-md"
           >
             <ul>
               {/* {
@@ -119,23 +107,13 @@ const Header = () => {
                   ))
               } 
             */}
-              {location.pathname == "/dashboard" ? (
-                <li
-                  className="px-6 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
-                  onClick={handleProfile}
-                >
-                  Profile
-                </li>
-              ) : (
-                <li
-                  className="px-6 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
-                  onClick={handleDashboard}
-                >
-                  Dashboard
-                </li>
-              )}
+              <li className="px-12 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+                onClick={handleProfile}
+              >
+                Profile
+              </li>
               <li
-                className="px-6 py-2 cursor-pointer hover:bg-gray-300"
+                className="px-12 py-2 cursor-pointer hover:bg-gray-300"
                 onClick={handleSignOut}
               >
                 Sign Out
@@ -184,19 +162,19 @@ const Header = () => {
           <div className="mt-6 md:flow-root hidden ">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="py-6">
-                <Link
-                  href="/profile"
+                <a
+                  href="#"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Profile
-                </Link>
-                <Link
+                </a>
+                <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   onClick={handleSignOut}
                 >
                   Sign Out
-                </Link>
+                </a>
               </div>
             </div>
           </div>

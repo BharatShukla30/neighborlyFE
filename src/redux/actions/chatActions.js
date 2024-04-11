@@ -17,9 +17,9 @@ export const getUserChats = createAsyncThunk(
 
 export const getChatMessages = createAsyncThunk(
     "chat/messages",
-    async ({groupId, page}, {rejectWithValue}) => {
+    async ({chatId, page}, {rejectWithValue}) => {
         try {
-            const request = await axiosInstance.get(`/group/fetch-group-messages/${groupId}?page=${page}&limit=30`);
+            const request = await axiosInstance.get(`/group/fetch-group-messages/${chatId}?page=${page}&limit=30`);
             const response = await request.data;
             return response;
         }
@@ -28,4 +28,3 @@ export const getChatMessages = createAsyncThunk(
         }
     }
 )
-

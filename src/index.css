@@ -2,24 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-body {
-  overflow-x: hidden;
+/* .blob1{
+  position: absolute;
+  width: 396px;
+  height: 457px;
+  left: 754px;
+  top: 190px;
+  z-index: 1;
+  background: #35EFC2;
+  box-shadow: inset -7px 4px 4px rgba(255, 255, 255, 0.25);
 }
+/*  */
 
 @layer components {
 
-  .h-rest {
-      height: calc(100vh - 200px);
+  .abstract_motion {
+    animation: abstract 10s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite
+    alternate forwards;
+  filter: blur(40px);
+  z-index: -1;
+  background: linear-gradient(
+    47deg,
+    rgb(88, 255, 202) 21%,
+    rgb(118, 248, 255) 67%,
+    rgb(74, 166, 105) 81%
+    );
+    
+    /*  Optional  */
+    /*   box-shadow: inset 50px 50px 17px 0px #ff588b,
+    inset 100px 100px 17px 0px #66319f; */
   }
-  .h-chatWindow {
-      height: calc(100vh - 12.2rem);
+  
+  @keyframes abstract {
+    0% {
+      translate: 40% -25%;
+      border-radius: 60% 40% 30% 70% / 100% 85% 92% 74%;
+    }
+    50% {
+      translate: 0% 13%;
+      border-radius: 20% 71% 47% 70% / 81% 15% 22% 54%;
+      rotate: 41deg;
+      scale: 1.15;
+    }
+    100% {
+      translate: -25% 29%;
+      border-radius: 100% 75% 92% 74% / 60% 80% 30% 70%;
+      rotate: -60deg;
+      scale: 1.05;
   }
-
-  .h-aside{
-      height: calc(100vh - 20rem);
-  }
-
 }
 
+}

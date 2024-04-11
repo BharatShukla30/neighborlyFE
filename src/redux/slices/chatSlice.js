@@ -13,7 +13,7 @@ const chatSlice = createSlice({
     extraReducers: (builder) => {
         builder
         // Fethcing User's Chat List
-        .addCase(getUserChats.pending, (state) => {
+        .addCase(getUserChats.pending, (state, action) => {
             state.loading = true;
             state.chats = [];
             state.error = null;

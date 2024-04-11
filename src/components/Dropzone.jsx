@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
-import {  XMarkIcon } from '@heroicons/react/24/solid'
+import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-function Dropzone() {
+function Dropzone({ className }) {
   const [files, setFiles] = useState([])
   
   const [open, setOpen] = useState(false);
@@ -35,7 +35,6 @@ function Dropzone() {
     maxSize: 1024 * 1000,
     onDrop
   })
-
   
   useEffect(() => {
     // Revoke the data uris to avoid memory leaks
@@ -46,38 +45,42 @@ function Dropzone() {
   
   const removeFile = name => {
     setFiles(files => files.filter(file => file.name !== name))
-    if(files.length === 1){
-      setFiles([])
-      setOpen(false)
-    }
   }
   
 
   const handleSubmit = async e => {
     e.preventDefault()
+     
     setOpen(prev=>!prev)
+
+    // if (!files?.length) return
+
+    // const formData = new FormData()
+    // files.forEach(file => formData.append('file', file))
+    // formData.append('upload_preset', 'friendsbook')
+
+    // const URL = process.env.NEXT_PUBLIC_CLOUDINARY_URL
+    // const data = await fetch(URL, {
+    //   method: 'POST',
+    //   body: formData
+    // }).then(res => res.json())
+
+    // console.log(data)
   }
   
-  const uploadtoS3 = async (files) => {
-    console.log(files)
-    // S3 logic here
-    setTimeout(() => {
-     
-      setFiles([])
-    }, 3000);
-
-  }
  
   const uploadFiles = () => {
     
     setLoading(true)
-    uploadtoS3(files).then(() => {
+    setTimeout(() => {
       setLoading(false)
-      setOpen(false)
-    }).catch((e) => {
-      console.log(e)
-      alert('Error uploading file')
-    })
+      setOpen(prev=>!prev)
+      setFiles([])
+    }, 3000);
+  
+    const formData = new FormData()
+    formData.append('file', files[0])
+
     
   };
 
@@ -99,7 +102,7 @@ function Dropzone() {
    
       </div>
 
-      { (<Transition appear show={open} as={Fragment}>
+      <Transition appear show={open} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
@@ -117,14 +120,7 @@ function Dropzone() {
 
             <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
               {files.map((file) => (
-                <div key={file.name} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => removeFile(file.name)}
-                    className="absolute top-0 right-0 bg-gray-100 outline outline-1 outline-red-400 translate-x-1 -translate-y-1 rounded-full  hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-100"
-                  >
-                    <XMarkIcon className="h-5 w-5 text-red-500" />
-                  </button>
+                <div key={file.name}>
                   <img
                     src={file.preview}
                     alt={file.name}
@@ -155,8 +151,7 @@ function Dropzone() {
             </div>
           </div>
         </Dialog>
-      </Transition>)
-      }
+      </Transition>
 
     </form>
   )

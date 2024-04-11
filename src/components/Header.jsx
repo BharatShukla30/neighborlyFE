@@ -102,6 +102,7 @@ const Header = () => {
                 src={user?.picture}
                 alt="Profile Image"
                 className="h-10 w-10 rounded-full"
+                loading="lazy"
               />
             </button>
           </>

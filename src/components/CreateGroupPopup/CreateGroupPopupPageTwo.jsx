@@ -2,6 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RxAvatar } from "react-icons/rx";
 import { createGroup, getUserGroups } from "../../redux/actions/groupActions";
+import { Tooltip } from "react-tooltip";
 
 const CreateGroupPopupPageTwo = (props) => {
   const {
@@ -43,9 +44,15 @@ const CreateGroupPopupPageTwo = (props) => {
             />
           </div>
         ) : (
-          <div className="h-[80%] flex gap-4 mt-2 mb-16 pl-4 flex-wrap min-h-[13rem] overflow-y-scroll">
+          <div className="h-[80%] flex gap-4 mt-2 mb-16 flex-wrap min-h-[13rem] overflow-y-scroll">
             {nearByUsersList?.map((userObject) => {
               const { userId, userName, picture, karma } = userObject.user;
+              const tooltipContent = (
+                <div className="text-center">
+                  <p>{userName}</p>
+                  <p>Karma: {karma >= 1000 ? `${karma / 1000}K` : karma}</p>
+                </div>
+              );
               return (
                 <div
                   key={userId}
@@ -56,10 +63,13 @@ const CreateGroupPopupPageTwo = (props) => {
                     src={picture}
                     alt="avatar"
                     className="h-16 w-16 rounded-full"
+                    data-tooltip-id={userName}
                   />
-                  {/* <p className="text-wrap break-all text-center w-[5rem] text-overflow-ellipses-2">
-                    K: {karma >= 1000 ? `${karma / 1000}K` : karma}
-                  </p> */}
+                  <Tooltip
+                    id={userName}
+                    place="bottom"
+                    content={tooltipContent}
+                  />
                 </div>
               );
             })}

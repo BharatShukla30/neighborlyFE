@@ -7,7 +7,6 @@ import {
   fetchGroupMessages,
   fetchGroupDetails,
 } from "../redux/actions/groupActions";
-import { getChatMessages } from "../redux/actions/chatActions";
 import { GoThumbsup, GoThumbsdown } from "react-icons/go";
 import { FaPlus } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";

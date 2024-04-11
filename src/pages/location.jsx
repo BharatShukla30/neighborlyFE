@@ -2,12 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import explore from "../assets/explore.png";
 import current from "../assets/current.png";
-import {
-  fetchCitiesList,
-  updateUserLocation,
-} from "../redux/actions/authActions";
+import { updateUserLocation } from "../redux/actions/authActions";
 import ReactCardFlip from "react-card-flip";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ImageBox from "../components/ImageBox";
 import { cityMapping } from "../utils/helpers";
 import LoadingAnimation from "../components/LoadingAnimation/LoadingAnimation";
@@ -20,12 +17,6 @@ function Location() {
   );
   const [cardFlipped, setCardFlipped] = useState(false);
   const [showLoadingAnimation, setShowLoadingAnimation] = useState(false);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(fetchCitiesList());
-    }
-  }, [isAuthenticated]);
 
   const successLocationHandler = (position) => {
     console.log(position);

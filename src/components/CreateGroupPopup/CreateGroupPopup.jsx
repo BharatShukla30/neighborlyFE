@@ -85,6 +85,7 @@ const CreateGroupPopup = (props) => {
             handleCancelButton={handleCancelButton}
             newGroupCreation={newGroupCreation}
             handleGroupCreationChange={handleGroupCreationChange}
+            setNewGroupCreation={setNewGroupCreation}
           />
         )}
       </div>

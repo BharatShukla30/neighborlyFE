@@ -10,6 +10,7 @@ const CreateGroupPopupPageOne = (props) => {
     handleCancelButton,
     newGroupCreation,
     handleGroupCreationChange,
+    setNewGroupCreation
   } = props;
 
   const dispatch = useDispatch();
@@ -31,8 +32,19 @@ const CreateGroupPopupPageOne = (props) => {
   const handleGroupNameChange = (e) => {
     e.preventDefault();
     setGroupName(e.target.value.replace(" ", ""));
+
   };
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setNewGroupCreation((newGroupCreation) => {
+      return {
+       ...newGroupCreation,
+        name: groupName,
+      };
+    })
+    handleNextButton(e);
+  }
   const handleGroupTypeChange = (e) => {
     e.preventDefault();
 
@@ -55,7 +67,7 @@ const CreateGroupPopupPageOne = (props) => {
   return (
     <>
       <h1 className="text-2xl mb-4 text-cblue font-bold">Create New Group</h1>
-      <form className="max-w-md" onSubmit={handleNextButton}>
+      <form className="max-w-md" onSubmit={submitHandler}>
         <div>
           {/* <div className="col-span-1 relative">
             <label

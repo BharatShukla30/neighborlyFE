@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/actions/authActions";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/websiteName.svg";
-import girl from "../assets/girl.jpg";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -39,7 +38,7 @@ const Header = () => {
     setMobileMenuOpen(false);
     dispatch(logoutUser()).then((result) => {
       console.log(result);
-      navigate("/");
+      window.location.href = "/";
     });
   };
 
@@ -57,7 +56,7 @@ const Header = () => {
 
   return (
     <header
-      className={`inset-x-0 z-50  top-0 ${
+      className={`grow-0 shrink-0 basis-auto ${
         location.path == "/location" ? "hidden" : ""
       } ${isAuthenticated ? "pr-12 pl-12" : "pl-12"}`}
     >

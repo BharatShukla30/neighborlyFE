@@ -4,9 +4,8 @@ import store from "./redux/store";
 import "./App.css";
 import Header from "./components/Header";
 import Home from "./pages/Home";
-import Footer from "./components/Footer";
 import Dashboard from "./pages/Dashboard";
-import { loadUser } from "./redux/actions/authActions";
+import { fetchCitiesList, loadUser } from "./redux/actions/authActions";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Error404Boundary from "./pages/404ErrorBoundary";
 import Profile from "./pages/Profile";
@@ -15,6 +14,7 @@ import Location from "./pages/Location";
 function App() {
   React.useEffect(() => {
     store.dispatch(loadUser());
+    store.dispatch(fetchCitiesList());
   }, []);
 
   return (

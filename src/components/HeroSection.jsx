@@ -23,7 +23,7 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative block">
+    <div className="relative block grow shrink-0 basis-auto">
       <div className="absolute inset-0 bg-world bg-no-repeat bg-opacity-5 opacity-25 bg-top bg-cover"></div>
       <div className="max-w-screen-lg mx-auto">
         <div className=" mx-auto pt-8  flex flex-col gap-15 justify-around items-center md:flex-row  ">

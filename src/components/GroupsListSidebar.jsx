@@ -1,25 +1,35 @@
 /* eslint-disable react/prop-types */
-import { FaPlus, FaRunning } from "react-icons/fa";
+import { FaPlus, FaRunning, FaSearchLocation } from "react-icons/fa";
 import { HiBellAlert } from "react-icons/hi2";
-import { IoLocationSharp } from "react-icons/io5";
+import { IoLocationSharp, IoLocate } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import girl from "../assets/girl.jpg";
 import { addUser, nearestGroup } from "../redux/actions/groupActions";
-import { getUserCoordinates } from "../utils/helpers";
+import { cityMapping, getUserCoordinates } from "../utils/helpers";
 import NotificationPanel from "./NotificationPanel/NotificationPanel";
+import { updateUserLocation } from "../redux/actions/authActions";
+import { LoadingAnimationTwo } from "./LoadingAnimation/LoadingAnimation";
+import Modal from "react-modal";
+import ImageBox from "./ImageBox";
+import { useNavigate } from "react-router-dom";
 
 const GroupsListSidebar = (props) => {
   const { activeChat, setActiveChat, setNewGroupPanel } = props;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.user);
   const userGroups = useSelector((state) => state.groups.grps);
   const nearbyGrps = useSelector((state) => state.groups.nearbyGrps);
+  const { availableCities } = useSelector((state) => state.auth);
 
   const [nearbySlider, setNearbySlider] = useState(50);
   const [nearbyGroupPanel, setNearbyGroupPanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const [showLocationOptions, setShowLocationOptions] = useState(false);
+  const [showLoadingAnimation, setShowLoadingAnimation] = useState(false);
+  const [openLocationModal, setOpenLocationModal] = useState(false);
 
   const handleNearbyPanel = () => {
     setNearbyGroupPanel(true);
@@ -33,6 +43,64 @@ const GroupsListSidebar = (props) => {
 
   const handleGroupCreation = () => {
     setNewGroupPanel(true);
+  };
+
+  const successLocationHandler = (position) => {
+    console.log(position);
+    const locationDetails = {
+      userLocation: [position.coords.latitude, position.coords.longitude],
+    };
+    dispatch(updateUserLocation(locationDetails)).then((result) => {
+      console.log(result);
+      if (result?.payload?.success) {
+        dispatch(
+          nearestGroup([position.coords.latitude, position.coords.longitude])
+        );
+      }
+      setShowLoadingAnimation(false);
+    });
+  };
+
+  const errorLocationHandler = (error) => {
+    console.log(error);
+    setShowLoadingAnimation(false);
+  };
+
+  const currentCityHandler = () => {
+    setShowLoadingAnimation(true);
+    try {
+      if (navigator?.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          successLocationHandler,
+          errorLocationHandler
+        );
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const chooseCityHandler = (e) => {
+    e.preventDefault();
+    setOpenLocationModal(true);
+    setShowLocationOptions(false);
+  };
+
+  const selectCityHandler = (cityName) => {
+    console.log("Chosen city: " + cityName);
+    try {
+      const locationDetails = {
+        cityLocation: cityName,
+      };
+      dispatch(updateUserLocation(locationDetails)).then((result) => {
+        console.log(result);
+        if (result?.payload?.success) {
+          navigate("/dashboard");
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const selectedButtonStyle =
@@ -102,9 +170,42 @@ const GroupsListSidebar = (props) => {
                 </div>
               </div>
             </form>
-            <button className="rounded-full bg-[#ffffff75] border-2 border-appTheme hover:border-cblue  p-2">
-              <IoLocationSharp className="text-2xl text-cblue pointer-events-auto" />
-            </button>
+            <div className="relative">
+              <button
+                className="rounded-full bg-[#ffffff75] border-2 border-appTheme hover:border-cblue  p-2"
+                onClick={() => {
+                  setShowLocationOptions(!showLocationOptions);
+                }}
+              >
+                <IoLocationSharp className="text-2xl text-cblue pointer-events-auto" />
+              </button>
+              {showLocationOptions && (
+                <div className="md:block w-56 text-left absolute  hidden bg-gray-100 z-10 shadow-md border border-gray-300 text-sm rounded-md">
+                  <ul>
+                    <li
+                      className="px-2 py-2 flex items-center gap-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+                      onClick={currentCityHandler}
+                    >
+                      {showLoadingAnimation ? (
+                        <LoadingAnimationTwo />
+                      ) : (
+                        <>
+                          <IoLocate />
+                          <p>My Current Location</p>
+                        </>
+                      )}
+                    </li>
+                    <li
+                      className="px-2 py-2 flex items-center gap-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+                      onClick={chooseCityHandler}
+                    >
+                      <FaSearchLocation />
+                      <p>Choose Location</p>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
           <div className="group-selection p-6 border-b-2">
             <div className="flex  gap-x-3 items-center justify-center">
@@ -239,6 +340,46 @@ const GroupsListSidebar = (props) => {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={openLocationModal}
+        onRequestClose={() => setOpenLocationModal(false)}
+        contentLabel="Choose a location"
+        className="flex items-center justify-center outline-none "
+        ariaHideApp={false}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.75)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          },
+          content: {
+            width: "40vw",
+            height: "40vh",
+            margin: "auto",
+            borderRadius: "20px",
+            backgroundColor: "white",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: "2rem",
+          },
+        }}
+      >
+        {availableCities?.map((city) => {
+          const { label, imageSource } = cityMapping[city];
+          return (
+            <ImageBox
+              key={city}
+              label={label}
+              src={imageSource}
+              value={city}
+              selectHandler={selectCityHandler}
+            />
+          );
+        })}
+      </Modal>
     </aside>
   );
 };

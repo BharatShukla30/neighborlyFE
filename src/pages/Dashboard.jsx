@@ -21,6 +21,7 @@ import mainDashboard from "../assets/mainDashboard.png";
 import CreateGroupPopup from "../components/CreateGroupPopup/CreateGroupPopup";
 import GroupsListSidebar from "../components/GroupsListSidebar";
 import { io } from "socket.io-client";
+import chatBg from "../assets/chatBackground.png";
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
@@ -157,10 +158,10 @@ const Dashboard = () => {
       if (message !== "") {
         const messageData = {
           group_id: activeChat.group_id,
-          senderName: user.username,
+          senderName: user?.username,
+          senderPhoto: user?.picture,
           msg: message,
           sent_at: new Date(),
-          votes: 0,
         };
         socket.emit("send-message", messageData);
         // console.log(messageData);
@@ -177,7 +178,8 @@ const Dashboard = () => {
     if (newMessage) {
       const messageData = {
         group_id: activeChat.group_id,
-        senderName: user.username,
+        senderName: user?.username,
+        senderPhoto: user?.picture,
         msg: newMessage,
         sent_at: new Date(),
       };
@@ -279,8 +281,9 @@ const Dashboard = () => {
               {/* Chats Section */}
               <div
                 className={
-                  "bg-mainBg h-[75vh] items-stretch justify-stretch relative"
+                  "chat-background h-[75vh] items-stretch justify-stretch relative"
                 }
+                style={{ backgroundImage: chatBg }}
               >
                 <div className=" h-full overflow-y-scroll px-4">
                   <AnimatePresence>
@@ -319,7 +322,11 @@ const Dashboard = () => {
                             key={index}
                             ref={isLastMessage ? chatRef : null}
                           >
-                            <FaCircleUser className={`w-8 h-8 rounded-full`} />
+                            <img
+                              src={msg.senderPhoto}
+                              className={`w-8 h-8 rounded-full`}
+                              alt={msg.senderName}
+                            />
                             <div className="flex flex-col justify-between items-center  leading-1.5 ">
                               <div
                                 className={`px-[0.2rem] bg-white  border-gray-200 backdrop-blur-md ${
@@ -352,7 +359,13 @@ const Dashboard = () => {
                                   </span>
                                 </p>
                               </div>
-                              <div className="flex justify-end text-gray-700 mt-2 text-sm">
+                              <div
+                                className={`w-full flex  text-gray-700 mt-2 text-sm ${
+                                  msg.senderName === user?.username
+                                    ? "justify-end"
+                                    : "justify-start"
+                                }`}
+                              >
                                 <motion.button
                                   whileTap={{
                                     scale: 0.9,

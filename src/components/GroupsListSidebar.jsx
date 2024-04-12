@@ -5,6 +5,8 @@ import { IoLocationSharp, IoLocate } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import girl from "../assets/girl.jpg";
+import NoUserGroups from "../assets/NoUserGroups.png";
+import NoNearbyGroups from "../assets/NoNearbyGroups.png";
 import { addUser, nearestGroup } from "../redux/actions/groupActions";
 import { cityMapping, getUserCoordinates } from "../utils/helpers";
 import NotificationPanel from "./NotificationPanel/NotificationPanel";
@@ -13,6 +15,7 @@ import { LoadingAnimationTwo } from "./LoadingAnimation/LoadingAnimation";
 import Modal from "react-modal";
 import ImageBox from "./ImageBox";
 import { useNavigate } from "react-router-dom";
+import EmptyUIUtil from "./EmptyUIUtil";
 
 const GroupsListSidebar = (props) => {
   const { activeChat, setActiveChat, setNewGroupPanel } = props;
@@ -231,31 +234,43 @@ const GroupsListSidebar = (props) => {
           </div>
           <div className="group-list">
             {nearbyGroupPanel === false ? (
-              userGroups?.map((grp) => {
-                return (
-                  <div
-                    className={`flex justify-between px-6 py-5 border-b-2 ${
-                      activeChat?.group_id === grp.group_id ? "bg-appTheme" : ""
-                    } hover:bg-gray-200 transition-all ease-in-out cursor-pointer`}
-                    key={grp.group_id}
-                    onClick={() =>
-                      setActiveChat({
-                        group_id: grp.group_id,
-                        group_name: grp.group_name,
-                      })
-                    }
-                  >
-                    <div className="flex gap-3">
-                      <img
-                        src={girl}
-                        alt="girl"
-                        className="h-8 w-8 rounded-full"
-                      />
-                      <h1>{grp.group_name}</h1>
+              userGroups.length === 0 ? (
+                <EmptyUIUtil
+                  imageSource={NoUserGroups}
+                  contentHeading="Discover Groups"
+                  content={"join local communities"}
+                  buttonText="Go to nearby groups"
+                  buttonHandler={() => setNearbyGroupPanel(true)}
+                />
+              ) : (
+                userGroups?.map((grp) => {
+                  return (
+                    <div
+                      className={`flex justify-between px-6 py-5 border-b-2 ${
+                        activeChat?.group_id === grp.group_id
+                          ? "bg-appTheme"
+                          : ""
+                      } hover:bg-gray-200 transition-all ease-in-out cursor-pointer`}
+                      key={grp.group_id}
+                      onClick={() =>
+                        setActiveChat({
+                          group_id: grp.group_id,
+                          group_name: grp.group_name,
+                        })
+                      }
+                    >
+                      <div className="flex gap-3">
+                        <img
+                          src={girl}
+                          alt="girl"
+                          className="h-8 w-8 rounded-full"
+                        />
+                        <h1>{grp.group_name}</h1>
+                      </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
+              )
             ) : (
               <>
                 <div className=" ms-2 mb-4 pt-4 flex justify-center items-center gap-4">
@@ -281,40 +296,50 @@ const GroupsListSidebar = (props) => {
                   />
                   <FaRunning className="text-cblue font-bold text-xl" />
                 </div>
-                {nearbyGrps?.nearGroup?.map((grp, idx) => (
-                  <div
-                    className={`flex justify-between px-6 py-5  border-b-2 hover:bg-gray-200 transition-all ease-in-out ${
-                      idx == 0 ? "border-t-2" : ""
-                    } `}
-                    key={grp.groupId}
-                    onClick={() =>
-                      setActiveChat({
-                        group_id: grp.groupId,
-                        group_name: grp.groupName,
-                      })
-                    }
-                  >
-                    <div className="flex gap-3">
-                      <img
-                        src={girl}
-                        alt="girl"
-                        className="h-8 w-8 rounded-full"
-                      />
-                      <div className="flex flex-col">
-                        <h1>{grp.groupName}</h1>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        handleJoinGroup(grp.groupId, grp.groupName);
-                      }}
-                      className="font-medium hover:text-cblue text-sm "
+                {nearbyGrps?.nearGroup?.length === 0 ? (
+                  <EmptyUIUtil
+                    imageSource={NoNearbyGroups}
+                    contentHeading="No nearby groups"
+                    content="Explore another places"
+                    buttonText="Change location"
+                    buttonHandler={() => setShowLocationOptions(true)}
+                  />
+                ) : (
+                  nearbyGrps?.nearGroup?.map((grp, idx) => (
+                    <div
+                      className={`flex justify-between px-6 py-5  border-b-2 hover:bg-gray-200 transition-all ease-in-out ${
+                        idx == 0 ? "border-t-2" : ""
+                      } `}
+                      key={grp.groupId}
+                      onClick={() =>
+                        setActiveChat({
+                          group_id: grp.groupId,
+                          group_name: grp.groupName,
+                        })
+                      }
                     >
-                      {" "}
-                      Join{" "}
-                    </button>
-                  </div>
-                ))}
+                      <div className="flex gap-3">
+                        <img
+                          src={girl}
+                          alt="girl"
+                          className="h-8 w-8 rounded-full"
+                        />
+                        <div className="flex flex-col">
+                          <h1>{grp.groupName}</h1>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          handleJoinGroup(grp.groupId, grp.groupName);
+                        }}
+                        className="font-medium hover:text-cblue text-sm "
+                      >
+                        {" "}
+                        Join{" "}
+                      </button>
+                    </div>
+                  ))
+                )}
               </>
             )}
           </div>

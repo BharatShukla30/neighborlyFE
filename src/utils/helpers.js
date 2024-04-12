@@ -59,4 +59,8 @@ export const cityMapping = {
   },
 };
 
+export const isGroupJoinedByUser = (joinedGroups, groupId) => {
+  return joinedGroups.find((group) => group.group_id === groupId);
+}
+
 export default userHasCoordinates;

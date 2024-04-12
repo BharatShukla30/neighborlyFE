@@ -22,6 +22,7 @@ import CreateGroupPopup from "../components/CreateGroupPopup/CreateGroupPopup";
 import GroupsListSidebar from "../components/GroupsListSidebar";
 import { io } from "socket.io-client";
 import chatBg from "../assets/chatBackground.png";
+import JoinGroupSection from "../components/JoinGroupSection";
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
@@ -61,7 +62,8 @@ const Dashboard = () => {
   let [newMessage, setNewMessage] = useState("");
   const [groupDetails, setGroupDetails] = useState(null);
   let [grpPanel, setGrpPanel] = useState(false);
-
+  const [joinGroupOverlay, setJoinGroupOverlay] = useState(false);
+  const [openNotJoined, setOpenNotJoined] = useState(false);
   let chatRef = useRef(null);
 
   // ----------------------------socket-----------------------------
@@ -190,6 +192,11 @@ const Dashboard = () => {
     e.target.value = "";
   };
 
+
+  const isOpenButNotJoined = () => {
+    
+  }
+
   const HandleSearch = (value) => {
     setSearch(value);
     // TODO: add some filter highlight logic
@@ -202,6 +209,7 @@ const Dashboard = () => {
   // const handleThumbsDown = (msg_id) => {
   //   socket.emit('down-vote', { msg_id });
   // };
+
 
   return (
     <>

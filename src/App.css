@@ -29,7 +29,4 @@
 
 .chat-background {
     background-image: url('./assets/chatBackground.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 100%;
 }

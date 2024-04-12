@@ -257,7 +257,7 @@ const Dashboard = () => {
         />
 
         {/* Right Chatting Section */}
-        <div className={`w-full h-[89vh]`}>
+        <div className={`w-full h-[89vh] chat-background `}>
           {activeChat.group_name ? (
             <div className="h-full relative">
               {/* Top Bar Section */}
@@ -326,14 +326,15 @@ const Dashboard = () => {
 
               {/* Chats Section */}
               <div
-                className={
-                  "chat-background h-[75vh] items-stretch justify-stretch relative"
-                }
+                className={"h-[75vh] items-stretch justify-stretch relative"}
                 style={{ backgroundImage: chatBg }}
               >
                 {!groupDetails?.isOpen &&
                 !isGroupJoinedByUser(groups, groupDetails?._id) ? (
-                  <JoinGroupSection handleJoinGroup={handleJoinGroup} activeChat={activeChat} />
+                  <JoinGroupSection
+                    handleJoinGroup={handleJoinGroup}
+                    activeChat={activeChat}
+                  />
                 ) : (
                   <div className=" h-full overflow-y-scroll px-4">
                     <AnimatePresence>

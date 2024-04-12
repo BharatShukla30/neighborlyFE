@@ -3,12 +3,12 @@ import { FaPlus, FaRunning, FaSearchLocation } from "react-icons/fa";
 import { HiBellAlert } from "react-icons/hi2";
 import { IoLocationSharp, IoLocate } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import girl from "../assets/girl.jpg";
 import NoUserGroups from "../assets/NoUserGroups.png";
 import NoNearbyGroups from "../assets/NoNearbyGroups.png";
-import { addUser, nearestGroup } from "../redux/actions/groupActions";
-import { cityMapping, getUserCoordinates } from "../utils/helpers";
+import { addUser, fetchGroupDetails, getUserGroups, nearestGroup } from "../redux/actions/groupActions";
+import { cityMapping, getUserCoordinates, isGroupJoinedByUser } from "../utils/helpers";
 import NotificationPanel from "./NotificationPanel/NotificationPanel";
 import { updateUserLocation } from "../redux/actions/authActions";
 import { LoadingAnimationTwo } from "./LoadingAnimation/LoadingAnimation";
@@ -18,7 +18,8 @@ import { useNavigate } from "react-router-dom";
 import EmptyUIUtil from "./EmptyUIUtil";
 
 const GroupsListSidebar = (props) => {
-  const { activeChat, setActiveChat, setNewGroupPanel } = props;
+  const { activeChat, setActiveChat, setNewGroupPanel, setJoinGroupOverlay, nearbyGroupPanel, setNearbyGroupPanel, handleJoinGroup} =
+    props;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -28,7 +29,6 @@ const GroupsListSidebar = (props) => {
   const { availableCities } = useSelector((state) => state.auth);
 
   const [nearbySlider, setNearbySlider] = useState(50);
-  const [nearbyGroupPanel, setNearbyGroupPanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showLocationOptions, setShowLocationOptions] = useState(false);
   const [showLoadingAnimation, setShowLoadingAnimation] = useState(false);
@@ -36,9 +36,13 @@ const GroupsListSidebar = (props) => {
 
   const handleNearbyPanel = () => {
     setNearbyGroupPanel(true);
+    fetchNearbyGroups();
+  };
+
+  const fetchNearbyGroups = () => {
     const coordinates = getUserCoordinates(user);
     dispatch(nearestGroup(coordinates));
-  };
+  }
 
   const handleChatPanel = () => {
     setNearbyGroupPanel(false);
@@ -63,6 +67,32 @@ const GroupsListSidebar = (props) => {
       setShowLoadingAnimation(false);
     });
   };
+
+  const handleNearbyGroupSelect = (grp) => {
+    dispatch(fetchGroupDetails(grp.groupId)).then((result) => {
+      const groupDetails = result.payload;
+      if (groupDetails.isOpen) {
+        setActiveChat({
+          group_id: grp.groupId,
+          group_name: grp.groupName,
+        });
+        setJoinGroupOverlay(false);
+      } else {
+        setActiveChat({
+          group_id: grp.groupId,
+          group_name: grp.groupName,
+        });
+
+        setJoinGroupOverlay(true);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (userGroups?.length === 0) {
+      setNearbyGroupPanel(true);
+    } else setNearbyGroupPanel(false);
+  }, [userGroups]);
 
   const errorLocationHandler = (error) => {
     console.log(error);
@@ -111,21 +141,7 @@ const GroupsListSidebar = (props) => {
   const unselectedButtonStyle =
     "py-2.5 px-5 text-sm font-medium text-cblue focus:outline-none bg-white rounded-lg border border-cblue hover:bg-cblue hover:text-white focus:z-10";
 
-  const handleJoinGroup = (grpId, grpName) => {
-    try {
-      setActiveChat({ group_id: grpId, group_name: grpName });
-      dispatch(addUser({ groupId: grpId, userId: user._id }))
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((err) => {
-          alert("Error in joining group");
-          console.log(err);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  
 
   return (
     <aside
@@ -307,15 +323,12 @@ const GroupsListSidebar = (props) => {
                 ) : (
                   nearbyGrps?.nearGroup?.map((grp, idx) => (
                     <div
-                      className={`flex justify-between px-6 py-5  border-b-2 hover:bg-gray-200 transition-all ease-in-out ${
+                      className={`flex justify-between px-6 py-5 cursor-pointer  border-b-2 hover:bg-gray-200 transition-all ease-in-out ${
                         idx == 0 ? "border-t-2" : ""
                       } `}
                       key={grp.groupId}
                       onClick={() =>
-                        setActiveChat({
-                          group_id: grp.groupId,
-                          group_name: grp.groupName,
-                        })
+                        handleNearbyGroupSelect(grp)
                       }
                     >
                       <div className="flex gap-3">
@@ -332,10 +345,10 @@ const GroupsListSidebar = (props) => {
                         onClick={() => {
                           handleJoinGroup(grp.groupId, grp.groupName);
                         }}
-                        className="font-medium hover:text-cblue text-sm "
+                        className="font-medium text-cblue text-sm border border-cblue px-5 rounded hover:text-white hover:bg-cblue"
                       >
-                        {" "}
-                        Join{" "}
+                        
+                        Join
                       </button>
                     </div>
                   ))

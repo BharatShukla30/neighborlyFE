@@ -264,11 +264,18 @@ const Dashboard = () => {
               <div className="shadow-inner py-3 px-3 flex items-center justify-between  bg-white z-40">
                 <div className="text-xl font-medium flex items-center">
                   <div className="me-3 md:me-4 bg-slate-200 px-3 py-3 rounded-full cursor-pointer">
-                    <BsPeople />
+                    <BsPeople
+                      onClick={() => {
+                        setGrpPanel(!grpPanel);
+                      }}
+                    />
                   </div>
-                  <p className="font-medium capitalize">
-                    {activeChat?.group_name}
-                  </p>
+                  <div>
+                    <p className="font-medium">{activeChat?.group_name}</p>
+                    <p className="text-sm text-gray-400">
+                      {`${groupDetails?.members.length} members`}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex gap-6 items-center justify-center">
                   {isGroupJoinedByUser(groups, groupDetails?._id) ? (
@@ -314,12 +321,7 @@ const Dashboard = () => {
                     </button>
                   )}
                   <p>
-                    <HiOutlineDotsVertical
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setGrpPanel(!grpPanel);
-                      }}
-                    />
+                    <HiOutlineDotsVertical className="cursor-pointer" />
                   </p>
                 </div>
               </div>

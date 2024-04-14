@@ -1,21 +1,31 @@
-import { useState } from "react"
-import { makeGroupPermanent } from "../redux/actions/groupActions"
-import {useDispatch} from "react-redux"
+/* eslint-disable react/prop-types */
+import { useState } from "react";
+import { makeGroupPermanent } from "../redux/actions/groupActions";
+import { useDispatch } from "react-redux";
 
-const GroupDetails = ({location ,name ,topic,  description , radius , members , group_type, _id}) => {
+const GroupDetails = ({
+  location,
+  name,
+  topic,
+  description,
+  radius,
+  members,
+  group_type,
+  admin,
+  _id,
+}) => {
+  let dispatch = useDispatch();
 
-  let dispatch = useDispatch()
+  let [permanent, setPermanent] = useState(false);
 
-  let [permanent, setPermanent] = useState(false)
-  
   const handleGroupPermanent = () => {
-//   TODO: w8ing for backend to make makegrPermanent if not already  (exist) , vice versa to make it temporary (reqd)
-    dispatch(makeGroupPermanent(_id))
-  }
+    //   TODO: w8ing for backend to make makegrPermanent if not already  (exist) , vice versa to make it temporary (reqd)
+    dispatch(makeGroupPermanent(_id));
+  };
 
   const handleLeaveGrp = () => {
-    // TODO: w8ing for backend to make api 
-  }
+    // TODO: w8ing for backend to make api
+  };
 
   return (
     <div className="flex flex-col w-full h-full bg-white overflow-y-scroll z-60">
@@ -29,50 +39,51 @@ const GroupDetails = ({location ,name ,topic,  description , radius , members , 
         </div>
         <div className="mb-4 flex flex-col items-center justify-center gap-2">
           <h1 className="text-xl font-semibold">{name}</h1>
-          <p className="text-sm">{topic}</p>
+          {/* <p className="text-sm">{topic}</p>
           <span className="py-1 px-2 bg-blue-500 text-white rounded-full text-xs ">
             {group_type}
-          </span>
+          </span> */}
         </div>
       </div>
 
-      <div className=" p-3 w-full">
+      <div className=" p-2 w-full">
         <h2 className="text-lg font-semibold mb-2 text-gray-700">
           Description
         </h2>
-        <p className="ms-1 text-sm  font-thin text-zinc-600">
-          {description}
-        </p>
+        <p className="ms-1 text-sm  font-thin text-zinc-600">{description}</p>
       </div>
 
-      <div className=" w-full p-4 mt-4">
+      {/* <div className=" w-full p-4 mt-4">
         <h2 className="text-lg font-semibold mb-2  text-gray-700">Media</h2>
-      </div>
+      </div> */}
 
-      <div className=" w-full p-4 mt-4 ">
+      <div className=" w-full p-4">
         <h2 className="text-lg font-semibold mb-2  text-zinc-700">Members</h2>
-       
-       
-        {
-            members?.map((member, id) => (
-                <div className="flex items-center space-x-4 mt-1 hover:bg-slate-200 hover:scale-105 transition-all ease-in p-1 rounded-md" key ={id}>
-                    <div className="flex-shrink-0">
-                        <img
-                        className="h-10 w-10 rounded-full"
-                        src={`https://randomuser.me/api/portraits/men/${id+1}.jpg`}
-                        alt={`Member ${id}`}
-                        />
-                    </div>
-                    <div className="">
-                        {/* <p className="font-semibold">{member.user.username}</p> */}
-                        <p className="text-sm text-gray-600">{member.status}</p>
-                    </div>
-                </div>
-            )
-            )
-        }
-     
-     
+
+        {members?.map((member, index) => {
+          const { userId, userName, picture, karma } = member.user;
+          return (
+            <div
+              className="flex items-center space-x-4 mt-1 hover:bg-slate-200 hover:scale-105 transition-all ease-in p-1 rounded-md"
+              key={userId}
+            >
+              <div className="flex-shrink-0">
+                <img
+                  className="h-10 w-10 rounded-full"
+                  src={picture}
+                  alt={`Member ${userName}`}
+                />
+              </div>
+              <div className="">
+                {/* <p className="font-semibold">{member.user.username}</p> */}
+                <p className="text-sm font-bold text-gray-600">{userName}</p>
+                <p className="text-sm text-gray-600">
+                  {(karma / 1000).toFixed(1)}K 🔥
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className=" py-4 px-6 w-full mt-4 flex flex-col gap-3 items-center justify-center mb-3">
@@ -90,7 +101,7 @@ const GroupDetails = ({location ,name ,topic,  description , radius , members , 
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default GroupDetails
+export default GroupDetails;

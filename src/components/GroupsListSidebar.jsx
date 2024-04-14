@@ -141,8 +141,6 @@ const GroupsListSidebar = (props) => {
   const unselectedButtonStyle =
     "py-2.5 px-5 text-sm font-medium text-cblue focus:outline-none bg-white rounded-lg border border-cblue hover:bg-cblue hover:text-white focus:z-10";
 
-  
-
   return (
     <aside
       className={`md:block flex w-2/5 flex-col bg-white relative`}
@@ -199,10 +197,10 @@ const GroupsListSidebar = (props) => {
                 <IoLocationSharp className="text-2xl text-cblue pointer-events-auto" />
               </button>
               {showLocationOptions && (
-                <div className="md:block w-56 text-left absolute  hidden bg-gray-100 z-10 shadow-md border border-gray-300 text-sm rounded-md">
+                <div className="md:block w-56 text-left absolute  hidden bg-gray-100 z-10 shadow-md border border-cblue text-sm rounded-md">
                   <ul>
                     <li
-                      className="px-2 py-2 flex items-center gap-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+                      className="px-2 py-2 flex items-center gap-2 border-b border-cblue cursor-pointer hover:bg-gray-300 rounded-t-md"
                       onClick={currentCityHandler}
                     >
                       {showLoadingAnimation ? (
@@ -215,7 +213,7 @@ const GroupsListSidebar = (props) => {
                       )}
                     </li>
                     <li
-                      className="px-2 py-2 flex items-center gap-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300"
+                      className="px-2 py-2 flex items-center gap-2 border-b border-gray-200 cursor-pointer hover:bg-gray-300 rounded-b-md"
                       onClick={chooseCityHandler}
                     >
                       <FaSearchLocation />

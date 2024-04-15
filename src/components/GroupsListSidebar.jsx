@@ -7,8 +7,17 @@ import { useEffect, useState } from "react";
 import girl from "../assets/girl.jpg";
 import NoUserGroups from "../assets/NoUserGroups.png";
 import NoNearbyGroups from "../assets/NoNearbyGroups.png";
-import { addUser, fetchGroupDetails, getUserGroups, nearestGroup } from "../redux/actions/groupActions";
-import { cityMapping, getUserCoordinates, isGroupJoinedByUser } from "../utils/helpers";
+import {
+  addUser,
+  fetchGroupDetails,
+  getUserGroups,
+  nearestGroup,
+} from "../redux/actions/groupActions";
+import {
+  cityMapping,
+  getUserCoordinates,
+  isGroupJoinedByUser,
+} from "../utils/helpers";
 import NotificationPanel from "./NotificationPanel/NotificationPanel";
 import { updateUserLocation } from "../redux/actions/authActions";
 import { LoadingAnimationTwo } from "./LoadingAnimation/LoadingAnimation";
@@ -18,8 +27,15 @@ import { useNavigate } from "react-router-dom";
 import EmptyUIUtil from "./EmptyUIUtil";
 
 const GroupsListSidebar = (props) => {
-  const { activeChat, setActiveChat, setNewGroupPanel, setJoinGroupOverlay, nearbyGroupPanel, setNearbyGroupPanel, handleJoinGroup} =
-    props;
+  const {
+    activeChat,
+    setActiveChat,
+    setNewGroupPanel,
+    setJoinGroupOverlay,
+    nearbyGroupPanel,
+    setNearbyGroupPanel,
+    handleJoinGroup,
+  } = props;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -42,7 +58,7 @@ const GroupsListSidebar = (props) => {
   const fetchNearbyGroups = () => {
     const coordinates = getUserCoordinates(user);
     dispatch(nearestGroup(coordinates));
-  }
+  };
 
   const handleChatPanel = () => {
     setNearbyGroupPanel(false);
@@ -246,7 +262,7 @@ const GroupsListSidebar = (props) => {
               </button>
             </div>
           </div>
-          <div className="group-list">
+          <div className="group-list overflow-y-scroll h-[57vh]">
             {nearbyGroupPanel === false ? (
               userGroups.length === 0 ? (
                 <EmptyUIUtil
@@ -325,9 +341,7 @@ const GroupsListSidebar = (props) => {
                         idx == 0 ? "border-t-2" : ""
                       } `}
                       key={grp.groupId}
-                      onClick={() =>
-                        handleNearbyGroupSelect(grp)
-                      }
+                      onClick={() => handleNearbyGroupSelect(grp)}
                     >
                       <div className="flex gap-3">
                         <img
@@ -345,7 +359,6 @@ const GroupsListSidebar = (props) => {
                         }}
                         className="font-medium text-cblue text-sm border border-cblue px-5 rounded hover:text-white hover:bg-cblue"
                       >
-                        
                         Join
                       </button>
                     </div>

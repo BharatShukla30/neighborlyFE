@@ -81,10 +81,15 @@ const Dashboard = () => {
   const joinRoom = () => {
     console.log("Joining..");
     if (user.username && activeChat?.group_id) {
-      socket.emit("join-room", {
+      try{
+        socket.emit("join-room", {
         username: user.username,
         group_id: activeChat.group_id,
       });
+    }
+    catch (error) {
+      console.log("Error joining room", error);
+    }
     }
   };
 

@@ -79,19 +79,14 @@ const Dashboard = () => {
   // ----------------------------socket-----------------------------
 
   const joinRoom = () => {
-    
     if (user.username && activeChat?.group_id) {
-      try{
-        console.log("Joining..");
-        socket.emit("join-room", {
+      console.log("Attempting to join room", {username: user.username, group_id: activeChat.group_id});
+      socket.emit("join-room", {
         username: user.username,
         group_id: activeChat.group_id,
+      }, (response) => {
+        console.log("Join room response:", response);
       });
-      console.log("Joined");
-    }
-    catch (error) {
-      console.log("Error joining room", error);
-    }
     }
   };
 
@@ -180,8 +175,10 @@ const Dashboard = () => {
           msg: message,
           sent_at: new Date(),
         };
-        socket.emit("send-message", messageData);
-        // console.log(messageData);
+        console.log(messageData);
+        socket.emit("send-message", messageData, (response) => {
+          console.log("Send message response:", response);
+        });
         setMessages((list) => [messageData, ...list]);
         setNewMessage("");
       }

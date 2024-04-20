@@ -30,7 +30,10 @@ import JoinGroupSection from "../components/JoinGroupSection";
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
-  const socket = io(socketServer);
+  const socket = io(socketServer,{
+    transports: ['websocket'],
+    upgrade: false,
+    });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

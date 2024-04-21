@@ -75,7 +75,23 @@ const Dashboard = () => {
   const [nearbyGroupPanel, setNearbyGroupPanel] = useState(false);
 
   let chatRef = useRef(null);
+  // test API call to socket connection
+  
+  const [apiResponse, setApiResponse] = useState('');
 
+  // useEffect to make API call when the component mounts
+  useEffect(() => {
+    // Fetch data from the API endpoint
+    fetch(`${socketServer}/`)  // Assuming `socketServer` contains the full URL to your server
+      .then(response => response.text())  // Assuming the server responds with plain text
+      .then(data => {
+        setApiResponse(data);
+        console.log("API call successful: ", data);
+      })
+      .catch(error => {
+        console.error("Failed to fetch data from API: ", error);
+      });
+    }, []);
   // ----------------------------socket-----------------------------
 
   const joinRoom = () => {

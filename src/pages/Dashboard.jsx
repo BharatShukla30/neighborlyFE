@@ -30,7 +30,10 @@ import JoinGroupSection from "../components/JoinGroupSection";
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
-  const socket = io(socketServer);
+  const socket = io(socketServer,{
+    transports: ['websocket'],
+    upgrade: false,
+    });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -72,15 +75,16 @@ const Dashboard = () => {
   const [nearbyGroupPanel, setNearbyGroupPanel] = useState(false);
 
   let chatRef = useRef(null);
-
   // ----------------------------socket-----------------------------
 
   const joinRoom = () => {
-    console.log("Joining..");
     if (user.username && activeChat?.group_id) {
+      console.log("Attempting to join room", {username: user.username, group_id: activeChat.group_id});
       socket.emit("join-room", {
         username: user.username,
         group_id: activeChat.group_id,
+      }, (response) => {
+        console.log("Join room response:", response);
       });
     }
   };
@@ -170,8 +174,10 @@ const Dashboard = () => {
           msg: message,
           sent_at: new Date(),
         };
-        socket.emit("send-message", messageData);
-        // console.log(messageData);
+        console.log(messageData);
+        socket.emit("send-message", messageData, (response) => {
+          console.log("Send message response:", response);
+        });
         setMessages((list) => [messageData, ...list]);
         setNewMessage("");
       }

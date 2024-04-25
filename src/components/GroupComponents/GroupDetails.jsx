@@ -1,28 +1,6 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import { makeGroupPermanent } from "../redux/actions/groupActions";
-import { useDispatch } from "react-redux";
 
-const GroupDetails = ({
-  location,
-  name,
-  topic,
-  description,
-  radius,
-  members,
-  group_type,
-  admin,
-  _id,
-}) => {
-  let dispatch = useDispatch();
-
-  let [permanent, setPermanent] = useState(false);
-
-  const handleGroupPermanent = () => {
-    //   TODO: w8ing for backend to make makegrPermanent if not already  (exist) , vice versa to make it temporary (reqd)
-    dispatch(makeGroupPermanent(_id));
-  };
-
+const GroupDetails = ({ name, description, members }) => {
   const handleLeaveGrp = () => {
     // TODO: w8ing for backend to make api
   };
@@ -39,10 +17,6 @@ const GroupDetails = ({
         </div>
         <div className="mb-4 flex flex-col items-center justify-center gap-2">
           <h1 className="text-xl font-semibold">{name}</h1>
-          {/* <p className="text-sm">{topic}</p>
-          <span className="py-1 px-2 bg-blue-500 text-white rounded-full text-xs ">
-            {group_type}
-          </span> */}
         </div>
       </div>
 
@@ -60,8 +34,8 @@ const GroupDetails = ({
       <div className=" w-full p-4">
         <h2 className="text-lg font-semibold mb-2  text-zinc-700">Members</h2>
 
-        {members?.map((member, index) => {
-          const { userId, userName, picture, karma } = member.user;
+        {members?.map((member) => {
+          const { userId, userName, picture, karma } = member;
           return (
             <div
               className="flex items-center space-x-4 mt-1 hover:bg-slate-200 hover:scale-105 transition-all ease-in p-1 rounded-md"
@@ -89,7 +63,7 @@ const GroupDetails = ({
       <div className=" py-4 px-6 w-full mt-4 flex flex-col gap-3 items-center justify-center mb-3">
         <button
           className="bg-blue-400 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-md transition-colors ease-in"
-          onClick={handleGroupPermanent}
+          // onClick={handleGroupPermanent}
         >
           Make Permanent
         </button>

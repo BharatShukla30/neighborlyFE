@@ -63,7 +63,7 @@ const GroupDetails = ({ name, description, members }) => {
       <div className=" py-4 px-6 w-full mt-4 flex flex-col gap-3 items-center justify-center mb-3">
         <button
           className="bg-blue-400 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-md transition-colors ease-in"
-          onClick={handleGroupPermanent}
+          // onClick={handleGroupPermanent}
         >
           Make Permanent
         </button>

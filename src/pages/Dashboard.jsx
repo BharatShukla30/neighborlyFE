@@ -30,10 +30,10 @@ import JoinGroupSection from "../components/JoinGroupSection";
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
-  const socket = io(socketServer,{
-    transports: ['websocket'],
+  const socket = io(socketServer, {
+    transports: ["websocket"],
     upgrade: false,
-    });
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -79,13 +79,20 @@ const Dashboard = () => {
 
   const joinRoom = () => {
     if (user.username && activeChat?.group_id) {
-      console.log("Attempting to join room", {username: user.username, group_id: activeChat.group_id});
-      socket.emit("join-room", {
+      console.log("Attempting to join room", {
         username: user.username,
         group_id: activeChat.group_id,
-      }, (response) => {
-        console.log("Join room response:", response);
       });
+      socket.emit(
+        "join-room",
+        {
+          username: user.username,
+          group_id: activeChat.group_id,
+        },
+        (response) => {
+          console.log("Join room response:", response);
+        }
+      );
     }
   };
 
@@ -268,13 +275,14 @@ const Dashboard = () => {
             <div className="h-full relative">
               {/* Top Bar Section */}
               <div className="shadow-inner py-3 px-3 flex items-center justify-between  bg-white z-40">
-                <div className="text-xl font-medium flex items-center">
-                  <div className="me-3 md:me-4 bg-slate-200 px-3 py-3 rounded-full cursor-pointer">
-                    <BsPeople
-                      onClick={() => {
-                        setGrpPanel(!grpPanel);
-                      }}
-                    />
+                <div
+                  className="text-xl font-medium flex items-center cursor-pointer"
+                  onClick={() => {
+                    setGrpPanel(!grpPanel);
+                  }}
+                >
+                  <div className="me-3 md:me-4 bg-slate-200 px-3 py-3 rounded-full">
+                    <BsPeople />
                   </div>
                   <div>
                     <p className="font-medium">{activeChat?.group_name}</p>

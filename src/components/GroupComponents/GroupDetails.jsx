@@ -35,11 +35,11 @@ const GroupDetails = ({ name, description, members }) => {
         <h2 className="text-lg font-semibold mb-2  text-zinc-700">Members</h2>
 
         {members?.map((member) => {
-          const { userName, picture, karma } = member.user;
+          const { userId, userName, picture, karma } = member;
           return (
             <div
               className="flex items-center space-x-4 mt-1 hover:bg-slate-200 hover:scale-105 transition-all ease-in p-1 rounded-md"
-              key={userName}
+              key={userId}
             >
               <div className="flex-shrink-0">
                 <img

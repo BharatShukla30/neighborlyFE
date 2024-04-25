@@ -28,6 +28,7 @@ const GroupChatBar = (props) => {
           senderName: user?.username,
           senderPhoto: user?.picture,
           msg: message,
+          // ToDo: Need to delete sent_at when server handles the date
           sent_at: new Date(),
         };
         console.log(messageData);

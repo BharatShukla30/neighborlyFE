@@ -10,7 +10,6 @@ import {
 } from "../redux/actions/groupActions";
 import { GoThumbsup, GoThumbsdown } from "react-icons/go";
 import { FaPlus } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
 import { IoIosAttach } from "react-icons/io";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Dropzone from "../components/Dropzone";

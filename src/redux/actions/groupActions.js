@@ -47,7 +47,7 @@ export const fetchGroupMessages = createAsyncThunk(
   async (groupId, { rejectWithValue }) => {
     try {
       const request = await axiosInstance.get(
-        `/group/fetch-group-messages/${groupId}?page=1&limit=5`
+        `/group/fetch-group-messages/${groupId}?page=1&limit=50`
       );
       const response = await request.data;
       // console.log(response);

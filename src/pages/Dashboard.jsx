@@ -116,9 +116,7 @@ const Dashboard = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log("groupSlice :>> ", groupSlice);
     if (!groupSlice.loading && groupSlice?.refreshGroups) {
-      console.log("In IF Condition :>> ");
       if (userHasCoordinates(user)) {
         const coordinates = getUserCoordinates(user);
         dispatch(nearestGroup(coordinates));

@@ -7,8 +7,6 @@ const GroupDetails = ({ _id: groupId, name, description, admin, members }) => {
   const dispatch = useDispatch();
   const { _id: userId } = useSelector((state) => state?.auth?.user);
 
-  console.log("groupId :>> ", groupId);
-  console.log("userId :>> ", userId);
   const handleLeaveGrp = () => {
     // TODO: w8ing for backend to make api
     dispatch(leaveGroup({ groupId, userId }));

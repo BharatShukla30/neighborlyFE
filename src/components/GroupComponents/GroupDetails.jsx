@@ -1,9 +1,23 @@
 /* eslint-disable react/prop-types */
 
-const GroupDetails = ({ name, description, members }) => {
+import { useDispatch, useSelector } from "react-redux";
+import { leaveGroup } from "../../redux/actions/groupActions";
+
+const GroupDetails = ({ _id: groupId, name, description, admin, members }) => {
+  const dispatch = useDispatch();
+  const { _id: userId } = useSelector((state) => state?.auth?.user);
+
   const handleLeaveGrp = () => {
     // TODO: w8ing for backend to make api
+    dispatch(leaveGroup({ groupId, userId }));
   };
+
+  let membersList = [];
+  admin.forEach((element) => {
+    membersList.push({ ...element, isAdmin: true });
+  });
+
+  membersList = [...membersList, ...members];
 
   return (
     <div className="flex flex-col w-full h-full bg-white overflow-y-scroll z-60">
@@ -20,11 +34,11 @@ const GroupDetails = ({ name, description, members }) => {
         </div>
       </div>
 
-      <div className=" p-2 w-full">
+      <div className=" p-4 w-full">
         <h2 className="text-lg font-semibold mb-2 text-gray-700">
           Description
         </h2>
-        <p className="ms-1 text-sm  font-thin text-zinc-600">{description}</p>
+        <p className="text-sm  font-thin text-zinc-600">{description}</p>
       </div>
 
       {/* <div className=" w-full p-4 mt-4">
@@ -34,8 +48,8 @@ const GroupDetails = ({ name, description, members }) => {
       <div className=" w-full p-4">
         <h2 className="text-lg font-semibold mb-2  text-zinc-700">Members</h2>
 
-        {members?.map((member) => {
-          const { userId, userName, picture, karma } = member;
+        {membersList?.map((member) => {
+          const { userId, userName, picture, karma, isAdmin } = member;
           return (
             <div
               className="flex items-center space-x-4 mt-1 hover:bg-slate-200 hover:scale-105 transition-all ease-in p-1 rounded-md"
@@ -43,7 +57,9 @@ const GroupDetails = ({ name, description, members }) => {
             >
               <div className="flex-shrink-0">
                 <img
-                  className="h-10 w-10 rounded-full"
+                  className={`h-10 w-10 rounded-full${
+                    isAdmin ? " border-dashed border-2 border-red-500" : ""
+                  }`}
                   src={picture}
                   alt={`Member ${userName}`}
                 />
@@ -52,7 +68,7 @@ const GroupDetails = ({ name, description, members }) => {
                 {/* <p className="font-semibold">{member.user.username}</p> */}
                 <p className="text-sm font-bold text-gray-600">{userName}</p>
                 <p className="text-sm text-gray-600">
-                  {(karma / 1000).toFixed(1)}K 🔥
+                  {(karma / 1000).toFixed(1)}k 🔥
                 </p>
               </div>
             </div>
@@ -61,12 +77,12 @@ const GroupDetails = ({ name, description, members }) => {
       </div>
 
       <div className=" py-4 px-6 w-full mt-4 flex flex-col gap-3 items-center justify-center mb-3">
-        <button
+        {/* <button
           className="bg-blue-400 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-md transition-colors ease-in"
-          // onClick={handleGroupPermanent}
+          onClick={handleGroupPermanent}
         >
           Make Permanent
-        </button>
+        </button> */}
         <button
           className="bg-rose-500 hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors ease-in "
           onClick={handleLeaveGrp}

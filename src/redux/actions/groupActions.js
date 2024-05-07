@@ -164,3 +164,17 @@ export const checkGroupNameUniqueness = createAsyncThunk(
     }
   }
 );
+
+export const leaveGroup = createAsyncThunk(
+  "group/remove-user",
+  async (reqBody, { rejectWithValue }) => {
+    try {
+      const request = await axiosInstance.post("group/remove-user", reqBody);
+      const response = await request.data;
+      response.groupName = reqBody.name;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);

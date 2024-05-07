@@ -101,7 +101,9 @@ const GroupsListSidebar = (props) => {
   useEffect(() => {
     if (userGroups?.length === 0) {
       setNearbyGroupPanel(true);
-    } else setNearbyGroupPanel(false);
+    } else {
+      setNearbyGroupPanel(false);
+    }
   }, [userGroups]);
 
   const errorLocationHandler = (error) => {

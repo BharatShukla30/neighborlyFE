@@ -46,7 +46,7 @@ const CreateGroupPopupPageTwo = (props) => {
         ) : (
           <div className="h-[80%] flex gap-4 mt-2 mb-16 flex-wrap min-h-[13rem] overflow-y-scroll">
             {nearByUsersList?.map((userObject) => {
-              const { userId, userName, picture, karma } = userObject.user;
+              const { userId, userName, picture, karma } = userObject;
               const tooltipContent = (
                 <div className="text-center">
                   <p>{userName}</p>

@@ -4,8 +4,16 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 
 /* eslint-disable react/prop-types */
 const GroupHeader = (props) => {
-    const {activeChat, grpPanel, setGrpPanel, groups, groupDetails, handleJoinGroup} = props;
+  const {
+    activeChat,
+    grpPanel,
+    setGrpPanel,
+    groups,
+    groupDetails,
+    handleJoinGroup,
+  } = props;
 
+  const numberOfMembers = groupDetails?.members.length + groupDetails?.admin.length
   return (
     <div className="shadow-inner py-3 px-3 flex items-center justify-between  bg-white z-40">
       <div
@@ -20,7 +28,7 @@ const GroupHeader = (props) => {
         <div>
           <p className="font-medium">{activeChat?.group_name}</p>
           <p className="text-sm text-gray-400">
-            {`${groupDetails?.members.length} members`}
+            {`${numberOfMembers} members`}
           </p>
         </div>
       </div>

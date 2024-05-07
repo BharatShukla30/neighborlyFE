@@ -9,9 +9,7 @@ import {
 } from "../redux/actions/groupActions";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import userHasCoordinates, {
-  getUserCoordinates,
-} from "../utils/helpers";
+import userHasCoordinates, { getUserCoordinates } from "../utils/helpers";
 import mainDashboard from "../assets/mainDashboard.png";
 import CreateGroupPopup from "../components/CreateGroupPopup/CreateGroupPopup";
 import GroupsListSidebar from "../components/GroupComponents/GroupsListSidebar";
@@ -32,6 +30,7 @@ const Dashboard = () => {
   // ----------------------------Selector-----------------------------
 
   const user = useSelector((state) => state.auth.user);
+  const groupSlice = useSelector((state) => state.groups);
 
   //  ----------------------------State-----------------------------
   const [newGroupPanel, setNewGroupPanel] = useState(false);
@@ -115,6 +114,20 @@ const Dashboard = () => {
       navigate("/location");
     }
   }, [user]);
+
+  useEffect(() => {
+    console.log("groupSlice :>> ", groupSlice);
+    if (!groupSlice.loading && groupSlice?.refreshGroups) {
+      console.log("In IF Condition :>> ");
+      if (userHasCoordinates(user)) {
+        const coordinates = getUserCoordinates(user);
+        dispatch(nearestGroup(coordinates));
+      }
+      dispatch(getUserGroups());
+      setGrpPanel(false);
+      setGroupDetails(null);
+    }
+  }, [groupSlice]);
 
   useEffect(() => {
     if (activeChat?.group_id) {

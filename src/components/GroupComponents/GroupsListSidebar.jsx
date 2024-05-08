@@ -4,27 +4,21 @@ import { HiBellAlert } from "react-icons/hi2";
 import { IoLocationSharp, IoLocate } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import girl from "../assets/girl.jpg";
-import NoUserGroups from "../assets/NoUserGroups.png";
-import NoNearbyGroups from "../assets/NoNearbyGroups.png";
+import girl from "../../assets/girl.jpg";
+import NoUserGroups from "../../assets/NoUserGroups.png";
+import NoNearbyGroups from "../../assets/NoNearbyGroups.png";
 import {
-  addUser,
   fetchGroupDetails,
-  getUserGroups,
   nearestGroup,
-} from "../redux/actions/groupActions";
-import {
-  cityMapping,
-  getUserCoordinates,
-  isGroupJoinedByUser,
-} from "../utils/helpers";
-import NotificationPanel from "./NotificationPanel/NotificationPanel";
-import { updateUserLocation } from "../redux/actions/authActions";
-import { LoadingAnimationTwo } from "./LoadingAnimation/LoadingAnimation";
+} from "../../redux/actions/groupActions";
+import { cityMapping, getUserCoordinates } from "../../utils/helpers";
+import NotificationPanel from "../NotificationPanel/NotificationPanel";
+import { updateUserLocation } from "../../redux/actions/authActions";
+import { LoadingAnimationTwo } from "../LoadingAnimation/LoadingAnimation";
 import Modal from "react-modal";
-import ImageBox from "./ImageBox";
+import ImageBox from "../ImageBox";
 import { useNavigate } from "react-router-dom";
-import EmptyUIUtil from "./EmptyUIUtil";
+import EmptyUIUtil from "../EmptyUIUtil";
 
 const GroupsListSidebar = (props) => {
   const {
@@ -107,7 +101,9 @@ const GroupsListSidebar = (props) => {
   useEffect(() => {
     if (userGroups?.length === 0) {
       setNearbyGroupPanel(true);
-    } else setNearbyGroupPanel(false);
+    } else {
+      setNearbyGroupPanel(false);
+    }
   }, [userGroups]);
 
   const errorLocationHandler = (error) => {

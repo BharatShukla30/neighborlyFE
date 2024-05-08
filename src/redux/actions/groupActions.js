@@ -47,7 +47,7 @@ export const fetchGroupMessages = createAsyncThunk(
   async (groupId, { rejectWithValue }) => {
     try {
       const request = await axiosInstance.get(
-        `/group/fetch-group-messages/${groupId}?page=1&limit=5`
+        `/group/fetch-group-messages/${groupId}?page=1&limit=50`
       );
       const response = await request.data;
       // console.log(response);
@@ -156,6 +156,20 @@ export const checkGroupNameUniqueness = createAsyncThunk(
       const request = await axiosInstance.get(
         `/group/is-group-unique?name=${reqBody.name}`
       );
+      const response = await request.data;
+      response.groupName = reqBody.name;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const leaveGroup = createAsyncThunk(
+  "group/remove-user",
+  async (reqBody, { rejectWithValue }) => {
+    try {
+      const request = await axiosInstance.post("group/remove-user", reqBody);
       const response = await request.data;
       response.groupName = reqBody.name;
       return response;

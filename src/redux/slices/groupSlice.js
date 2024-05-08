@@ -4,6 +4,7 @@ import {
   fetchNearbyUsers,
   getUserGroups,
   nearestGroup,
+  removeUser,
 } from "../actions/groupActions";
 
 const groupSlice = createSlice({
@@ -13,6 +14,7 @@ const groupSlice = createSlice({
     loading: false,
     nearbyGrps: [],
     uniqueGroup: {},
+    refreshGroups: false,
     error: null,
   },
   reducers: {},
@@ -23,6 +25,7 @@ const groupSlice = createSlice({
       .addCase(getUserGroups.pending, (state) => {
         state.loading = true;
         state.grps = [];
+        state.refreshGroups = false;
         state.error = null;
       })
       .addCase(getUserGroups.fulfilled, (state, action) => {
@@ -40,6 +43,7 @@ const groupSlice = createSlice({
       .addCase(nearestGroup.pending, (state) => {
         state.loading = true;
         state.nearbyGrps = [];
+        state.refreshGroups = false;
         state.error = null;
       })
       .addCase(nearestGroup.fulfilled, (state, action) => {
@@ -63,7 +67,7 @@ const groupSlice = createSlice({
         state.uniqueGroup = {
           ...state.uniqueGroup,
           ...action.payload,
-          error: false
+          error: false,
         };
         state.error = null;
       })
@@ -92,17 +96,25 @@ const groupSlice = createSlice({
         state.loading = false;
         state.nearbyUsers = null;
         state.error = action.payload;
-      });
+      })
 
-    //---------------------------------createGroup---------------------------------
+      //-------------------------------Remove User from Group-----------------------------------
+      .addCase(removeUser.pending, (state) => {
+        state.loading = true;
+        state.refreshGroups = false;
+        state.error = null;
+      })
+      .addCase(removeUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.refreshGroups = true;
+        state.error = null;
+      })
+      .addCase(removeUser.rejected, (state, action) => {
+        state.loading = false;
+        state.refreshGroups = true;
+        state.error = action.payload;
+      });
   },
 });
-
-
-
-
-
-
-
 
 export default groupSlice.reducer;

@@ -17,12 +17,14 @@ import { io } from "socket.io-client";
 import GroupHeader from "../components/GroupComponents/GroupHeader";
 import GroupChatBar from "../components/GroupComponents/GroupChatBar";
 import GroupChatDisplay from "../components/GroupComponents/GroupChatDisplay";
+import customParser from 'socket.io-msgpack-parser';
 
 const Dashboard = () => {
   const socketServer = import.meta.env.VITE_REACT_APP_SOCKET_URL;
   const socket = io(socketServer, {
     transports: ["websocket"],
     upgrade: false,
+    parser: customParser
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -176,7 +178,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <section className="flex h-full bg-white rounded-md mx-12 shadow-xl">
+      <section className="flex h-full mx-12 bg-white rounded-md shadow-xl">
         {/* {openNewChatBox && <NewChat changeState={setOpenNewChatBox} />} */}
 
         {newGroupPanel && (
@@ -202,7 +204,7 @@ const Dashboard = () => {
         {/* Right Chatting Section */}
         <div className={`w-full h-[89vh] chat-background `}>
           {activeChat.group_name ? (
-            <div className="h-full relative">
+            <div className="relative h-full">
               {/* Top Bar Section */}
               <GroupHeader
                 activeChat={activeChat}
@@ -236,10 +238,10 @@ const Dashboard = () => {
               />
             </div>
           ) : (
-            <div className="h-full w-full flex flex-col justify-center text-xl text-center text-cblue">
+            <div className="flex flex-col justify-center w-full h-full text-xl text-center text-cblue">
               <img
                 width="500px"
-                className="w-100 mx-auto mb-2"
+                className="mx-auto mb-2 w-100"
                 src={mainDashboard}
                 alt="Welcome Image"
               />
@@ -247,7 +249,7 @@ const Dashboard = () => {
               <h2>Click 'Create Group' to get started</h2>
               <button
                 onClick={() => setNewGroupPanel(true)}
-                className="mt-4 mx-auto w-48 flex items-center justify-between bg-transparent hover:bg-cblue text-cblue font-semibold hover:text-white py-2 px-4 border border-cblue hover:border-transparent rounded-full"
+                className="flex items-center justify-between w-48 px-4 py-2 mx-auto mt-4 font-semibold bg-transparent border rounded-full hover:bg-cblue text-cblue hover:text-white border-cblue hover:border-transparent"
               >
                 Create Group <FaPlus />
               </button>

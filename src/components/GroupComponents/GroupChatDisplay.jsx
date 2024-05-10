@@ -5,6 +5,8 @@ import JoinGroupSection from "../JoinGroupSection";
 import chatBg from "../../assets/chatBackground.png";
 import GroupDetails from "./GroupDetails";
 import { useDispatch, useSelector } from "react-redux";
+import { useInView } from "react-intersection-observer";
+
 import {
   addUser,
   getUserGroups,
@@ -27,6 +29,12 @@ const GroupChatDisplay = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
+  const { ref, inView } = useInView({
+    /* Optional options */
+    threshold: 0,
+  });
+
+  console.log('inView :>> ', inView);
   const handleJoinGroup = (grpId, grpName) => {
     try {
       setActiveChat({ group_id: grpId, group_name: grpName });
@@ -101,7 +109,7 @@ const GroupChatDisplay = (props) => {
                         : "flex-row"
                     } gap-2.5 my-4  w-full  `}
                     key={index}
-                    ref={isLastMessage ? chatRef : null}
+                    ref={index === 0 ? ref  : ((messages.length - 1 === index) ? chatRef : null) }
                   >
                     <img
                       src={msg.senderPhoto}

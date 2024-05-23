@@ -17,7 +17,7 @@ const GroupChatBar = (props) => {
 
   const user = useSelector((state) => state.auth.user);
   const groups = useSelector((state) => state.groups.grps);
-
+  
   const handleEnterKey = (e) => {
     if (e.keyCode === 13 && !e.shiftKey) {
       e.preventDefault();
@@ -63,10 +63,14 @@ const GroupChatBar = (props) => {
   if (activeChat.group_name && isGroupJoinedByUser(groups, groupDetails?._id)) {
     return (
       <div className="absolute bottom-0 flex items-center justify-center  w-full bg-chatBg  pt-2 pb-2">
+        
+        {/* Attachment button */}
         <button className="h-10 w-10 me-5 ms-2 rounded-full bg-slate-300 shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
           <IoIosAttach className="mx-2 my-2 text-gray-600 font-bold text-2xl rotate-45" />
           <Dropzone />
         </button>
+        {/* Attachment button */}
+        
         <textarea
           className=" resize-none pl-3 w-5/6 py-3 rounded-md shadow-md"
           placeholder="Type a message"

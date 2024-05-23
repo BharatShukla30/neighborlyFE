@@ -58,9 +58,36 @@ function Dropzone() {
     setOpen(prev=>!prev)
   }
   
+  const uploadImageToS3 = async (file) => {
+      // Fetch the pre-signed URL from your server
+      ///get-presigned-url
+      
+      const response = await fetch(`/user/get-presigned-url?fileName=${file.name}`);
+      const { url } = await response.json();
+      console.log(url);
+      // Use the fetched URL to upload the file
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'image/jpeg',
+        },
+        body: file,
+      };
+    
+      const result = await fetch(url, options);
+      if (result.status === 200) {
+        console.log('Upload successful');
+      } else {
+        console.error('Upload failed');
+      }
+    }
+
+
   const uploadtoS3 = async (files) => {
-    console.log(files)
-    // S3 logic here
+    console.log("Here from Dropzone", files);
+
+    uploadImageToS3(files[0]);
+
     setTimeout(() => {
      
       setFiles([])

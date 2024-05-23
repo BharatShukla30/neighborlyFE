@@ -32,7 +32,7 @@ const Dashboard = () => {
     parser: customParser
   });
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
 
   // ----------------------------Selector-----------------------------
 

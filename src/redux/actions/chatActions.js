@@ -1,31 +1,32 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
+import {
+  GET_USER_CHATS_URL,
+  GET_CHAT_MESSAGES_URL
+} from "../../config/apiURLs";
 
 export const getUserChats = createAsyncThunk(
-    "user/chats",
-    async (_, {rejectWithValue}) => {
-        try{
-            const request = await axiosInstance.get(`/user/get-user-groups`);
-            const response = await request.data;
-            return response;
-        }
-        catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    } 
-)
+  "user/chats",
+  async (_, { rejectWithValue }) => {
+    try {
+      const request = await axiosInstance.get(GET_USER_CHATS_URL);
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 export const getChatMessages = createAsyncThunk(
-    "chat/messages",
-    async ({groupId, page}, {rejectWithValue}) => {
-        try {
-            const request = await axiosInstance.get(`/group/fetch-group-messages/${groupId}?page=${page}&limit=30`);
-            const response = await request.data;
-            return response;
-        }
-        catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
+  "chat/messages",
+  async ({ groupId, page }, { rejectWithValue }) => {
+    try {
+      const request = await axiosInstance.get(GET_CHAT_MESSAGES_URL(groupId, page));
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
     }
-)
-
+  }
+);

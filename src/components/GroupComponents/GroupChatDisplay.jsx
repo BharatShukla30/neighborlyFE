@@ -92,6 +92,7 @@ const GroupChatDisplay = (props) => {
               ?.slice()
               .reverse()
               .map((msg, index) => {
+                console.log("Messages: >>>>", msg);
                 const isLastMessage = messages.length - 1 === index;
                 return (
                   <div
@@ -124,7 +125,9 @@ const GroupChatDisplay = (props) => {
                             : msg.senderName}
                         </h1>
                         <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left  ">
-                          {msg.msg}
+                           {
+                            (msg.msg ? (msg.msg) :(<img className="h-36" src={msg.mediaLink}/>))
+                           }
                         </p>
                         <p className="text-[11px] font-thin text-right ps-1">
                           <span className=" pr-1 text-gray-500 dark:text-gray-400 text-right">

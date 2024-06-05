@@ -135,6 +135,7 @@ const Dashboard = () => {
         setGroupDetails(result.payload);
       });
       dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
+        console.log("Messages of a group >> ", result.payload);
         setMessages([...result.payload]);
       });
       joinRoom();

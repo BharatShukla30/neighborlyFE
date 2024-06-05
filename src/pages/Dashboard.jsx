@@ -3,10 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   nearestGroup,
   getUserGroups,
-  fetchGroupMessages,
+  fetchGroupMessages, 
   fetchGroupDetails,
   addUser,
 } from "../redux/actions/groupActions";
+
+import {
+  getChatMessages
+} from "../redux/actions/chatActions";
+
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import userHasCoordinates, { getUserCoordinates } from "../utils/helpers";
@@ -134,8 +139,13 @@ const Dashboard = () => {
       dispatch(fetchGroupDetails(activeChat.group_id)).then((result) => {
         setGroupDetails(result.payload);
       });
-      dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
-        console.log("Messages of a group >> ", result.payload);
+
+      const obj = {
+        groupId: activeChat.group_id,
+        viewPage: 0
+      }
+      
+      dispatch(fetchGroupMessages(obj)).then((result) => {
         setMessages([...result.payload]);
       });
       joinRoom();
@@ -224,6 +234,7 @@ const Dashboard = () => {
                 messages={messages}
                 groupDetails={groupDetails}
                 activeChat={activeChat}
+                setMessages={setMessages}
                 setActiveChat={setActiveChat}
                 setNearbyGroupPanel={setNearbyGroupPanel}
               />

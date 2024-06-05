@@ -5,12 +5,20 @@ import JoinGroupSection from "../JoinGroupSection";
 import chatBg from "../../assets/chatBackground.png";
 import GroupDetails from "./GroupDetails";
 import { useDispatch, useSelector } from "react-redux";
+import { useInView } from "react-intersection-observer";
+
 import {
   addUser,
   getUserGroups,
   nearestGroup,
 } from "../../redux/actions/groupActions";
 import { GoThumbsdown, GoThumbsup } from "react-icons/go";
+
+// For fetching messages on inView
+import {
+  fetchGroupMessages,
+} from "../../redux/actions/groupActions";
+import { useEffect, useState } from "react";
 
 const GroupChatDisplay = (props) => {
   const {
@@ -22,11 +30,42 @@ const GroupChatDisplay = (props) => {
     activeChat,
     setActiveChat,
     setNearbyGroupPanel,
+    setMessages
   } = props;
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
+
+  // Establishing state to manage the page number used for API calls to retrieve the subsequent set of messages.
+  const [viewPage, setViewPage] = useState(0);
+  const { ref, inView } = useInView({ 
+    /* Optional options */
+    threshold: 0,
+  });
+
+
+  useEffect(()=>{
+    if(inView){
+    setViewPage(prev=>prev+1);
+    }
+  }, [inView]);
+
+  useEffect(()=>{
+    const fetchNextPageOfMsg = () => {
+      const obj = {
+        groupId: activeChat.group_id,
+        viewPage: viewPage,
+      }
+      dispatch(fetchGroupMessages(obj)).then((result) => {
+            setMessages([...result.payload, ...messages]);
+      });
+    }
+    fetchNextPageOfMsg();
+    console.log(viewPage);
+  }, [viewPage]);
+
+  
   const handleJoinGroup = (grpId, grpName) => {
     try {
       setActiveChat({ group_id: grpId, group_name: grpName });
@@ -92,8 +131,9 @@ const GroupChatDisplay = (props) => {
               ?.slice()
               .reverse()
               .map((msg, index) => {
-                console.log("Messages: >>>>", msg);
+
                 const isLastMessage = messages.length - 1 === index;
+
                 return (
                   <div
                     className={`flex ${
@@ -102,7 +142,7 @@ const GroupChatDisplay = (props) => {
                         : "flex-row"
                     } gap-2.5 my-4  w-full  `}
                     key={index}
-                    ref={isLastMessage ? chatRef : null}
+                    ref={index === 0 ? ref  : ((messages.length - 1 === index) ? chatRef : null) }
                   >
                     <img
                       src={msg.senderPhoto}

@@ -9,7 +9,7 @@ import {
   UPDATE_USER_LOCATION_URL,
   LOAD_USER_URL,
   FETCH_CITIES_LIST_URL
-} from "../../config/apiURLs";
+} from "../../utils/apiURLs";
 
 
 axios.defaults.withCredentials = true;

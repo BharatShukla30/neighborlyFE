@@ -14,7 +14,7 @@ import {
   FETCH_NEARBY_USERS_URL,
   CHECK_GROUP_NAME_UNIQUENESS_URL,
   LEAVE_GROUP_URL
-} from "../../config/apiURLs";
+} from "../../utils/apiURLs";
 
 // User related actions
 export const getUserGroups = createAsyncThunk(

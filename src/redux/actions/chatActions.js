@@ -3,7 +3,7 @@ import axiosInstance from "../../config/axios";
 import {
   GET_USER_CHATS_URL,
   GET_CHAT_MESSAGES_URL
-} from "../../config/apiURLs";
+} from "../../utils/apiURLs";
 
 export const getUserChats = createAsyncThunk(
   "user/chats",

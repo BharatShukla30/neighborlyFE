@@ -53,11 +53,7 @@ const GroupChatDisplay = (props) => {
 
   useEffect(()=>{
     const fetchNextPageOfMsg = () => {
-      const obj = {
-        groupId: activeChat.group_id,
-        viewPage: viewPage,
-      }
-      dispatch(fetchGroupMessages(obj)).then((result) => {
+      dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
             setMessages([...result.payload, ...messages]);
       });
     }

@@ -59,11 +59,10 @@ export const fetchGroupDetails = createAsyncThunk(
  
 export const fetchGroupMessages = createAsyncThunk(
   "group/fetch-group-messages",
-  async (obj, { rejectWithValue }) => {
+  async (groupId, { rejectWithValue }) => {
     try {
       const request = await axiosInstance.get(FETCH_GROUP_MESSAGES_URL(groupId));
       const response = await request.data;
-      console.log(response);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

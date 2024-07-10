@@ -20,6 +20,43 @@ import {
 } from "../../redux/actions/groupActions";
 import { useEffect, useState } from "react";
 
+
+const MessageComponent = ({ msg }) => {
+  
+  const renderMedia = (mediaLink) => {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+
+    const extension = mediaLink.split('.').pop().toLowerCase();
+
+    if (imageExtensions.includes(extension)) {
+      return <img className="h-36" src={mediaLink} alt="media" />;
+    }
+
+    if (videoExtensions.includes(extension)) {
+      return (
+        <video className="h-auto w-auto" controls>
+          <source src={mediaLink} type={`video/${extension}`} />
+          Your browser does not support the video tag.
+        </video>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left">
+      {msg ? (msg.msg ? msg.msg : renderMedia(msg.mediaLink)) : null}
+    </p>
+  );
+};
+
+
+
+
+
+
 const GroupChatDisplay = (props) => {
   const {
     chatRef,
@@ -160,11 +197,7 @@ const GroupChatDisplay = (props) => {
                             ? "You"
                             : msg.senderName}
                         </h1>
-                        <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left  ">
-                           {
-                            (msg.msg ? (msg.msg) :(<img className="h-36" src={msg.mediaLink}/>))
-                           }
-                        </p>
+                        <MessageComponent msg={msg}/>
                         <p className="text-[11px] font-thin text-right ps-1">
                           <span className=" pr-1 text-gray-500 dark:text-gray-400 text-right">
                             {new Date(msg.sent_at).toLocaleTimeString("en-US", {

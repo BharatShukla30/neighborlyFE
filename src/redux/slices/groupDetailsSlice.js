@@ -11,7 +11,6 @@ const groupDetailsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-
       // Get Group Details Reducers
       .addCase(fetchGroupDetails.pending, (state, action) => {
         state.groupDetails = null;

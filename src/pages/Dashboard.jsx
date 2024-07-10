@@ -40,6 +40,7 @@ const Dashboard = () => {
   const groupSlice = useSelector((state) => state.groups);
 
   //  ----------------------------State-----------------------------
+  const [latestMessages, setLatestMessages] = useState({}); // State for storing group -> latestMsg
   const [newGroupPanel, setNewGroupPanel] = useState(false);
   let groups = useSelector((state) => state.groups.grps);
 
@@ -71,18 +72,29 @@ const Dashboard = () => {
 
   let chatRef = useRef(null);
   // ----------------------------socket-----------------------------
-
-  const joinRoom = () => {
-    if (user.username && activeChat?.group_id) {
-      console.log("Attempting to join room", {
-        username: user.username,
-        group_id: activeChat.group_id,
-      });
+  // Join all relevant rooms when the component mounts
+    useEffect(()=>{
+      console.log("On Landing>>> ", groups);
+      if(groups?.length > 0){
+        groups.forEach(group => joinRoom((group.group_id)));
+      }
+  
+  
+      // return () => {
+      //   if (groups?.length > 0) {
+      //     groups.forEach(group => leaveRoom(group.group_id));
+      //   }
+      //   socket.disconnect();
+      // };
+    }, [groups]);
+  
+  const joinRoom = (groupId) => {
+    if (user.username && groupId) {
       socket.emit(
         "join-room",
         {
           username: user.username,
-          group_id: activeChat.group_id,
+          group_id: groupId,
         },
         (response) => {
           console.log("Join room response:", response);
@@ -91,15 +103,18 @@ const Dashboard = () => {
     }
   };
 
-  const leaveRoom = () => {
+
+  const leaveRoom = (groupId) => {
     console.log("leave-room");
-    if (user.username && activeChat?.group_id) {
+    if (user.username && groupId) {
       socket.emit("leave-room", {
         username: user.username,
-        group_id: activeChat.group_id,
+        group_id: groupId,
       });
     }
   };
+
+  
 
   // ----------------------------UseEffect-----------------------------
 
@@ -145,17 +160,27 @@ const Dashboard = () => {
         console.log(result)
         setMessages([...result.payload]);
       });
-      joinRoom();
     }
   }, [activeChat]);
 
+  
   useEffect(() => {
     chatRef?.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
+ 
+
+
   useMemo(() => {
     socket.on("receive_message", (data) => {
+      // console.log("Socket details >>>> ", socket);
       console.log("Received message : ", data);
+      
+      setLatestMessages((prevLatestMessages) => ({
+        ...prevLatestMessages,
+        [data.group_id]: data.msg, // Assuming 'data' contains the message details and 'group_id'
+      }));
+
       if (data.senderName !== user.username) {
         setMessages((list) => [data, ...list]);
       }
@@ -164,6 +189,7 @@ const Dashboard = () => {
       socket.off("receive_message");
     };
   }, [socket]);
+
 
   const handleJoinGroup = (grpId, grpName) => {
     try {
@@ -199,6 +225,7 @@ const Dashboard = () => {
         )}
 
         <GroupsListSidebar
+          latestMessages={latestMessages}
           groups={groups}
           activeChat={activeChat}
           setActiveChat={setActiveChat}

@@ -26,15 +26,15 @@ const GroupChatBar = (props) => {
         const messageData = {
           group_id: activeChat.group_id,
           senderName: user?.username,
+          senderId: user._id,
           senderPhoto: user?.picture,
           msg: message,
           // ToDo: Need to delete sent_at when server handles the date
           sent_at: new Date(),
         };
 
-        socket.emit("send-message", messageData, (response) => {
-          console.log("Send message response:", response);
-        });
+        socket.emit("send-message", messageData);
+        console.log("console for debug>>>> ", messageData); 
         setMessages((list) => [messageData, ...list]);
         setNewMessage("");
       }
@@ -48,6 +48,7 @@ const GroupChatBar = (props) => {
       const messageData = {
         group_id: activeChat.group_id,
         senderName: user?.username,
+        sender_id: user._id,
         senderPhoto: user?.picture,
         msg: newMessage,
         sent_at: new Date(),

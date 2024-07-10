@@ -22,6 +22,7 @@ import EmptyUIUtil from "../EmptyUIUtil";
 
 const GroupsListSidebar = (props) => {
   const {
+    latestMessages, //latest msg for each grp
     activeChat,
     setActiveChat,
     setNewGroupPanel,
@@ -260,7 +261,7 @@ const GroupsListSidebar = (props) => {
           </div>
           <div className="group-list overflow-y-scroll h-[57vh]">
             {nearbyGroupPanel === false ? (
-              userGroups.length === 0 ? (
+              userGroups?.length === 0 ? (
                 <EmptyUIUtil
                   imageSource={NoUserGroups}
                   contentHeading="Discover Groups"
@@ -291,7 +292,13 @@ const GroupsListSidebar = (props) => {
                           alt="girl"
                           className="h-8 w-8 rounded-full"
                         />
+                        <div className="p-1">
                         <h1>{grp.group_name}</h1>
+                        {/* latest msg */}
+
+                        {console.log(">>>>>>>>>>> :", latestMessages)}
+                        {((Object.keys(latestMessages).length > 0) && (latestMessages[grp.group_id])) ?<h1 className="text-gray-700 px-1 py-1">{latestMessages[grp.group_id]}</h1>:<h1 className="text-gray-700 px-1 py-1">Media-File</h1>}
+                        </div>
                       </div>
                     </div>
                   );

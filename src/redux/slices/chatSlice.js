@@ -9,7 +9,7 @@ const chatSlice = createSlice({
         chatMessages: {},
         error: null
     },
-    reducers: {},
+    reducers: {}, 
     extraReducers: (builder) => {
         builder
         // Fethcing User's Chat List

@@ -5,12 +5,13 @@ import {
   getUserGroups,
   nearestGroup,
   removeUser,
+  fetchGroupMessages
 } from "../actions/groupActions";
 
 const groupSlice = createSlice({
   name: "groups",
   initialState: {
-    grps: [],
+    grps: [], 
     loading: false,
     nearbyGrps: [],
     uniqueGroup: {},
@@ -113,7 +114,7 @@ const groupSlice = createSlice({
         state.loading = false;
         state.refreshGroups = true;
         state.error = action.payload;
-      });
+      })
   },
 });
 

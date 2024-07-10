@@ -23,7 +23,7 @@ export const getUserGroups = createAsyncThunk(
     try {
       const request = await axiosInstance.get(USER_GROUPS_URL);
       const response = await request.data;
-      return response;
+     return response;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
     }
@@ -61,8 +61,9 @@ export const fetchGroupMessages = createAsyncThunk(
   "group/fetch-group-messages",
   async (groupId, { rejectWithValue }) => {
     try {
-      const request = await axiosInstance.get(FETCH_GROUP_MESSAGES_URL(groupId));
+      const request = await axiosInstance.get(FETCH_GROUP_MESSAGES_URL(groupId, 20));
       const response = await request.data;
+      console.log(response);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

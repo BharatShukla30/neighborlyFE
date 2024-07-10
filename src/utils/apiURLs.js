@@ -10,7 +10,7 @@ export const USER_GROUPS_URL = `${USER_BASE_URL}/get-user-groups`;
 // Group URLs
 export const CREATE_GROUP_URL = `${GROUP_BASE_URL}/create`;
 export const FETCH_GROUP_DETAILS_URL = (groupId) => `${GROUP_BASE_URL}/fetch-group-details/${groupId}`;
-export const FETCH_GROUP_MESSAGES_URL = (groupId) => `${GROUP_BASE_URL}/fetch-group-messages/${groupId}?page=1&limit=20`;
+export const FETCH_GROUP_MESSAGES_URL = (groupId, limit) => `${GROUP_BASE_URL}/fetch-group-messages/${groupId}?page=1&limit=${limit}`;
 export const UPDATE_GROUP_DETAILS_URL = `${GROUP_BASE_URL}/update-group-details`;
 export const NEAREST_GROUP_URL = (coordinates) => `${GROUP_BASE_URL}/nearest-group?latitude=${coordinates[0]}&longitude=${coordinates[1]}`;
 export const ADD_USER_URL = `${GROUP_BASE_URL}/add-user`;

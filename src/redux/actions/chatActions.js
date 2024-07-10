@@ -15,7 +15,7 @@ export const getUserChats = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data.message);
     }
-  }
+  } 
 );
 
 export const getChatMessages = createAsyncThunk(

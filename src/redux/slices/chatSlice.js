@@ -6,7 +6,7 @@ const chatSlice = createSlice({
     initialState: {
         loading: false,
         chats: [],
-        chatMessages: [],
+        chatMessages: {},
         error: null
     },
     reducers: {},
@@ -20,7 +20,10 @@ const chatSlice = createSlice({
         })
         .addCase(getUserChats.fulfilled, (state, action) => {
             state.loading = false;
-            state.chats = action.payload.groups;
+
+            state.chats = action.payload.chats.groups;
+            state.chatMessages = action.payload.chatMessages;
+
             state.error = null;
         })
         .addCase(getUserChats.rejected, (state, action) => {
@@ -36,7 +39,7 @@ const chatSlice = createSlice({
         })
         .addCase(getChatMessages.fulfilled, (state, action) => {
             state.loading = false;
-            state.chatMessages = action.payload;
+            state.chatMessages[action.payload.groupId] = action.payload.messages;
             state.error = null;
         })
         .addCase(getChatMessages.rejected, (state, action) => {

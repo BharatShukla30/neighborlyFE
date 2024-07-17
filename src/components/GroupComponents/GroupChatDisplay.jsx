@@ -5,12 +5,57 @@ import JoinGroupSection from "../JoinGroupSection";
 import chatBg from "../../assets/chatBackground.png";
 import GroupDetails from "./GroupDetails";
 import { useDispatch, useSelector } from "react-redux";
+import { useInView } from "react-intersection-observer";
+
 import {
   addUser,
   getUserGroups,
   nearestGroup,
 } from "../../redux/actions/groupActions";
 import { GoThumbsdown, GoThumbsup } from "react-icons/go";
+
+// For fetching messages on inView
+import {
+  fetchGroupMessages,
+} from "../../redux/actions/groupActions";
+import { useEffect, useState } from "react";
+
+
+const MessageComponent = ({ msg }) => {
+  
+  const renderMedia = (mediaLink) => {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+
+    const extension = mediaLink.split('.').pop().toLowerCase();
+
+    if (imageExtensions.includes(extension)) {
+      return <img className="h-36" src={mediaLink} alt="media" />;
+    }
+
+    if (videoExtensions.includes(extension)) {
+      return (
+        <video className="h-auto w-auto" controls>
+          <source src={mediaLink} type={`video/${extension}`} />
+          Your browser does not support the video tag.
+        </video>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left">
+      {msg ? (msg.msg ? msg.msg : renderMedia(msg.mediaLink)) : null}
+    </p>
+  );
+};
+
+
+
+
+
 
 const GroupChatDisplay = (props) => {
   const {
@@ -22,11 +67,38 @@ const GroupChatDisplay = (props) => {
     activeChat,
     setActiveChat,
     setNearbyGroupPanel,
+    setMessages
   } = props;
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
+
+  // Establishing state to manage the page number used for API calls to retrieve the subsequent set of messages.
+  const [viewPage, setViewPage] = useState(0);
+  const { ref, inView } = useInView({ 
+    /* Optional options */
+    threshold: 0,
+  });
+
+
+  useEffect(()=>{
+    if(inView){
+    setViewPage(prev=>prev+1);
+    }
+  }, [inView]);
+
+  useEffect(()=>{
+    const fetchNextPageOfMsg = () => {
+      dispatch(fetchGroupMessages(activeChat.group_id)).then((result) => {
+            setMessages([...result.payload, ...messages]);
+      });
+    }
+    fetchNextPageOfMsg();
+    console.log(viewPage);
+  }, [viewPage]);
+
+  
   const handleJoinGroup = (grpId, grpName) => {
     try {
       setActiveChat({ group_id: grpId, group_name: grpName });
@@ -92,7 +164,9 @@ const GroupChatDisplay = (props) => {
               ?.slice()
               .reverse()
               .map((msg, index) => {
+
                 const isLastMessage = messages.length - 1 === index;
+
                 return (
                   <div
                     className={`flex ${
@@ -101,7 +175,7 @@ const GroupChatDisplay = (props) => {
                         : "flex-row"
                     } gap-2.5 my-4  w-full  `}
                     key={index}
-                    ref={isLastMessage ? chatRef : null}
+                    ref={index === 0 ? ref  : ((messages.length - 1 === index) ? chatRef : null) }
                   >
                     <img
                       src={msg.senderPhoto}
@@ -123,9 +197,7 @@ const GroupChatDisplay = (props) => {
                             ? "You"
                             : msg.senderName}
                         </h1>
-                        <p className="block text-sm font-normal py-1 ps-2 pe-3 text-left  ">
-                          {msg.msg}
-                        </p>
+                        <MessageComponent msg={msg}/>
                         <p className="text-[11px] font-thin text-right ps-1">
                           <span className=" pr-1 text-gray-500 dark:text-gray-400 text-right">
                             {new Date(msg.sent_at).toLocaleTimeString("en-US", {

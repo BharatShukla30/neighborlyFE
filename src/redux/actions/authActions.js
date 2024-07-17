@@ -2,14 +2,23 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../config/axios";
 import { formUserCoordinatesObject } from "../../utils/helpers";
 
+import {
+  LOGIN_URL,
+  REGISTER_URL,
+  LOGOUT_URL,
+  UPDATE_USER_LOCATION_URL,
+  LOAD_USER_URL,
+  FETCH_CITIES_LIST_URL
+} from "../../utils/apiURLs";
+
+
 axios.defaults.withCredentials = true;
 
 export const loginUser = createAsyncThunk(
   "authentication/login",
   async (userCredentials, { rejectWithValue }) => {
     try {
-      console.log("auth action", userCredentials)
-      const request = await axios.post("/authentication/login", userCredentials);//changed
+      const request = await axios.post(LOGIN_URL, userCredentials);
       const response = await request.data;
       return response;
     } catch (error) {
@@ -19,11 +28,11 @@ export const loginUser = createAsyncThunk(
 );
 
 export const registerUser = createAsyncThunk(
-  "authentication/register",
+
+  "authentication/signin",
   async (userDetails, { rejectWithValue }) => {
     try {
-      console.log(userDetails)
-      const request = await axios.post("/authentication/register", userDetails);//changed
+      const request = await axios.post(REGISTER_URL, userDetails);
       const response = await request.data;
       return response;
     } catch (error) {
@@ -37,7 +46,7 @@ export const updateUserLocation = createAsyncThunk(
   async (locationDetails, { rejectWithValue }) => {
     try {
       const request = await axios.put(
-        "/user/update-user-location",
+        UPDATE_USER_LOCATION_URL,
         locationDetails
       );
       const response = await request.data;
@@ -53,10 +62,10 @@ export const updateUserLocation = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk(
-  "user/logout",
+  "authentication/logout",
   async (_, { rejectWithValue }) => {
     await axios
-      .get("/authentication/logout")
+      .get(LOGOUT_URL)
       .then((response) => {
         return response.data;
       })
@@ -70,7 +79,7 @@ export const loadUser = createAsyncThunk(
   "user/load",
   async (_, { rejectWithValue }) => {
     try {
-      const request = await axios.get("/user/me");
+      const request = await axios.get(LOAD_USER_URL);
       const response = await request.data;
       return response;
     } catch (error) {
@@ -83,7 +92,7 @@ export const fetchCitiesList = createAsyncThunk(
   "user/fetch-cities",
   async (_, { rejectWithValue }) => {
     try {
-      const request = await axios.get("/user/fetch-cities");
+      const request = await axios.get(FETCH_CITIES_LIST_URL);
       const response = await request.data;
       return response;
     } catch (error) {

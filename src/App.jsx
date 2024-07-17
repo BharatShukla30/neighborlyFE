@@ -10,6 +10,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Error404Boundary from "./pages/404ErrorBoundary";
 import Profile from "./pages/Profile";
 import Location from "./pages/Location";
+import Signup from './pages/Signup'
+import Login from './pages/Login'
 
 function App() {
   React.useEffect(() => {
@@ -18,9 +20,8 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-[100vh] bg-mainBg">
       <BrowserRouter>
-        <Header />
+        {/* <Header /> */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route element={<ProtectedRoute />}>
@@ -29,9 +30,13 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="location" element={<Location />} />
           <Route path="*" element={<Error404Boundary />} />
+          
+          {/* updated by vishal */}
+          <Route path='/Signup' element = {<Signup/>}/>
+          <Route path='/Login' element = {<Login/>}/>
+
         </Routes>
       </BrowserRouter>
-    </div>
   );
 }
 

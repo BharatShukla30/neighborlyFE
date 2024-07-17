@@ -27,6 +27,16 @@
     text-overflow: ellipsis;
 }
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none;
+  -webkit-text-security: disc;
+}
+
 .chat-background {
     background-image: url('./assets/chatBackground.png');
 }

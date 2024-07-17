@@ -5,10 +5,11 @@ import { formUserCoordinatesObject } from "../../utils/helpers";
 axios.defaults.withCredentials = true;
 
 export const loginUser = createAsyncThunk(
-  "user/login",
+  "authentication/login",
   async (userCredentials, { rejectWithValue }) => {
     try {
-      const request = await axios.post("/user/login", userCredentials);
+      console.log("auth action", userCredentials)
+      const request = await axios.post("/authentication/login", userCredentials);//changed
       const response = await request.data;
       return response;
     } catch (error) {
@@ -18,10 +19,11 @@ export const loginUser = createAsyncThunk(
 );
 
 export const registerUser = createAsyncThunk(
-  "user/signin",
+  "authentication/register",
   async (userDetails, { rejectWithValue }) => {
     try {
-      const request = await axios.post("/user/register", userDetails);
+      console.log(userDetails)
+      const request = await axios.post("/authentication/register", userDetails);//changed
       const response = await request.data;
       return response;
     } catch (error) {
@@ -54,7 +56,7 @@ export const logoutUser = createAsyncThunk(
   "user/logout",
   async (_, { rejectWithValue }) => {
     await axios
-      .get("/user/logout")
+      .get("/authentication/logout")
       .then((response) => {
         return response.data;
       })

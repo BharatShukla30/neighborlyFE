@@ -30,6 +30,7 @@ export const AUTH_BASE_URL = "/authentication";
 export const LOGIN_URL = `${AUTH_BASE_URL}/login`;
 export const REGISTER_URL = `${AUTH_BASE_URL}/register`;
 export const LOGOUT_URL = `${AUTH_BASE_URL}/logout`;
+export const VERIFY_OTP_URL = `${AUTH_BASE_URL}/verify-phone-otp`;
 
 // User URLs
 export const UPDATE_USER_LOCATION_URL = `${USER_BASE_URL}/update-user-location`;

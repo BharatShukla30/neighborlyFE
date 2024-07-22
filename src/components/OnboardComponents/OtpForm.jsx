@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react'
 import logo from '../../assets/Logo.svg'
 import { otpRegexPattern } from '../../utils/Regex'
 import { validateOtp } from '../../utils/Validators'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { loginUserWithOtp } from '../../redux/actions/authActions'
 
 const OtpForm = (props) => {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
   //props
   const {mobile, isLogin, setGotoOtp} = props
     
@@ -15,6 +20,13 @@ const OtpForm = (props) => {
     //useEffect.
     useEffect(()=>{
         console.log('otp sent to mobile',mobile.value)
+        fetch("http://localhost:5000/authentication/send-phone-otp",{
+            method:"POST",
+            headers:{'Content-type':"application/json"},
+            body:JSON.stringify({
+                phoneNumber:`${mobile.value}`
+            })
+        })
     },[])
 
 
@@ -48,10 +60,48 @@ const OtpForm = (props) => {
         if(otpValidatorResult.status) {
             if(isLogin) {
                 //login logic
-                console.log('login done')
+                const formData = {
+                    phoneNumber: mobile.value,
+                    otp: OTP
+                }
+                dispatch(loginUserWithOtp(formData))
+                                .then((result) => {
+                                    console.log(result)
+                                    if (result.payload?.user) {
+                                      console.log("User registered successfully")
+                                      navigate("/location")
+                                    }
+                                  })
+
+
+
+                // fetch("http://localhost:5000/authentication/verify-phone-otp",{
+                //     method:"POST",
+                //     headers:{'Content-type':"application/json"},
+                //     body:JSON.stringify({
+                //         "phoneNumber": `${mobile.value}`,
+                //         "otp": `${OTP}`
+                //     })
+                // }).then((res)=>res.json())
+                //   .then((data)=>{
+                //     if(data.success){
+                //         navigate("/location")
+                //         console.log('login done')
+                //     }
+                // })
             }
             else{
                 //signup logic
+                fetch("http://localhost:5000/authentication/verify-phone-otp",{
+                    method:"POST",
+                    headers:{'Content-type':"application/json"},
+                    body:JSON.stringify({
+                        "phoneNumber": `${mobile.value}`,
+                        "otp": `${OTP}`
+                    })
+                }).then((res)=>{
+                    console.log(res.json())
+                })
                 console.log('signup done')
             }
         }

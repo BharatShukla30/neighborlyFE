@@ -4,13 +4,13 @@ import { otpRegexPattern } from '../../utils/Regex'
 import { validateOtp } from '../../utils/Validators'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { loginUserWithOtp } from '../../redux/actions/authActions'
+import { authUserWithEmailOtp, authUserWithPhoneOtp, sendOtpToEmail, sendOtpToPhone } from '../../redux/actions/authActions'
 
 const OtpForm = (props) => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
   //props
-  const {mobile, isLogin, setGotoOtp} = props
+  const {mobile, isLogin, setGotoOtp, mobileMethod,emailData} = props
     
   // usesates.
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
@@ -19,14 +19,12 @@ const OtpForm = (props) => {
                                     
     //useEffect.
     useEffect(()=>{
-        console.log('otp sent to mobile',mobile.value)
-        fetch("http://localhost:5000/authentication/send-phone-otp",{
-            method:"POST",
-            headers:{'Content-type':"application/json"},
-            body:JSON.stringify({
-                phoneNumber:`${mobile.value}`
-            })
-        })
+        console.log('otp sent',mobileMethod ? mobile.value : emailData.email)
+        const data = {phoneNumber:mobile.value}
+        const data2 = {email:emailData.email}
+        
+        mobileMethod ? (dispatch(sendOtpToPhone(data)).then(console.log('otp sent to phone'))) : (dispatch(sendOtpToEmail(data2)).then(console.log('otp sent to email')))    
+        
     },[])
 
 
@@ -64,45 +62,46 @@ const OtpForm = (props) => {
                     phoneNumber: mobile.value,
                     otp: OTP
                 }
-                dispatch(loginUserWithOtp(formData))
-                                .then((result) => {
-                                    console.log(result)
-                                    if (result.payload?.user) {
-                                      console.log("User registered successfully")
-                                      navigate("/location")
+                
+                dispatch(authUserWithPhoneOtp(formData))
+                                    .then((result) => {
+                                        console.log(result)
+                                        if (result.payload?.user) {
+                                            console.log("User signed in successfully")
+                                            navigate("/location")
+                                        }
                                     }
-                                  })
-
-
-
-                // fetch("http://localhost:5000/authentication/verify-phone-otp",{
-                //     method:"POST",
-                //     headers:{'Content-type':"application/json"},
-                //     body:JSON.stringify({
-                //         "phoneNumber": `${mobile.value}`,
-                //         "otp": `${OTP}`
-                //     })
-                // }).then((res)=>res.json())
-                //   .then((data)=>{
-                //     if(data.success){
-                //         navigate("/location")
-                //         console.log('login done')
-                //     }
-                // })
+                                )
             }
             else{
                 //signup logic
-                fetch("http://localhost:5000/authentication/verify-phone-otp",{
-                    method:"POST",
-                    headers:{'Content-type':"application/json"},
-                    body:JSON.stringify({
-                        "phoneNumber": `${mobile.value}`,
-                        "otp": `${OTP}`
-                    })
-                }).then((res)=>{
-                    console.log(res.json())
-                })
-                console.log('signup done')
+
+                const formData = {
+                    phoneNumber: mobile.value,
+                    otp: OTP
+                }
+                const formData2 = {
+                    "email": emailData.email ,
+                    "otp": OTP,
+                    "verificationFor":"email-verify"
+                }
+                mobileMethod ? (dispatch(authUserWithPhoneOtp(formData))
+                                    .then((result) => {
+                                        console.log(result)
+                                        if (result.payload?.user) {
+                                            console.log("User signed in successfully")
+                                            navigate("/location")
+                                        }
+                                    }
+                                )) : (dispatch(authUserWithEmailOtp(formData2))
+                                        .then((result)=>{
+                                            console.log(result)
+                                            if(result.payload?.message === "Email verified successfully"){
+                                                console.log("User signed in successfully")
+                                                navigate("/location")   
+                                            }
+                                        }
+                                ))
             }
         }
         else {
@@ -126,7 +125,7 @@ const OtpForm = (props) => {
         
         <div className='flex flex-col text-[#0A0A0A]'>
             <p className='text-h3 font-bold'> Enter Verification Code</p>
-            <p className='text-body2 font-normal text-[#666666]'>We have sent a verification code to your phone number &nbsp;<font className='text-body2 font-medium text-[#635BFF]'>{mobile.value}.</font></p>
+            <p className='text-body2 font-normal text-[#666666]'>We have sent a verification code to your {mobileMethod ? 'phone number':'email'} &nbsp;<font className='text-body2 font-medium text-[#635BFF]'>{mobileMethod ? mobile.value : emailData.email}.</font></p>
         </div>
 
         <div className='flex flex-col gap-[.5rem]'>
@@ -152,7 +151,7 @@ const OtpForm = (props) => {
                                             Continue
                                         </button>
             <p className = 'text-center font-bold text-[#635BFF] text-body2' onClick={ handleResendCode }>Resend code?</p>
-            <p className = 'text-center font-bold text-[#635BFF] text-body2' onClick={ ()=>{setGotoOtp(false)} }>Change phone number</p>
+            <p className = 'text-center font-bold text-[#635BFF] text-body2' onClick={ ()=>{setGotoOtp(false)} }>{mobileMethod ? "Change phone number" : ""}</p>
         </div>
     </div>
 

@@ -11,10 +11,23 @@ const OtpForm = (props) => {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [err , setErr] = useState({isError : false,
                                     message : ''})
-                                    
+    
+    // Adding send otp API
+    const sendOtp = async (phoneNumber) => {
+        const response = await fetch('/authentication/send-phone-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ phoneNumber: phoneNumber }),
+        });
+        const data = await response.json();
+        console.log("Data >>>>>>>>>>> :" , data);
+    }
     //useEffect.
     useEffect(()=>{
         console.log('otp sent to mobile',mobile.value)
+        sendOtp(mobile.value);
     },[])
 
 
@@ -42,6 +55,23 @@ const OtpForm = (props) => {
         }
     }
 
+       // Adding send otp API
+       const verifyOtp = async (otp, phoneNumber) => {
+        const response = await fetch('/authentication/verify-phone-otp', {
+                method: 'POST',
+                headers:{
+                'Content-Type': 'application/json',
+                body: JSON.stringify({
+                    "phoneNumber": phoneNumber,
+                    "otp":  otp
+                }),
+                'mode': 'no-cors'
+                }
+        });
+        const data = await response.json();
+        console.log("Data >>>>>>>>>>> :" , data);
+    }
+
     const handleContinue = ()=>{
         const OTP = otp.join('')
         const otpValidatorResult = validateOtp(OTP)
@@ -52,6 +82,7 @@ const OtpForm = (props) => {
             }
             else{
                 //signup logic
+                verifyOtp(OTP, mobile.value);
                 console.log('signup done')
             }
         }

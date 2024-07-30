@@ -16,7 +16,19 @@ const OtpForm = (props) => {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [err , setErr] = useState({isError : false,
                                     message : ''})
-                                    
+    
+    // Adding send otp API
+    const sendOtp = async (phoneNumber) => {
+        const response = await fetch('/authentication/send-phone-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ phoneNumber: phoneNumber }),
+        });
+        const data = await response.json();
+        console.log("Data >>>>>>>>>>> :" , data);
+    }
     //useEffect.
     useEffect(()=>{
         console.log('otp sent',mobileMethod ? mobile.value : emailData.email)
@@ -50,6 +62,23 @@ const OtpForm = (props) => {
         else if (val ==='' && e.target.previousSibling){
             e.target.previousSibling.focus()
         }
+    }
+
+       // Adding send otp API
+       const verifyOtp = async (otp, phoneNumber) => {
+        const response = await fetch('/authentication/verify-phone-otp', {
+                method: 'POST',
+                headers:{
+                'Content-Type': 'application/json',
+                body: JSON.stringify({
+                    "phoneNumber": phoneNumber,
+                    "otp":  otp
+                }),
+                'mode': 'no-cors'
+                }
+        });
+        const data = await response.json();
+        console.log("Data >>>>>>>>>>> :" , data);
     }
 
     const handleContinue = ()=>{

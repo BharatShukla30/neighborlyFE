@@ -102,6 +102,7 @@ const LogInForm = (props) => {
     }
 
     const handleContinueWithEmail = () => {
+        
         setMethodMobile(false)
         clearMobile()
     }

@@ -9,6 +9,10 @@ const Login = () => {
 
   const { isAuthenticated } = useSelector((state) => state.auth)
   const navigate = useNavigate();
+  const [mobileMethod, setMobileMethod] = useState(true);
+  const [emailData, setEmailData] = useState({ email:"",
+                                               password: "" 
+                                            })
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,7 +33,7 @@ const Login = () => {
         
         <Left/>
         { gotoOtp ? 
-          <OtpForm mobile = {mobile}  isLogin = {true} setGotoOtp = {setGotoOtp}/>
+          <OtpForm mobile = {mobile}  isLogin = {true} setGotoOtp = {setGotoOtp} mobileMethod={mobileMethod} emailData={emailData} />
           :
           <LogInForm setGotoOtp = {setGotoOtp} mobile = {mobile} setMobile = {setMobile}/>
         }

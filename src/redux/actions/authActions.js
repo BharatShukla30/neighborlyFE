@@ -8,7 +8,11 @@ import {
   LOGOUT_URL,
   UPDATE_USER_LOCATION_URL,
   LOAD_USER_URL,
-  FETCH_CITIES_LIST_URL
+  FETCH_CITIES_LIST_URL,
+  VERIFY_OTP_URL,
+  SEND_OTP_URL,
+  SEND_EMAIL_OTP_URL,
+  VERIFY_EMAIL_OTP_URL
 } from "../../utils/apiURLs";
 
 
@@ -93,6 +97,61 @@ export const fetchCitiesList = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const request = await axios.get(FETCH_CITIES_LIST_URL);
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+
+export const sendOtpToPhone = createAsyncThunk(
+
+  "authentication/send-phone-otp",
+  async (userDetails, { rejectWithValue }) => {
+    try {
+      const request = await axios.post(SEND_OTP_URL, userDetails);
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+export const authUserWithPhoneOtp = createAsyncThunk(
+
+  "authentication/verify-phone-otp",
+  async (userDetails, { rejectWithValue }) => {
+    try {
+      const request = await axios.post(VERIFY_OTP_URL, userDetails);
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const sendOtpToEmail = createAsyncThunk(
+
+  "authentication/send-otp",
+  async (userDetails, { rejectWithValue }) => {
+    try {
+      const request = await axios.post(SEND_EMAIL_OTP_URL, userDetails);
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+export const authUserWithEmailOtp = createAsyncThunk(
+
+  "authentication/verify-otp",
+  async (userDetails, { rejectWithValue }) => {
+    try {
+      const request = await axios.post(VERIFY_EMAIL_OTP_URL, userDetails);
       const response = await request.data;
       return response;
     } catch (error) {

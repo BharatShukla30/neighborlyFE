@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../assets/Logo.svg'
 import google from '../../assets/Google.svg'
 import Email from '../../assets/Email.svg'
@@ -15,9 +17,10 @@ import { registerUser } from "../../redux/actions/authActions"
 
 const SignUpForm = (props) => {
     //props
-    const { setGotoOtp, mobile, setMobile} = props
+    const { setGotoOtp, mobile, setMobile, setMobileMethod,setEmailData} = props
 
-
+    // warning
+    const notify = () => toast("signup failed");
 
     //usestates
     const [methodMobile, setMethodMobile] = useState(true)
@@ -80,7 +83,19 @@ const SignUpForm = (props) => {
         if(methodMobile) {
             const mobileValidatorResult = validatePhone(mobile.value)
             if(mobileValidatorResult.status) {
-                setGotoOtp(true)
+                const formData = {
+                    phoneNumber: mobile.value,
+                }
+                dispatch(registerUser(formData))
+                .then((result) => {
+                    console.log(result)
+                    if (result.payload?.user) {
+                        console.log("User registered successfully")
+                        setGotoOtp(true)
+                    }else{
+                        notify()
+                    }
+                })
             }
             else {
                 setMobile((prev)=>({...prev, isError: true, errMessage : mobileValidatorResult.errMessage}))
@@ -103,15 +118,18 @@ const SignUpForm = (props) => {
                                                   password : password.value,
                                                 //   confirm_password : repassword.value
                                                 }
-                                
+                                setEmailData(formData)
                                 dispatch(registerUser(formData))
                                 .then((result) => {
                                     console.log(result)
                                     if (result.payload?.user) {
                                       console.log("User registered successfully")
-                                      navigate("/location")
+                                      setMobileMethod(false)
+                                      setGotoOtp(true)
+                                    }else{
+                                        notify() 
                                     }
-                                  })
+                                })
                             }
                             else {
                                 setRepassword((prev) => ({...prev , isError : true, errMessage : `Re-password is not same as password`}))
@@ -310,6 +328,7 @@ const SignUpForm = (props) => {
 
                     <p className=' text-[#666666] text-small font-medium'>By clicking the above button and creating an account, you have read and accepted the <font className ='font-bold text-[#635BFF]'> Terms of Service </font> and acknowledged our <font className ='font-bold text-[#635BFF]'> Privacy Policy </font>.</p>
                 </div> 
+                <ToastContainer/>
         </div>
   )
 }

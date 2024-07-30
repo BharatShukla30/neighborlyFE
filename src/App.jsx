@@ -13,6 +13,7 @@ import Location from "./pages/Location";
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 
+
 function App() {
   React.useEffect(() => {
     store.dispatch(loadUser());
@@ -34,6 +35,7 @@ function App() {
           {/* updated by vishal */}
           <Route path='/Signup' element = {<Signup/>}/>
           <Route path='/Login' element = {<Login/>}/>
+
 
         </Routes>
       </BrowserRouter>

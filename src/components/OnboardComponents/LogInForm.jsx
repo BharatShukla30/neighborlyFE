@@ -1,6 +1,5 @@
-import React, {useState} from 'react'
+import React, {useState , useEffect} from 'react'
 import logo from '../../assets/Logo.svg'
-import google from '../../assets/Google.svg'
 import Email from '../../assets/Email.svg'
 import or from '../../assets/or.svg'
 import pass from '../../assets/Password.svg'
@@ -10,10 +9,59 @@ import { useNavigate } from 'react-router-dom'
 import { phoneRegexPattern } from '../../utils/Regex'
 import { validatePhone, validateEmail, validatePassword } from '../../utils/Validators'
 import { useDispatch } from 'react-redux'
-import { loginUser } from '../../redux/actions/authActions'
+import { googleAuth, loginUser } from '../../redux/actions/authActions'
+import GoogleLoginButton from './GoogleLoginButton'
 
 const LogInForm = (props) => {
     const { setGotoOtp, mobile, setMobile} = props
+
+
+    //Google Auth use effect
+    useEffect(()=>{
+        const handleRedirect = async () =>{
+
+            const param = new URLSearchParams(window.location.search);
+
+            const code = param.get('code');
+            if(code){
+                const clientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID;
+                const clientSecret = import.meta.env.VITE_REACT_APP_GOOGLE_SECRET_ID;
+                const redirectUri = `${import.meta.env.VITE_REACT_APP_URL}/login`
+
+                try {
+                    const data = {
+                        client_id:clientId,
+                        client_secret:clientSecret,
+                        code:code,
+                        grant_type:'authorization_code',
+                        redirect_uri:redirectUri
+                    }
+                    fetch('https:oauth2.googleapis.com/token', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body:new URLSearchParams(data),
+                    }).then((response)=>{
+                        return response.json()
+                    }).then((data)=>{
+                        console.log(data)                        
+                        dispatch(googleAuth({token:data.id_token}))
+                                        .then((result)=>{
+                                            console.log(result)
+                                            if (result.payload?.user) {
+                                                console.log("User signed in successfully")
+                                                navigate("/feed")
+                                            }
+                                        })
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        }
+        handleRedirect();
+    },[]);
 
     //usestates
     const [methodMobile, setMethodMobile] = useState(true)
@@ -87,7 +135,7 @@ const LogInForm = (props) => {
                             console.log(result)
                             if (result.payload?.user) {
                               console.log("User logged successfully")
-                              navigate("/location")
+                              navigate("/feed")
                             }
                           })
                     }
@@ -215,14 +263,7 @@ const LogInForm = (props) => {
                                     <img  src={or}/>
                                 
                                     {/* continue with google */}
-                                    <button className='flex flex-row items-center py-[0.6rem]  gap-[.5rem] border-[#0A0A0A] border justify-center  rounded-[1.75rem]'
-                                            onClick={ handleContinueWithGoogle }>
-                                        <img className='w-[2.5rem] h-[2.5rem]'
-                                             src={google} 
-                                             alt="google icon"/>
-
-                                        <span className='text-body2 font-medium'>Continue with Google</span>
-                                    </button>
+                                    <GoogleLoginButton/>
 
                                     {/* continue with email */}
                                     { methodMobile && 

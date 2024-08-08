@@ -12,7 +12,8 @@ import {
   VERIFY_OTP_URL,
   SEND_OTP_URL,
   SEND_EMAIL_OTP_URL,
-  VERIFY_EMAIL_OTP_URL
+  VERIFY_EMAIL_OTP_URL,
+  GOOGLE_AUTHENTICATION_URL
 } from "../../utils/apiURLs";
 
 
@@ -152,6 +153,20 @@ export const authUserWithEmailOtp = createAsyncThunk(
   async (userDetails, { rejectWithValue }) => {
     try {
       const request = await axios.post(VERIFY_EMAIL_OTP_URL, userDetails);
+      const response = await request.data;
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const googleAuth = createAsyncThunk(
+
+  "authentication/google/login",
+  async (userDetails, { rejectWithValue }) => {
+    try {
+      const request = await axios.post(GOOGLE_AUTHENTICATION_URL, userDetails);
       const response = await request.data;
       return response;
     } catch (error) {

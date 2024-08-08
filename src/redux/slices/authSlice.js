@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { authUserWithPhoneOtp, fetchCitiesList, loadUser, loginUser, logoutUser, registerUser, sendOtpToPhone, updateUserLocation } from "../actions/authActions";
+import { authUserWithPhoneOtp, fetchCitiesList, googleAuth, loadUser, loginUser, logoutUser, registerUser, sendOtpToPhone, updateUserLocation } from "../actions/authActions";
 
 const authSlice = createSlice({
     name: "auth",
@@ -145,6 +145,26 @@ const authSlice = createSlice({
             state.error = null;
         })
         .addCase(authUserWithPhoneOtp.rejected, (state, action) => {
+            state.loading = false;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = action.payload;
+        })
+        
+        //User Authentication With OTP
+        .addCase(googleAuth.pending, (state, action) => {
+            state.loading = true;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = null;
+        })
+        .addCase(googleAuth.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.isAuthenticated = true;
+            state.error = null;
+        })
+        .addCase(googleAuth.rejected, (state, action) => {
             state.loading = false;
             state.user = null;
             state.isAuthenticated = false;

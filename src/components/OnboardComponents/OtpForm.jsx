@@ -97,7 +97,7 @@ const OtpForm = (props) => {
                                         console.log(result)
                                         if (result.payload?.user) {
                                             console.log("User signed in successfully")
-                                            navigate("/location")
+                                            navigate("/feed")
                                         }
                                     }
                                 )
@@ -119,7 +119,7 @@ const OtpForm = (props) => {
                                         console.log(result)
                                         if (result.payload?.user) {
                                             console.log("User signed in successfully")
-                                            navigate("/location")
+                                            navigate("/feed")
                                         }
                                     }
                                 )) : (dispatch(authUserWithEmailOtp(formData2))
@@ -127,7 +127,7 @@ const OtpForm = (props) => {
                                             console.log(result)
                                             if(result.payload?.message === "Email verified successfully"){
                                                 console.log("User signed in successfully")
-                                                navigate("/location")   
+                                                navigate("/feed")   
                                             }
                                         }
                                 ))

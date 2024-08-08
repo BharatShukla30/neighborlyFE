@@ -34,6 +34,7 @@ export const SEND_OTP_URL = `${AUTH_BASE_URL}/send-phone-otp`;
 export const VERIFY_OTP_URL = `${AUTH_BASE_URL}/verify-phone-otp`;
 export const SEND_EMAIL_OTP_URL = `${AUTH_BASE_URL}/send-otp`;
 export const VERIFY_EMAIL_OTP_URL = `${AUTH_BASE_URL}/verify-otp`;
+export const GOOGLE_AUTHENTICATION_URL = `${AUTH_BASE_URL}/google/login`;
 
 // User URLs
 export const UPDATE_USER_LOCATION_URL = `${USER_BASE_URL}/update-user-location`;

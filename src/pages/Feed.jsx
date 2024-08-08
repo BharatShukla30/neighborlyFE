@@ -4,9 +4,14 @@ import Posts from '../components/Posts'
 import PostCreation from '../components/PostCreation'
 import SideNavbar from '../components/SideNavbar'
 import CommunityBox from '../components/CommunityBox'
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const Feed = () => {
-  return (
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
+  return isAuthenticated ? (
     <div className='bg-[#E1DFF8] h-auto'>
       <FeedHeader />
       <div className='flex'>
@@ -21,6 +26,8 @@ const Feed = () => {
       </div>
       </div>
     </div>
+  ) : (
+    navigate('/')
   )
 }
 

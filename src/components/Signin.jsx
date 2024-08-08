@@ -13,7 +13,7 @@ const SignIn = ({ setSignin }) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/feed");
     }
   }, [isAuthenticated]);
 
@@ -39,7 +39,7 @@ const SignIn = ({ setSignin }) => {
         if (payload?.success) {
           //Check if user coordinates are not set
           if (userHasCoordinates(payload?.user)) {
-            navigate("/dashboard");
+            navigate("/feed");
           } else {
             navigate("/location");
           }

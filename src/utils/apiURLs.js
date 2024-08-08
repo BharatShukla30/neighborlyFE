@@ -3,6 +3,7 @@
 // Define base URLs
 export const USER_BASE_URL = "/user";
 export const GROUP_BASE_URL = "/group";
+export const WALL_BASE_URL = "/wall";
 
 // User URLs
 export const USER_GROUPS_URL = `${USER_BASE_URL}/get-user-groups`;
@@ -19,6 +20,9 @@ export const MAKE_GROUP_PERMANENT_URL = `${GROUP_BASE_URL}/make-group-permanent`
 export const FETCH_NEARBY_USERS_URL = (body) => `${GROUP_BASE_URL}/fetch-nearby-users?latitude=${body?.latitude}&longitude=${body?.longitude}&karma_need=${body?.karma}`;
 export const CHECK_GROUP_NAME_UNIQUENESS_URL = (name) => `${GROUP_BASE_URL}/is-group-unique?name=${name}`;
 export const LEAVE_GROUP_URL = `${GROUP_BASE_URL}/remove-user`;
+
+//Wall URLs
+export const FETCH_POSTS_URL = `${WALL_BASE_URL}/fetch-posts?home=false`
 
 
 

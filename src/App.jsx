@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import Location from "./pages/Location";
 import Signup from './pages/Signup'
 import Login from './pages/Login'
+import AboutUs from "./pages/AboutUs";
+import ProductDesign from "./pages/productDesign";
 
 function App() {
   React.useEffect(() => {
@@ -27,16 +29,21 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
-          <Route path="profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="location" element={<Location />} />
           <Route path="*" element={<Error404Boundary />} />
           
           {/* updated by vishal */}
           <Route path='/Signup' element = {<Signup/>}/>
           <Route path='/Login' element = {<Login/>}/>
+          {/* updated by Krish */}
+          <Route path='/About' element = {<AboutUs/>}/>
+
 
         </Routes>
       </BrowserRouter>
+      // <ProductDesign/>
+      
   );
 }
 

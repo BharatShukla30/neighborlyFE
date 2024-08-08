@@ -51,7 +51,7 @@ const Header = () => {
   const handleDashboard = () => {
     setMenuOpen(false);
     setMobileMenuOpen(false);
-    navigate("/dashboard");
+    navigate("/feed");
   };
 
   return (

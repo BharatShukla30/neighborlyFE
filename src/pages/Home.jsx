@@ -10,7 +10,7 @@ const Home = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/feed");
     }
   }, [isAuthenticated]);
 

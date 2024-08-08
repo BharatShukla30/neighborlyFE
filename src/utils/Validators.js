@@ -34,6 +34,7 @@ export const validateEmail = (email) => {
 export const validatePassword = (password) => {
     // added to bypass 
     // return true;
+    return new validatorResult(true, '')
     return new validatorResult(true, 'done')
                             if(password.length === 0) {
                                 return new validatorResult(false, 'Fill your password.')

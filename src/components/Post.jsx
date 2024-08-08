@@ -6,51 +6,51 @@ import couple from '../assets/beautyIcon.svg'
 import share from '../assets/shareIcon.svg'
 
 
-const Post = () => {
+const Post = (props) => {
+
+  const {username,title,city,body,cheers,commentCount,boos,awardsCount,userProfilePicture,multimedia} = props;
+
+
   return (
-    <div className="flex flex-col items-start p-6 gap-8 w-[856px] h-[302px] bg-white rounded-2xl mb-4">
+    <div className="flex flex-col items-start  w-[856px] max-h-fit bg-white rounded-2xl p-4 mb-3">
       <div className="flex items-center gap-2">
         <img
           className="w-10 h-10 rounded-full"
-          src="https://w0.peakpx.com/wallpaper/979/89/HD-wallpaper-purple-smile-design-eye-smily-profile-pic-face-thumbnail.jpg"
+          src={userProfilePicture}
           alt="Profile"
         />
         <div>
-          <div className="font-semibold">James Williams</div>
-          <div className="text-gray-500 text-sm">United States</div>
+          <div className="font-semibold">{username}</div>
+          <div className="text-gray-500 text-sm">{city}</div>
         </div>
       </div>
-      <div className="text-gray-700">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Duis aute irure dolor
-        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-        paria
+      <div className="text-gray-700 my-3">
+        {body}
+      </div>
+      <div>
+        {multimedia?<img src={multimedia} alt="img" className="h-60 my-7"/> : ""}
       </div>
       <div className="flex justify-between w-full">
         <div className="flex gap-6 font-semibold text-gray-600">
           <div className="flex items-center border rounded-3xl gap-2 border-[#B8B8B8] box-border w-fit h-12 justify-center px-2">
             <img src={glassCheers} alt="Icon" />
-            <span>02</span>
+            <span>{cheers>0?cheers:0}</span>
           </div>
           <div className="flex items-center border rounded-3xl gap-2 border-[#B8B8B8] box-border w-fit h-12 justify-center px-2">
             <img src={booyaah} alt="Icon" />
-            <span>02</span>
+            <span>{boos}</span>
           </div>
           <div className="flex items-center border rounded-3xl gap-2 border-[#B8B8B8] box-border w-fit h-12 justify-center px-2">
             <img src={comment} alt="Icon" />
-            <span>02</span>
+            <span>{commentCount}</span>
           </div>
           <div className="flex items-center border rounded-3xl gap-2 border-[#B8B8B8] box-border w-fit h-12 justify-center px-2">
             <img src={couple} alt="Icon" />
-            <span>02</span>
+            <span>{awardsCount}</span>
           </div>
-          <div className="flex items-center border rounded-3xl gap-2 border-[#B8B8B8] box-border w-fit h-12 justify-center px-2">
-          <img src={share} alt="Icon" />
-          <span>02</span>
-        </div>
+          <button className="flex items-center border rounded-3xl gap-2 border-[#B8B8B8] box-border w-fit h-12 justify-center px-2">
+            <img src={share} alt="Icon" />
+          </button>
         </div>
       </div>
     </div>

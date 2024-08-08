@@ -1,32 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Post from '../components/Post'
 
-const Posts = () => {
-   const [posts, setPosts] = useState([]);
-
-   useEffect(() => {
-      const fetchPosts = async () => {
-        try {
-          const response = await fetch(import.meta.env.VITE_REACT_APP_API_URL+'/api/posts', { mode: 'no-cors'}); // Replace with your actual endpoint
-          const data = await response.json();
-          setPosts(data);
-          console.log(data)
-        } catch (error) {
-          console.error('Error fetching posts:', error);
-        }
-      };
-  
-      fetchPosts();
-  }, []);
-
+const Posts = ({postList}) => {
+  console.log(postList,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
   return (
     <div className='flex flex-col items-baseline'>
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
+      
+      {
+        postList?.map((post)=><Post key={post.contentid} username={post.username} title={post.title} city={post.city} body={post.body} cheers={post.cheers} commentCount={post.commentCount} boos={post.boos} awardsCount={post.awards.length} userProfilePicture={post.userProfilePicture} multimedia={post.multimedia}/>)
+      }
 
     </div>
   )

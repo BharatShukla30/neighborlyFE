@@ -5,6 +5,7 @@ import { validateOtp } from '../../utils/Validators'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { authUserWithEmailOtp, authUserWithPhoneOtp, sendOtpToEmail, sendOtpToPhone } from '../../redux/actions/authActions'
+import Cookies from 'js-cookie';
 
 const OtpForm = (props) => {
     const navigate = useNavigate()
@@ -97,6 +98,7 @@ const OtpForm = (props) => {
                                         console.log(result)
                                         if (result.payload?.user) {
                                             console.log("User signed in successfully")
+                                            Cookies.set('refreshToken', result.payload.refreshToken, { expires: 7 });
                                             navigate("/feed")
                                         }
                                     }
@@ -119,6 +121,7 @@ const OtpForm = (props) => {
                                         console.log(result)
                                         if (result.payload?.user) {
                                             console.log("User signed in successfully")
+                                            Cookies.set('refreshToken', result.payload.refreshToken, { expires: 7 });
                                             navigate("/feed")
                                         }
                                     }
@@ -127,6 +130,7 @@ const OtpForm = (props) => {
                                             console.log(result)
                                             if(result.payload?.message === "Email verified successfully"){
                                                 console.log("User signed in successfully")
+                                                Cookies.set('refreshToken', result.payload.refreshToken, { expires: 7 });
                                                 navigate("/feed")   
                                             }
                                         }

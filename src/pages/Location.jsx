@@ -26,7 +26,7 @@ function Location() {
     dispatch(updateUserLocation(locationDetails)).then((result) => {
       console.log(result);
       if (result?.payload?.success) {
-        navigate("/dashboard");
+        navigate("/feed");
       }
     });
     setShowLoadingAnimation(false);
@@ -59,7 +59,7 @@ function Location() {
       dispatch(updateUserLocation(locationDetails)).then((result) => {
         console.log(result);
         if (result?.payload?.success) {
-          navigate("/dashboard");
+          navigate("/feed");
         }
       });
     } catch (error) {

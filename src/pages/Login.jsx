@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Left from '../components/OnboardComponents/Left'
 import OtpForm from '../components/OnboardComponents/OtpForm'
-import LogInForm from '../components/OnboardComponents/logInForm'
+import LogInForm from '../components/OnboardComponents/LogInForm'
 import {useSelector} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 

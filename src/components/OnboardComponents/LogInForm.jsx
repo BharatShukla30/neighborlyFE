@@ -10,6 +10,7 @@ import { phoneRegexPattern } from '../../utils/Regex'
 import { validatePhone, validateEmail, validatePassword } from '../../utils/Validators'
 import { useDispatch } from 'react-redux'
 import { googleAuth, loginUser } from '../../redux/actions/authActions'
+import Cookies from 'js-cookie';
 import GoogleLoginButton from './GoogleLoginButton'
 
 const LogInForm = (props) => {
@@ -51,6 +52,7 @@ const LogInForm = (props) => {
                                             console.log(result)
                                             if (result.payload?.user) {
                                                 console.log("User signed in successfully")
+                                                Cookies.set('refreshToken', result.payload.refreshToken, { expires: 7 });
                                                 navigate("/feed")
                                             }
                                         })
@@ -135,6 +137,7 @@ const LogInForm = (props) => {
                             console.log(result)
                             if (result.payload?.user) {
                               console.log("User logged successfully")
+                              Cookies.set('refreshToken', result.payload.refreshToken, { expires: 7 });
                               navigate("/feed")
                             }
                           })

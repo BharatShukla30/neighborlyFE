@@ -3,6 +3,7 @@
 // Define base URLs
 export const USER_BASE_URL = "/user";
 export const GROUP_BASE_URL = "/group";
+export const WALL_BASE_URL = "/wall";
 
 // User URLs
 export const USER_GROUPS_URL = `${USER_BASE_URL}/get-user-groups`;
@@ -20,6 +21,9 @@ export const FETCH_NEARBY_USERS_URL = (body) => `${GROUP_BASE_URL}/fetch-nearby-
 export const CHECK_GROUP_NAME_UNIQUENESS_URL = (name) => `${GROUP_BASE_URL}/is-group-unique?name=${name}`;
 export const LEAVE_GROUP_URL = `${GROUP_BASE_URL}/remove-user`;
 
+//Wall URLs
+export const FETCH_POSTS_URL = `${WALL_BASE_URL}/fetch-posts?home=false`
+
 
 
 // AUTH APIs
@@ -30,6 +34,11 @@ export const AUTH_BASE_URL = "/authentication";
 export const LOGIN_URL = `${AUTH_BASE_URL}/login`;
 export const REGISTER_URL = `${AUTH_BASE_URL}/register`;
 export const LOGOUT_URL = `${AUTH_BASE_URL}/logout`;
+export const SEND_OTP_URL = `${AUTH_BASE_URL}/send-phone-otp`;
+export const VERIFY_OTP_URL = `${AUTH_BASE_URL}/verify-phone-otp`;
+export const SEND_EMAIL_OTP_URL = `${AUTH_BASE_URL}/send-otp`;
+export const VERIFY_EMAIL_OTP_URL = `${AUTH_BASE_URL}/verify-otp`;
+export const GOOGLE_AUTHENTICATION_URL = `${AUTH_BASE_URL}/google/login`;
 
 // User URLs
 export const UPDATE_USER_LOCATION_URL = `${USER_BASE_URL}/update-user-location`;

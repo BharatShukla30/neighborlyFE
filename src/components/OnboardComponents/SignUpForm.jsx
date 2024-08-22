@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../assets/Logo.svg'
-import google from '../../assets/Google.svg'
 import Email from '../../assets/Email.svg'
 import or from '../../assets/or.svg'
 import pass from '../../assets/Password.svg'
@@ -11,13 +12,66 @@ import { validatePassword, validatePhone, validateEmail } from '../../utils/Vali
 import { phoneRegexPattern } from '../../utils/Regex'
 import { useDispatch } from "react-redux"
 import { registerUser } from "../../redux/actions/authActions"
+import GoogleLoginButton from './GoogleLoginButton';
 
 
 const SignUpForm = (props) => {
     //props
-    const { setGotoOtp, mobile, setMobile} = props
+    const { setGotoOtp, mobile, setMobile, setMobileMethod,setEmailData} = props
+
+    //Google Auth use effect
+    useEffect(()=>{
+        const handleRedirect = async () =>{
+
+            const param = new URLSearchParams(window.location.search);
+
+            const code = param.get('code');
+            if(code){
+                //keep these credentials into env file if needed
+                const clientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID;
+                const clientSecret = import.meta.env.VITE_REACT_APP_GOOGLE_SECRET_ID
+                const redirectUri = `${import.meta.env.VITE_REACT_APP_URL}/login`
+
+                try {
+                    const data = {
+                        client_id:clientId,
+                        client_secret:clientSecret,
+                        code:code,
+                        grant_type:'authorization_code',
+                        redirect_uri:redirectUri
+                    }
+                    fetch('https:oauth2.googleapis.com/token', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body:new URLSearchParams(data),
+                    }).then((response)=>{
+                        return response.json()
+                    }).then((data)=>{
+                        console.log(data)                        
+                        dispatch(googleAuth({token:data.id_token}))
+                                        .then((result)=>{
+                                            console.log(result)
+                                            if (result.payload?.user) {
+                                                console.log("User signed in successfully")
+                                                navigate("/feed")
+                                            }
+                                        })
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        }
+        handleRedirect();
+    },[]);
 
 
+
+
+    // warning
+    const notify = () => toast("signup failed");
 
     //usestates
     const [methodMobile, setMethodMobile] = useState(true)
@@ -80,7 +134,19 @@ const SignUpForm = (props) => {
         if(methodMobile) {
             const mobileValidatorResult = validatePhone(mobile.value)
             if(mobileValidatorResult.status) {
-                setGotoOtp(true)
+                const formData = {
+                    phoneNumber: mobile.value,
+                }
+                dispatch(registerUser(formData))
+                .then((result) => {
+                    console.log(result)
+                    if (result.payload?.user) {
+                        console.log("User registered successfully")
+                        setGotoOtp(true)
+                    }else{
+                        notify()
+                    }
+                })
             }
             else {
                 setMobile((prev)=>({...prev, isError: true, errMessage : mobileValidatorResult.errMessage}))
@@ -103,15 +169,18 @@ const SignUpForm = (props) => {
                                                   password : password.value,
                                                 //   confirm_password : repassword.value
                                                 }
-                                
+                                setEmailData(formData)
                                 dispatch(registerUser(formData))
                                 .then((result) => {
                                     console.log(result)
                                     if (result.payload?.user) {
                                       console.log("User registered successfully")
-                                      navigate("/location")
+                                      setMobileMethod(false)
+                                      setGotoOtp(true)
+                                    }else{
+                                        notify() 
                                     }
-                                  })
+                                })
                             }
                             else {
                                 setRepassword((prev) => ({...prev , isError : true, errMessage : `Re-password is not same as password`}))
@@ -141,10 +210,6 @@ const SignUpForm = (props) => {
     const handleContinueWithMobile = () => {
         setMethodMobile(true)
         clearEmailPass()
-    }
-
-    const handleContinueWithGoogle = () =>{
-        console.log('continue with google clicked')
     }
     
     const switchToLogin = () => {
@@ -267,14 +332,7 @@ const SignUpForm = (props) => {
                                     <img  src={or}/>
                                 
                                     {/* continue with google */}
-                                    <button className='flex flex-row items-center py-[0.6rem]  gap-[.5rem] border-[#0A0A0A] border justify-center  rounded-[1.75rem]'
-                                            onClick={ handleContinueWithGoogle }>
-                                        <img className='w-[2.5rem] h-[2.5rem]'
-                                             src={google} 
-                                             alt="google icon"/>
-
-                                        <span className='text-body2 font-medium'>Continue with Google</span>
-                                    </button>
+                                    <GoogleLoginButton/>
 
                                     {/* continue with email */}
                                     { methodMobile && 
@@ -310,6 +368,7 @@ const SignUpForm = (props) => {
 
                     <p className=' text-[#666666] text-small font-medium'>By clicking the above button and creating an account, you have read and accepted the <font className ='font-bold text-[#635BFF]'> Terms of Service </font> and acknowledged our <font className ='font-bold text-[#635BFF]'> Privacy Policy </font>.</p>
                 </div> 
+                <ToastContainer/>
         </div>
   )
 }

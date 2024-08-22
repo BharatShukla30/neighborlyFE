@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Left from '../components/OnboardComponents/Left'
 import OtpForm from '../components/OnboardComponents/OtpForm'
-import LogInForm from '../components/OnboardComponents/logInForm'
+import LogInForm from '../components/OnboardComponents/LogInForm'
 import {useSelector} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,6 +9,10 @@ const Login = () => {
 
   const { isAuthenticated } = useSelector((state) => state.auth)
   const navigate = useNavigate();
+  const [mobileMethod, setMobileMethod] = useState(true);
+  const [emailData, setEmailData] = useState({ email:"",
+                                               password: "" 
+                                            })
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,7 +33,7 @@ const Login = () => {
         
         <Left/>
         { gotoOtp ? 
-          <OtpForm mobile = {mobile}  isLogin = {true} setGotoOtp = {setGotoOtp}/>
+          <OtpForm mobile = {mobile}  isLogin = {true} setGotoOtp = {setGotoOtp} mobileMethod={mobileMethod} emailData={emailData} />
           :
           <LogInForm setGotoOtp = {setGotoOtp} mobile = {mobile} setMobile = {setMobile}/>
         }

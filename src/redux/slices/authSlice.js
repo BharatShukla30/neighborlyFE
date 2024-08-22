@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCitiesList, loadUser, loginUser, logoutUser, registerUser, updateUserLocation } from "../actions/authActions";
+import { authUserWithPhoneOtp, fetchCitiesList, googleAuth, loadUser, loginUser, logoutUser, registerUser, sendOtpToPhone, updateUserLocation } from "../actions/authActions";
 
 const authSlice = createSlice({
     name: "auth",
@@ -42,7 +42,7 @@ const authSlice = createSlice({
         .addCase(registerUser.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload.user;
-            state.isAuthenticated = true;
+            state.isAuthenticated = false;
             state.error = null;
         })
         .addCase(registerUser.rejected, (state, action) => {
@@ -108,6 +108,69 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         })
+
+
+
+        //otp sending
+        .addCase(sendOtpToPhone.pending, (state, action) => {
+            state.loading = true;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = null;
+        })
+        .addCase(sendOtpToPhone.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.isAuthenticated = false;
+            state.error = null;
+        })
+        .addCase(sendOtpToPhone.rejected, (state, action) => {
+            state.loading = false;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = action.payload;
+        })
+
+        //User Authentication With OTP
+        .addCase(authUserWithPhoneOtp.pending, (state, action) => {
+            state.loading = true;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = null;
+        })
+        .addCase(authUserWithPhoneOtp.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.isAuthenticated = true;
+            state.error = null;
+        })
+        .addCase(authUserWithPhoneOtp.rejected, (state, action) => {
+            state.loading = false;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = action.payload;
+        })
+        
+        //User Authentication With OTP
+        .addCase(googleAuth.pending, (state, action) => {
+            state.loading = true;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = null;
+        })
+        .addCase(googleAuth.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.isAuthenticated = true;
+            state.error = null;
+        })
+        .addCase(googleAuth.rejected, (state, action) => {
+            state.loading = false;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = action.payload;
+        })
+
     } 
 });
 

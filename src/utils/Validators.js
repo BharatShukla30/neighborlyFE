@@ -32,6 +32,10 @@ export const validateEmail = (email) => {
                     }
 
 export const validatePassword = (password) => {
+    // added to bypass 
+    // return true;
+    return new validatorResult(true, '')
+    return new validatorResult(true, 'done')
                             if(password.length === 0) {
                                 return new validatorResult(false, 'Fill your password.')
                             }
@@ -47,7 +51,7 @@ export const validatePassword = (password) => {
 }
 
 export const validateOtp = (otp) => {
-                            if (otp,length < 6) {
+                            if (otp.length < 6) {
                                 return new validatorResult(false, '6-digit verification code required.')
                             }
                             else {

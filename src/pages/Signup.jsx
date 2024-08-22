@@ -11,7 +11,7 @@ const Signup = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated){
       navigate("/location")
     }
   }, [isAuthenticated])
@@ -21,6 +21,10 @@ const Signup = () => {
                                         isError: false,
                                         errMessage : ''
                                       })
+  const [mobileMethod, setMobileMethod] = useState(true)
+  const [emailData, setEmailData] = useState({ email:"",
+                                               password: "" 
+                                            })
 
   return (
     <div className='hidden w-screen h-screen
@@ -29,9 +33,9 @@ const Signup = () => {
         
         <Left/>
         { gotoOtp ? 
-          <OtpForm mobile = {mobile} isLogin = {false} setGotoOtp = {setGotoOtp}/>
+          <OtpForm mobile = {mobile} isLogin = {false} setGotoOtp = {setGotoOtp} mobileMethod={mobileMethod} emailData={emailData} />
           :
-          <SignUpForm setGotoOtp = {setGotoOtp} mobile = {mobile} setMobile = {setMobile}/>
+          <SignUpForm setGotoOtp = {setGotoOtp} mobile = {mobile} setMobile = {setMobile} setMobileMethod={setMobileMethod} setEmailData ={setEmailData}/>
         }
     </div>
   )

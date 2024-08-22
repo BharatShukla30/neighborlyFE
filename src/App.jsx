@@ -14,6 +14,9 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 import AboutUs from "./pages/AboutUs";
 import ProductDesign from "./pages/productDesign";
+import Feed from "./pages/Feed";
+
+
 
 function App() {
   React.useEffect(() => {
@@ -39,6 +42,9 @@ function App() {
           {/* updated by Krish */}
           <Route path='/About' element = {<AboutUs/>}/>
 
+
+          {/* added this page */}
+          <Route path="/feed" element={<Feed />}/>
 
         </Routes>
       </BrowserRouter>

@@ -2,7 +2,6 @@ import React from 'react'
 import Post from '../components/Post'
 
 const Posts = ({postList}) => {
-  console.log(postList,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
   return (
     <div className='flex flex-col items-baseline'>
       

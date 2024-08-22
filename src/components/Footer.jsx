@@ -25,7 +25,7 @@ const Footer = () => {
           </div>
           <ul className="flex flex-wrap items-center text-sm font-medium text-white sm:mb-0 mt-4">
             <li>
-              <a href="#" className="mr-4 hover:underline md:mr-6 ">
+              <a href="/about" className="mr-4 hover:underline md:mr-6 ">
                 About
               </a>
             </li>

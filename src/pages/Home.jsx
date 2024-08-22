@@ -13,9 +13,17 @@ const Home = () => {
       navigate("/feed");
     }
   }, [isAuthenticated]);
-
+  // const winSize = window.innerWidth;
+  // console.log(winSize)
+  // if(winSize < 768){
+  //   return <h1>
+  //     placeholder
+  //   </h1>
+  // }
   return (
     <>
+      <div className="xl:hidden md:hidden">placeholder</div>
+      <div className="sm:hidden "> existing</div>
       <HeroSection />
       {!isAuthenticated && <Footer />}
     </>

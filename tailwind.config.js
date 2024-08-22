@@ -8,7 +8,8 @@ export default {
         chatBg: "#f1f6fb",
         cblue: "#177a8d",
         appTheme: "#90E0EF",
-        mainBg: "#f5f5f5"
+        mainBg: "#f5f5f5",
+        'custom-blue': '#0A2540'
       },
       height: {
         page: "calc(100vh - 10rem)",
@@ -25,6 +26,9 @@ export default {
       },
       fontFamily: {
         sans: ["Roboto", "sans-serif"]
+      },
+      backgroundImage: {
+        'custom-pattern': "url('./assets/AboutUs/team-bg.svg')",
       }
     }
   },

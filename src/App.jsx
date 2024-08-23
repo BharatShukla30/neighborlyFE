@@ -11,7 +11,10 @@ import Profile from "./pages/Profile";
 import Location from "./pages/Location";
 import Signup from './pages/Signup'
 import Login from './pages/Login'
+import AboutUs from "./pages/AboutUs";
+import ProductDesign from "./pages/productDesign";
 import Feed from "./pages/Feed";
+
 
 
 function App() {
@@ -29,12 +32,14 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/feed" element={<Feed />}/>
           </Route>
-          <Route path="profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="location" element={<Location />} />
           <Route path="*" element={<Error404Boundary />} />
           <Route path='/Signup' element = {<Signup/>}/>
+          <Route path='/About' element = {<AboutUs/>}/>
         </Routes>
       </BrowserRouter>
+      
   );
 }
 

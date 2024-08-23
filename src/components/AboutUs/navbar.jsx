@@ -4,7 +4,7 @@ import MobileButton from './mobileButton'
 
 
 const navigation = [
-  { name: 'Home', href: '/', current: false },
+  { name: 'Home', href: '/login', current: false },
   { name: 'Contact Us', href: '/', current: false },
   { name: 'Download app', href: '/', current: false },
   { name: 'About Us', href: '/', current: true },

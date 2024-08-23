@@ -213,7 +213,7 @@ const SignUpForm = (props) => {
     }
     
     const switchToLogin = () => {
-        navigate('/')
+        navigate('/login')
     }
     
 

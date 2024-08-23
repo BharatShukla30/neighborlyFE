@@ -27,7 +27,7 @@ function App() {
       <BrowserRouter>
         {/* <Header /> */}
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/feed" element={<Feed />}/>
@@ -36,7 +36,7 @@ function App() {
           <Route path="location" element={<Location />} />
           <Route path="*" element={<Error404Boundary />} />
           <Route path='/Signup' element = {<Signup/>}/>
-          <Route path='/About' element = {<AboutUs/>}/>
+          <Route path='/' element = {<AboutUs/>}/>
         </Routes>
       </BrowserRouter>
       

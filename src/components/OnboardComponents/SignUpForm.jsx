@@ -213,7 +213,7 @@ const SignUpForm = (props) => {
     }
     
     const switchToLogin = () => {
-        navigate('/Login')
+        navigate('/login')
     }
     
 
@@ -359,7 +359,7 @@ const SignUpForm = (props) => {
                                             <span className='text-body2 font-medium'>Continue with Phone.</span>
                                         </button>
                                     }
-                                    <p className='text-center text-body2 font-normal text-[#0A0A0A]'>Already have and account? &nbsp; <font className ='font-bold text-[#635BFF]' onClick = { switchToLogin }>Log In</font>.</p>
+                                    <p className='text-center text-body2 font-normal text-[#0A0A0A]'>Already have and account? &nbsp; <font className ='font-bold text-[#635BFF] cursor-pointer' onClick = { switchToLogin }>Log In</font>.</p>
                                 
                             </div> 
 

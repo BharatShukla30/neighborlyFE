@@ -23,6 +23,7 @@ const Feed = () => {
 
     })
     .then((res) =>{
+      console.log("here ", res);
       return res.json();
     }).then(data => {
       console.log(data,">>>>>>>>>>>>data")

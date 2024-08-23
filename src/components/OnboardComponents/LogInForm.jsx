@@ -293,8 +293,14 @@ const LogInForm = (props) => {
                                             <span className='text-body2 font-medium'>Continue with Phone.</span>
                                         </button>
                                     }
-                                    <p className='text-center text-body2 font-normal text-[#0A0A0A]'>Don't have and account? &nbsp; <font className ='font-bold text-[#635BFF]' onClick = { switchToSignup }>Sign Up</font>.</p>
-                                
+                    
+                                    <p className='text-center text-body2 font-normal text-[#0A0A0A]'>
+                                      Don't have an account? &nbsp;
+                                        <span className='font-bold text-[#635BFF] cursor-pointer ' 
+                                        onClick={switchToSignup} >
+                                        Sign Up
+                                        </span>.
+                                    </p>
                             </div> 
 
                         </div>

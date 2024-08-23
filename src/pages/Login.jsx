@@ -30,7 +30,6 @@ const Login = () => {
     <div className='sm:hidden w-screen h-screen
                     xl:flex xl:flex-row
                     md:flex md:flex-col'>
-        
         <Left/>
         { gotoOtp ? 
           <OtpForm mobile = {mobile}  isLogin = {true} setGotoOtp = {setGotoOtp} mobileMethod={mobileMethod} emailData={emailData} />

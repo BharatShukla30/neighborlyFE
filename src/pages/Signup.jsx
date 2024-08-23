@@ -30,7 +30,6 @@ const Signup = () => {
     <div className='hidden w-screen h-screen
                     xl:flex xl:flex-row
                     md:flex md:flex-col'>
-        
         <Left/>
         { gotoOtp ? 
           <OtpForm mobile = {mobile} isLogin = {false} setGotoOtp = {setGotoOtp} mobileMethod={mobileMethod} emailData={emailData} />

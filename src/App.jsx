@@ -14,7 +14,7 @@ import Login from './pages/Login'
 import AboutUs from "./pages/AboutUs";
 import ProductDesign from "./pages/productDesign";
 import Feed from "./pages/Feed";
-
+import Home from "../src/pages/Home.jsx";
 
 
 function App() {
@@ -36,7 +36,8 @@ function App() {
           <Route path="location" element={<Location />} />
           <Route path="*" element={<Error404Boundary />} />
           <Route path='/Signup' element = {<Signup/>}/>
-          <Route path='/' element = {<AboutUs/>}/>
+          <Route path='/' element = {<Home/>}/>
+          <Route path='/about' element = {<AboutUs/>}/>
         </Routes>
       </BrowserRouter>
       

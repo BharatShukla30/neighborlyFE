@@ -8,7 +8,7 @@ import Team from '../components/AboutUs/team';
 function AboutUs() {
   return (
     <div>
-      <Navbar/>
+      <Navbar current={"AboutUs"}/>
       <Mission/>
       <Offer/>
       <Team/>

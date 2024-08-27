@@ -1,5 +1,5 @@
-import maskGroup from '../../assets/AboutUs/Mask Group.svg'
-import maskGroup2 from '../../assets/AboutUs/Mask group2.svg'
+import maskGroup from '../../assets/AboutUs/MaskGroup.svg'
+import maskGroup2 from '../../assets/AboutUs/MaskGroup2.svg'
 const Mission = () => {
     return (
         <div >

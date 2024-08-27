@@ -12,7 +12,7 @@ import Location from "./pages/Location";
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 import AboutUs from "./pages/AboutUs";
-import ProductDesign from "./pages/productDesign";
+import ProductDesign from "./pages/ProductDesign";
 import Feed from "./pages/Feed";
 import Home from "../src/pages/Home.jsx";
 

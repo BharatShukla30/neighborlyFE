@@ -3,8 +3,7 @@ import logo from '../../assets/AboutUs/logo.svg'
 import MobileButton from './mobileButton'
 import { current } from '@reduxjs/toolkit'
 import { connect } from 'react-redux'
-
-
+import { Link } from 'react-router-dom'
 
 
 const navigation = [
@@ -42,9 +41,9 @@ export default function Example() {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4 justify-center items-center">
                 {navigation.map((item) => (
-                  (item.email) ? <button className="bg-indigo-500 rounded px-1 py-2 text-white shadow-md text-xs" onClick={() => window.location = 'mailto:'+item.href}>{item.email}</button> :
+                  (item.email) ? <button key={item.href} className="bg-indigo-500 rounded px-1 py-2 text-white shadow-md text-xs" onClick={() => window.location = 'mailto:'+item.href}>{item.email}</button> :
                 (  (item.connect) ? <a key={item.href} href={item.href}> <img className="h-6" src={item.connect} alt={item.name || 'email icon'} /></a> :
-                  <a
+                  <Link to={item.href}
                     key={item.name}
                     href={item.href}
                     aria-current={item.current ? 'page' : undefined}
@@ -55,7 +54,7 @@ export default function Example() {
                     )}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 )))}
               </div>
             </div>

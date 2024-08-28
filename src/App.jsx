@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import store from "./redux/store";
 import "./App.css";
-import Header from "./components/Header";
+// import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
 import { fetchCitiesList, loadUser } from "./redux/actions/authActions";
 import ProtectedRoute from "./components/ProtectedRoute";

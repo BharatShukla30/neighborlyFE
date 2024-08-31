@@ -7,6 +7,7 @@ import Section5 from './Home/section5';
 import Section6 from './Home/section6';
 import Section7 from '../pages/Home/section7';
 import NavBar from '../../src/components/AboutUs/navbar'
+import FAQS from "../pages/Home/FAQS"
 
 function Home() {
   return (
@@ -19,6 +20,7 @@ function Home() {
       <Section5/>
       <Section6/>
       <Section7/>
+      <FAQS />
       <Footer/>
       
     </div>

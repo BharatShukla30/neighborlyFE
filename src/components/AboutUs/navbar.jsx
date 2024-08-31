@@ -11,7 +11,7 @@ const navigation = [
   // { name: 'Contact Us', href: '/', current: false },
   { name: 'Download app', href: '/', current: false },
   { name: 'About Us', href: '/about', current: true },
-  { name: 'FAQs', href: '/', current: false },
+  // { name: 'FAQs', href: '/', current: false },
   { connect: "https://cdn-icons-png.flaticon.com/256/1384/1384063.png", href:'https://www.instagram.com/neighborlysocialapp/', current: false},
   { connect: "https://images.rawpixel.com/image_png_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjk4Mi1kMS0xMC5wbmc.png", href:"https://www.linkedin.com/company/neighborlyapp/", current: false},
   { email: "Contact Us", href:"mailto:tech.support@neighborly.in",current: false}

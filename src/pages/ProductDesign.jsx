@@ -18,7 +18,6 @@ function ProductDesign() {
       <Section6/>
       <Section7/>
       <Footer/>
-      
     </div>
   );
 }

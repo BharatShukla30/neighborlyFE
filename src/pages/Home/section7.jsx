@@ -1,61 +1,52 @@
 import userImage from "../../assets/userImage.png";
 import apostrophe from "../../assets/apostrophe.png";
 import apostropheRev from "../../assets/apostrophe reverse.png";
+import team1 from "../../assets/team_1.jpeg";
+import team2 from "../../assets/team_2.png";
+
 const Section7 = () => {
   return (
     <section className="my-10">
-      
-        <div className="flex flex-col text-center">
-          <p className="text-4xl mb-6 max-phone:text-2xl">
-            <b>What our user says</b>
-          </p>
-          <div className="flex justify-evenly">
-          <div className="bg-custom-blue rounded-2xl text-white w-72  max-medium:w-[470px]  max-medium:flex  max-phone:w-[400px]   ">
-              <div className="flex items-center space-x-10 ml-8 mt-8 max-medium:mt-20 max-medium:flex-col max-medium:space-x-0 max-medium:space-y-3  max-phone:mt-14">
-                <img src={userImage} alt="userImage" />
-                <p>
-                  <b>Kavya1719</b>
-                </p>
-              </div>
-              <div className="mx-8 mt-5 max-phone:mx-1 max-phone:my-5" >
-                <div>
-                  <img src={apostrophe} alt="apostrophe " className="max-phone:h-4" />
-                </div>
-                <div className="text-start mx-5 max-phone:text-[12px]">
-                  This is best social media platform I have used till now. This
-                  app really connect me with communities according to my
-                  interest and I got to know people in my neighbors really well.
-                </div>
-                <div className="flex justify-end ">
-                  <img src={apostropheRev} alt="apostropheRev" className="max-phone:h-4" />
-                </div>
+      <div className="flex flex-col items-center text-center">
+        <p className="text-xl text-gray-800 mb-6 max-phone:text-2xl">
+          <b>Some Words From Our Team</b>
+        </p>
+        <div className="flex flex-wrap justify-center gap-8">
+          {/* Card 1 */}
+          <div className="bg-custom-blue rounded-2xl text-white shadow-indigo-400 p-6 w-80 max-medium:w-full max-medium:flex max-medium:items-center">
+            <div className="flex items-center space-x-4 max-medium:flex-col max-medium:space-x-0 max-medium:space-y-3">
+              <img src={team2} alt="Bharat" className="w-12 h-12 rounded-full" />
+              <p className="text-lg font-semibold">Bharat, Founder</p>
+            </div>
+            <div className="mt-5">
+              <img src={apostrophe} alt="apostrophe" className="h-5" />
+              <p className="text-sm text-start my-3">
+                Neighborly is about breaking down the barriers that keep us isolated in our own neighborhoods. It’s a tool to help people connect on a deeper level with those around them.
+              </p>
+              <div className="flex justify-end">
+                <img src={apostropheRev} alt="apostropheRev" className="h-5" />
               </div>
             </div>
+          </div>
 
-            <div className="bg-custom-blue rounded-2xl text-white w-72 max-medium:hidden">
-              <div className="flex items-center space-x-10 ml-8 mt-8">
-                <img src={userImage} alt="userImage" />
-                <p>
-                  <b>Kavya1719</b>
-                </p>
-              </div>
-              <div className="mx-8 mt-5" >
-                <div>
-                  <img src={apostrophe} alt="apostrophe" />
-                </div>
-                <div className="text-start mx-5">
-                  This is best social media platform I have used till now. This
-                  app really connect me with communities according to my
-                  interest and I got to know people in my neighbors really well.
-                </div>
-                <div className="flex justify-end ">
-                  <img src={apostropheRev} alt="apostropheRev" />
-                </div>
+          {/* Card 2 */}
+          <div className="bg-custom-blue rounded-2xl text-white shadow-lg p-6 w-80 max-medium:w-full max-medium:flex max-medium:items-center">
+            <div className="flex items-center space-x-4 max-medium:flex-col max-medium:space-x-0 max-medium:space-y-3">
+              <img src={team1} alt="Niraj" className="w-12 h-12 rounded-full" />
+              <p className="text-lg font-semibold">Niraj, Frontend Lead</p>
+            </div>
+            <div className="mt-5">
+              <img src={apostrophe} alt="apostrophe" className="h-5" />
+              <p className="text-sm text-start my-3">
+                I love how Neighborly uses technology to create opportunities for neighbors to come together, whether it’s organizing local events, sharing resources, or just getting to know each other better.
+              </p>
+              <div className="flex justify-end">
+                <img src={apostropheRev} alt="apostropheRev" className="h-5" />
               </div>
             </div>
           </div>
         </div>
-      
+      </div>
     </section>
   );
 };

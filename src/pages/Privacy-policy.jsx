@@ -1,5 +1,6 @@
 import NavBar from '../../src/components/AboutUs/navbar';
 import Footer from './Home/footer';
+import './Privacy-policy.css';
 
 function PrivacyPolicy() {
   return (

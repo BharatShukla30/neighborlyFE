@@ -12,6 +12,7 @@ import Location from "./pages/Location";
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 import AboutUs from "./pages/AboutUs";
+import PrivacyPolicy from "./pages/Privacy-policy";
 import ProductDesign from "./pages/ProductDesign";
 import Feed from "./pages/Feed";
 import Home from "../src/pages/Home.jsx";
@@ -38,6 +39,7 @@ function App() {
           <Route path='/Signup' element = {<Signup/>}/>
           <Route path='/' element = {<Home/>}/>
           <Route path='/about' element = {<AboutUs/>}/>
+          <Route path='/privacy-policy' element = {<PrivacyPolicy/>}/>
         </Routes>
       </BrowserRouter>
       

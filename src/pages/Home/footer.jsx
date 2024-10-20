@@ -19,13 +19,12 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className="flex flex-col justify-between ml-60 max-phone:ml-0">
-                    <p className="mb-4 text-2xl max-phone:text-[18px]">Other Links</p>
+                    <p className="mb-4 text-2xl max-phone:text-[18px]'>Other Links</p>
                     <a href="/about" className='max-phone:text-[12px]'>About Us</a>
-                    <a href="/" className='max-phone:text-[12px]'>Privacy Policy</a>
+                    <a href="/privacy-policy" className='max-phone:text-[12px]'>Privacy Policy</a>
                     <a href="/" className='max-phone:text-[12px]'>Terms & Condition</a>
                     <a href="/" className='max-phone:text-[12px]'>FAQs</a>
                 </div>
-                
             </div>
         </footer>
     );
